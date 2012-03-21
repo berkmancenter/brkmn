@@ -1,11 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  username: MyString
-  email: MyString
+normal:
+  id: 1
+  username: normal
+  email: normal@example.com
   superadmin: false
 
-two:
-  username: MyString
-  email: MyString
-  superadmin: false
+admin:
+  id: 2
+  username: superadmin
+  email: superadmin@example.com
+  superadmin: true

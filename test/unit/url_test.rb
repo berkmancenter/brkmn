@@ -13,29 +13,9 @@ class UrlTest < ActiveSupport::TestCase
   end
 
   test 'URL Accessibility' do
-    normal_user = User.create(:email => 'foo@example.com')
-    normal_user.username = 'foobar'
-    assert normal_user.save
 
-    admin_user = User.create(:email => 'fooadmin@example.com')
-    admin_user.username = 'fooadmin'
-    admin_user.superadmin = true
-    assert admin_user.save
-
-    url = Url.new(:from => 'public', :to => 'http://google.com', :public => true)
-    url.user = normal_user
-    assert url.save
-
-    url = Url.new(:from => 'private', :to => 'http://google.com', :public => false)
-    url.user = normal_user
-    assert url.save
-
-    url = Url.new(:from => 'adminprivate', :to => 'http://google.com', :public => false)
-    url.user = admin_user
-    assert url.save
-
-    urls = Url.viewable(normal_user)
-    assert urls.length == 2
+    urls = Url.viewable(users(:normal))
+    assert urls.length == 3, "The normal user didn't have 3 links"
 
 #    urls = Url.viewable(admin_user)
 #    assert urls.length == 3

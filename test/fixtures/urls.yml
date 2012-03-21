@@ -1,13 +1,25 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  from: foobar
+normalpublic:
+  from: normalpublic
   to: http://www.google.com
   user_id: 1
   public: true
 
-two:
-  from: barfoo
-  to: http://bleep.com
+normalprivate:
+  from: normalprivate
+  to: http://www.google.com
   user_id: 1
+  public: false
+
+adminpublic:
+  from: adminpublic
+  to: http://www.google.com
+  user_id: 2
   public: true
+
+adminprivate:
+  from: adminprivate
+  to: http://www.google.com
+  user_id: 2
+  public: false
