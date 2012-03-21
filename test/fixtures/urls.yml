@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  from: foobar
+  to: http://www.google.com
+  user_id: 1
+  public: true
+
+two:
+  from: barfoo
+  to: http://bleep.com
+  user_id: 1
+  public: true
