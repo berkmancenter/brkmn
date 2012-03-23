@@ -11,6 +11,7 @@
  *= require_self
  *= require_tree .
 */
+
 html{
   min-height: 100%;
 }
@@ -21,6 +22,7 @@ body{
   background-image: -webkit-linear-gradient(bottom, #222 0%, rgb(140,0,2) 100%);
   background-image: -ms-linear-gradient(bottom, #222 0%,rgb(140,0,2)  100%);
   font-family: verdana;
+  font-size: 12px;
 }
 
 .wrapper{
@@ -32,12 +34,19 @@ body{
   border: 10px solid black;
 }
 
+footer{
+  font-size: .75em;
+  width: 900px;
+  margin: 10px auto 0px auto;
+  text-align: right;
+}
+
 h1{
   margin: 0px;
   padding: 10px;
   color: white;
   background-color:black;
-  margin: -10px;
+  margin: -10px -10px 0px -10px;
   font-size: 72px;
   letter-spacing: -5px;
   font-family: times;

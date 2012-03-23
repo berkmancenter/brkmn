@@ -1,5 +1,13 @@
-%h1 brk.mn
 .add_form
-  %h2 Shorten a URL
+  %fieldset
+    %legend Shorten a URL
+    = form_for(Url.new) do |f|
+      = f.label(:from)
+      = f.text_field(:from, :size => 80)
+      %br
+      = f.label(:to)
+      http://brk.mn/
+      = f.text_field(:to, :size => 10)
+      = f.submit
 .your_urls
   %h2 Your URLs

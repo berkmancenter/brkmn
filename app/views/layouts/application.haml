@@ -8,4 +8,9 @@
     = csrf_meta_tags 
   %body
     .wrapper
+      %h1 brk.mn
       = yield
+    %footer 
+      Logged in as
+      = @current_user.username
+
