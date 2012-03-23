@@ -1,8 +1,8 @@
 class UrlsController < ApplicationController
-  before_filter :rights_check
+  before_filter :is_authenticated
 
   def index
-    @urls = Url.accessible(u).paginate(:page => params[:page], :per_page => params[:per_page])
+    @urls = Url.viewable(current_user).paginate(:page => params[:page], :per_page => params[:per_page])
   end
 
   def create
@@ -21,8 +21,8 @@ class UrlsController < ApplicationController
   end
 
   private
+
   def rights_check
-    #TODO
   end
 
 end

@@ -17,8 +17,11 @@ class UrlTest < ActiveSupport::TestCase
     urls = Url.viewable(users(:normal))
     assert urls.length == 3, "The normal user didn't have 3 links"
 
-#    urls = Url.viewable(admin_user)
-#    assert urls.length == 3
+    urls = Url.viewable(users(:admin))
+    assert urls.length == 4, "The superadmin couldn't see all the links"
+
+    urls = Url.viewable(users(:secondnormal))
+    assert urls.length == 2, "The second normal user didn't see the proper number of links"
 
   end
 end

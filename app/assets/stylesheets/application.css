@@ -11,3 +11,35 @@
  *= require_self
  *= require_tree .
 */
+html{
+  min-height: 100%;
+}
+body{
+  background-image: linear-gradient(bottom, #222 0%, rgb(140,0,2) 100%);
+  background-image: -o-linear-gradient(bottom, #222 0%, rgb(140,0,2) 100%);
+  background-image: -moz-linear-gradient(bottom, #222 0%, rgb(140,0,2) 100%);
+  background-image: -webkit-linear-gradient(bottom, #222 0%, rgb(140,0,2) 100%);
+  background-image: -ms-linear-gradient(bottom, #222 0%,rgb(140,0,2)  100%);
+  font-family: verdana;
+}
+
+.wrapper{
+  width: 900px;
+  margin: 0px auto;
+  background-color: #e4e4e4;
+  padding: 10px;
+  border-radius: 20px;
+  border: 10px solid black;
+}
+
+h1{
+  margin: 0px;
+  padding: 10px;
+  color: white;
+  background-color:black;
+  margin: -10px;
+  font-size: 72px;
+  letter-spacing: -5px;
+  font-family: times;
+  font-weight:normal;
+}
