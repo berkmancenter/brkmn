@@ -5,5 +5,5 @@ Brkmn::Application.routes.draw do
   resources :urls
 
   # So anything that doesn't match the resource controllers above goes to the redirector controller.
-  # root :to => 'welcome#index'
+  root :to => 'urls#index'
 end

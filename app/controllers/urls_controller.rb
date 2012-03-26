@@ -2,7 +2,7 @@ class UrlsController < ApplicationController
   before_filter :is_authenticated
 
   def index
-    @urls = Url.viewable(current_user).paginate(:page => params[:page], :per_page => params[:per_page])
+    @urls = Url.paginate(:page => params[:page], :per_page => params[:per_page])
   end
 
   def create

@@ -8,6 +8,7 @@ gem 'rails', '3.2.2'
 gem 'pg'
 gem 'will_paginate'
 gem 'haml'
+gem 'base32-crockford'
 
 # Gems used only for assets and not required
 # in production environments by default.

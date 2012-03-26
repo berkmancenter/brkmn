@@ -14,16 +14,16 @@
 ActiveRecord::Schema.define(:version => 20120321115748) do
 
   create_table "urls", :force => true do |t|
-    t.string   "from",                                          :null => false
+    t.string   "from"
     t.string   "to",         :limit => 10240,                   :null => false
     t.integer  "user_id"
-    t.boolean  "public",                      :default => true
+    t.boolean  "auto",                        :default => true
     t.datetime "created_at",                                    :null => false
     t.datetime "updated_at",                                    :null => false
   end
 
+  add_index "urls", ["auto"], :name => "index_urls_on_auto"
   add_index "urls", ["from"], :name => "index_urls_on_from"
-  add_index "urls", ["public"], :name => "index_urls_on_public"
   add_index "urls", ["to"], :name => "index_urls_on_to"
   add_index "urls", ["user_id"], :name => "index_urls_on_user_id"
 
