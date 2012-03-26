@@ -60,6 +60,17 @@ legend{
 }
 
 .messages{
-  margin: 10px;
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
+}
+
+#url_to{
+  font-size: 1.5em;
+  width: 85%;
+  font-weight: bold;
+  padding: 5px;
+}
+
+#url_from{
+  width: 25%;
 }

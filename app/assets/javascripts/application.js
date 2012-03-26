@@ -17,13 +17,18 @@
 
 
 $(document).ready(function(){
+  $('#url_to').focus();
   $('#new_url').ajaxForm({
     dataType: 'html',
     success: function(html){
       $('#new_url .messages').show().html(html);
+      $('#url_to').val('');
+      $('#url_from').val('');
+      $('#url_to').focus();
     },
     error: function(e){
       $('#new_url .messages').show().html('<span class="error">' + e.responseText + '</span>');
+      $('#url_to').focus();
     }
   });
 

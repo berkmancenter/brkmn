@@ -15,8 +15,9 @@ class UrlsController < ApplicationController
     respond_to do |f|
       f.html {
         if @url.save
-          render :text => 'Success! We created that URL for you.', :layout => ! request.xhr?
+          render :text => "<h2 class='generated_url'>Huzzah!: <a href='http://brk.mn/#{@url.from}'>http://brk.mn/#{@url.from}</a></h2>", :layout => ! request.xhr?
         else
+          logger.warn(@url.errors.inspect)
           render :text => "Sorry, we couldn't create that URL.<br/>#{@url.errors.full_messages.join('<br/>')}", :status => :unprocessable_entity
         end
       }

@@ -25,6 +25,7 @@ class Url < ActiveRecord::Base
     if ! self.from.match(URL_FORMAT)
       self.errors.add(:from, "needs to contains letters, numbers, or the forward slash")
     end
+    return 
   end
 
   scope :auto, where({:auto => true})
@@ -49,9 +50,10 @@ class Url < ActiveRecord::Base
       self.from = "#{encoded_from}#{suffix}"
       self.auto = true
     else
-      # 
       self.auto = false
     end
+    #Return true to ensure this doesn't look like a failed validation.
+    return true
   end
 
 end
