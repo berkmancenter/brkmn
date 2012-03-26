@@ -12,4 +12,20 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.form
 //= require_tree .
+
+
+$(document).ready(function(){
+  $('#new_url').ajaxForm({
+    dataType: 'html',
+    success: function(html){
+      $('#new_url .messages').show().html(html);
+    },
+    error: function(e){
+      $('#new_url .messages').show().html('<span class="error">' + e.responseText + '</span>');
+    }
+  });
+
+
+});

@@ -3,7 +3,7 @@ class Url < ActiveRecord::Base
   validates_presence_of :to
 
   validates_length_of :to, :maximum => 10.kilobytes, :allow_blank => false 
-  validates_format_of :to, :with => /https?:\/\/.+/i
+  validates_format_of :to, :with => /https?:\/\/.+/i, :message => 'should begin with http:// or https:// and look like a valid URL'
 
   belongs_to :user
 

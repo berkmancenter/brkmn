@@ -2,12 +2,13 @@
   %fieldset
     %legend Shorten a URL
     = form_for(Url.new) do |f|
-      = f.label(:from)
-      = f.text_field(:from, :size => 80)
-      %br
+      .messages{:style => 'display: none;'}
       = f.label(:to)
+      = f.text_field(:to, :size => 80)
+      %br
+      = f.label(:from, 'Short URL')
       http://brk.mn/
-      = f.text_field(:to, :size => 10)
+      = f.text_field(:from, :size => 10)
       = f.submit
 .your_urls
   %h2 Your URLs
