@@ -11,6 +11,32 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 0) do
+ActiveRecord::Schema.define(:version => 20120321115748) do
+
+  create_table "urls", :force => true do |t|
+    t.string   "shortened"
+    t.string   "to",         :limit => 10240,                   :null => false
+    t.integer  "user_id"
+    t.boolean  "auto",                        :default => true
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
+  end
+
+  add_index "urls", ["auto"], :name => "index_urls_on_auto"
+  add_index "urls", ["shortened"], :name => "index_urls_on_shortened"
+  add_index "urls", ["to"], :name => "index_urls_on_to"
+  add_index "urls", ["user_id"], :name => "index_urls_on_user_id"
+
+  create_table "users", :force => true do |t|
+    t.string   "username",   :limit => 100,                    :null => false
+    t.string   "email",      :limit => 100
+    t.boolean  "superadmin",                :default => false
+    t.datetime "created_at",                                   :null => false
+    t.datetime "updated_at",                                   :null => false
+  end
+
+  add_index "users", ["email"], :name => "index_users_on_email"
+  add_index "users", ["superadmin"], :name => "index_users_on_superadmin"
+  add_index "users", ["username"], :name => "index_users_on_username"
 
 end

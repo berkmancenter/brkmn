@@ -2,35 +2,35 @@
 
 normalpublic:
   id: 1
-  from: normalpublic
+  shortened: normalpublic
   to: http://www.google.com
   user_id: 1
   auto: false
 
 normalprivate:
   id: 2
-  from: normalprivate
+  shortened: normalprivate
   to: http://www.google.com
   user_id: 1
   auto: false
 
 adminpublic:
   id: 3
-  from: adminpublic
+  shortened: adminpublic
   to: http://www.google.com
   user_id: 2
   auto: false
 
 adminprivate:
   id: 4
-  from: adminprivate
+  shortened: adminprivate
   to: http://www.google.com
   user_id: 2
   auto: false
 
 adminauto:
   id: 5
-  from: a
+  shortened: a
   to: http://www.google.com
   user_id: 2
   auto: true

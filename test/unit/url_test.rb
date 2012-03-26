@@ -2,13 +2,13 @@ require 'test_helper'
 
 class UrlTest < ActiveSupport::TestCase
   test 'URL requirements' do
-    @url = Url.new(:from => 'foobar', :to => 'http://google.com')
+    @url = Url.new(:shortened => 'foobar', :to => 'http://google.com')
     assert @url.valid?, 'Should have been valid'
 
-    @url = Url.new(:from => 'foobar', :to => 'hp://google.com')
+    @url = Url.new(:shortened => 'foobar', :to => 'hp://google.com')
     assert ! @url.valid?, 'Should not have been valid'
 
-    @url = Url.new(:from => nil, :to => 'http://google.com')
+    @url = Url.new(:shortened => nil, :to => 'http://google.com')
     assert @url.valid?, 'Auto generated'
   end
 
@@ -30,11 +30,11 @@ class UrlTest < ActiveSupport::TestCase
 
     u = Url.new(:to => 'http://www.google.com')
     assert u.save, "Couldn't save auto generated URL"
-    assert u.from == '6', "Didn't look like what we wanted."
+    assert u.shortened == '6', "Didn't look like what we wanted."
 
     u2 = Url.new(:to => 'http://www.google.com')
     assert u2.save, "Couldn't save auto generated URL"
-    assert u2.from == '7', "Didn't look like what we wanted."
+    assert u2.shortened == '7', "Didn't look like what we wanted."
 
   end
 

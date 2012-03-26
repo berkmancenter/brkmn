@@ -21,9 +21,9 @@ $(document).ready(function(){
   $('#new_url').ajaxForm({
     dataType: 'html',
     success: function(html){
-      $('#new_url .messages').show().html(html);
+      $('#new_url .messages').show().html('<span class="notice">' + html + '</span>');
       $('#url_to').val('');
-      $('#url_from').val('');
+      $('#url_shortened').val('');
       $('#url_to').focus();
     },
     error: function(e){

@@ -26,6 +26,10 @@ body{
   font-size: 12px;
 }
 
+a{
+  color: darkred;
+}
+
 .wrapper{
   width: 900px;
   margin: 0px auto;
@@ -64,6 +68,12 @@ legend{
   padding: 5px;
 }
 
+.error{
+  font-size: 1.1em;
+  font-weight: bold;
+  color: darkred;
+}
+
 #url_to{
   font-size: 1.5em;
   width: 85%;
@@ -71,6 +81,6 @@ legend{
   padding: 5px;
 }
 
-#url_from{
+#url_shortened{
   width: 25%;
 }

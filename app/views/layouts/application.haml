@@ -8,9 +8,10 @@
     = csrf_meta_tags 
   %body
     .wrapper
-      %h1 brk.mn
+      %h1 
+        = REDIRECT_DOMAIN
       = yield
     %footer 
-      Logged in as
-      = @current_user.username
-
+      - unless @current_user.blank?
+        Logged in as
+        = @current_user.username
