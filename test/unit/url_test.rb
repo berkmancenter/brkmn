@@ -26,16 +26,15 @@ class UrlTest < ActiveSupport::TestCase
   end
 
   test 'Auto URL generation' do
+    Url.find_by_sql("select setval('urls_id_seq', 5,TRUE)")
 
     u = Url.new(:to => 'http://www.google.com')
     assert u.save, "Couldn't save auto generated URL"
-    puts "from is: " + u.from
-    assert u.from == '7', "Didn't look like what we wanted."
+    assert u.from == '6', "Didn't look like what we wanted."
 
     u2 = Url.new(:to => 'http://www.google.com')
     assert u2.save, "Couldn't save auto generated URL"
-    puts "second from is: " + u2.from
-    assert u2.from == 'c', "Didn't look like what we wanted."
+    assert u2.from == '7', "Didn't look like what we wanted."
 
   end
 
