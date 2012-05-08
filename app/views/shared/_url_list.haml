@@ -1,0 +1,8 @@
+%table
+  %tr
+    %td{:colspan => 2}
+      = will_paginate @urls
+  = render :partial => 'urls/url_list', :collection => @urls
+  %tr
+    %td{:colspan => 2}
+      = will_paginate @urls

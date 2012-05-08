@@ -4,13 +4,10 @@
     = form_for(Url.new) do |f|
       .messages{:style => 'display: none;'}
       = f.text_field(:to, :size => 80, :placeholder => "URL to shorten", :tabindex => 1)
-      = f.submit('Shorten', :tabindex => 3)
+      = f.submit('Shorten', :tabindex => 3, :id => 'submit')
       %br
       = "http://#{REDIRECT_DOMAIN}/"
       = f.text_field(:shortened, :size => 10, :placeholder => "OPTIONAL: shorten to. . . ", :tabindex => 2)
 .your_urls
   %h2 Shortened URLs
-  .url_list
-    %table
-      = will_paginate @urls
-      = render :partial => 'urls/url_list', :collection => @urls
+  #url_list

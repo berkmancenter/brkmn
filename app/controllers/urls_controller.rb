@@ -5,6 +5,13 @@ class UrlsController < ApplicationController
     @urls = Url.order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
   end
 
+  def url_list
+    @urls = Url.select([:id, :auto, :shortened, '"to"', :user_id]).order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
+    respond_to do |f|
+      f.html { render :partial => 'shared/url_list' }
+    end
+  end
+
   def create
     @url = Url.new(
       :shortened  => params[:url][:shortened],
