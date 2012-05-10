@@ -23,6 +23,7 @@ $.extend({
     $.ajax({
       method: 'get',
       url: $.rootPath() + 'urls/url_list',
+      data: {filter: $('#filter').val()},
       dataType: 'html',
       success: function(html){
         $('#url_list').html(html);
@@ -62,7 +63,21 @@ $(document).ready(function(){
     }
   });
 
+  $('#apply_filter').live({
+    click: function(e){
+      e.preventDefault();
+      $.updateUrlList();
+    }
+  });
+
+  $('#clear_filter').live({
+    click: function(e){
+      e.preventDefault();
+      $('#filter').val('');
+      $.updateUrlList();
+    }
+  });
+
   $.updateUrlList();
   $.observeListPagination();
-
 });

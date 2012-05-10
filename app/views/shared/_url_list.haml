@@ -1,4 +1,14 @@
-= will_paginate @urls
 %table
+  %tr
+    %td{:colspan => 3, :class => 'filters'}
+      %label{:for => 'filter'} Filter:
+      %input{:type => 'text', :name => 'filter', :id => 'filter', :value => params[:filter]}
+      %input{:type => 'submit', :id => 'apply_filter', :value => 'go'}
+      %input{:type => 'submit', :id => 'clear_filter', :value => 'reset'}
+  %tr
+    %td{:colspan => 3, :class => "top_pagination"}
+      = will_paginate @urls
   = render :partial => 'urls/url_list', :collection => @urls
-= will_paginate @urls
+  %tr
+    %td{:colspan => 3, :class => "bottom_pagination"}
+      = will_paginate @urls

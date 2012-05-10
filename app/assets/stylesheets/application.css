@@ -92,13 +92,41 @@ legend{
   text-align: center;
 }
 
+.top_pagination, .bottom_pagination{
+  border: 1px #ccc;
+}
+
+.top_pagination{
+  border-style: none none dotted none;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.bottom_pagination{
+  border-style: dotted none none none;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+table{
+  width: 100%;
+}
+
 td{
   padding: 2px;
+}
+
+td.shortened{
+  width: 33%;
 }
 
 td.arrow{
   font-size: 2em;
   line-height: 1em;
+}
+
+td.filters{
+  text-align: right;
 }
 
 #submit:hover, #submit:focus{

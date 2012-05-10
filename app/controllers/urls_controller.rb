@@ -6,7 +6,8 @@ class UrlsController < ApplicationController
   end
 
   def url_list
-    @urls = Url.select([:id, :auto, :shortened, '"to"', :user_id]).order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
+    query = Url.select([:id, :auto, :shortened, '"to"', :user_id]).where((params[:filter].blank?) ? ['1 = 1'] : ['"to" like ?',"%#{params[:filter]}%"]).order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
+    @urls = query
     respond_to do |f|
       f.html { render :partial => 'shared/url_list' }
     end

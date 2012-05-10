@@ -1,6 +1,6 @@
 %tr
-  %td
+  %td{:class=>'shortened'}
     = link_to(shortened_url(url_list.shortened), shortened_url(url_list.shortened))
   %td{:class => 'arrow'} →
-  %td
+  %td{:class => 'to'}
     = link_to(url_list.to, url_list.to)
