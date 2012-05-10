@@ -63,6 +63,15 @@ $(document).ready(function(){
     }
   });
 
+  $('#filter').live({
+    keydown: function(e){
+      if(e.which == 13){
+        e.preventDefault();
+        $.updateUrlList();
+      }
+    }
+  });
+
   $('#apply_filter').live({
     click: function(e){
       e.preventDefault();
