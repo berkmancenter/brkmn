@@ -79,13 +79,25 @@ legend{
   padding: 5px;
 }
 
-#submit{
+.mine td{
+  background-color: #fff;
+}
+
+#submit, #apply_filter, #clear_filter{
   color: darkred;
   padding: 5px 10px 5px 10px;
   font-size: 1.5em;
   font-weight: bold;
   background-color: #aaa;
   border-radius: 5px;
+}
+
+#apply_filter, #clear_filter{
+  font-size: 1.1em;
+}
+
+#filter_control{
+  text-align: right;
 }
 
 .pagination{
@@ -125,7 +137,7 @@ td.arrow{
   line-height: 1em;
 }
 
-td.filters{
+#filters td{
   text-align: right;
 }
 

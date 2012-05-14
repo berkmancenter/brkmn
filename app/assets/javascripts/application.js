@@ -63,6 +63,20 @@ $(document).ready(function(){
     }
   });
 
+  $('#filter_control').live({
+    click: function(e){
+      e.preventDefault();
+      var filter_viz = $.cookie('filter_control');
+      if(filter_viz == undefined || filter_viz == ''){
+        $('#filters').show();
+        $.cookie('filter_control',1);
+      } else {
+        $('#filters').hide();
+        $.cookie('filter_control',null);
+      }
+    }
+  });
+
   $('#filter').live({
     keydown: function(e){
       if(e.which == 13){
