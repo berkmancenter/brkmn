@@ -83,7 +83,7 @@ legend{
   background-color: #fff;
 }
 
-#submit, #apply_filter, #clear_filter{
+#submit, #apply_filter, #clear_filter, #filter_control span{
   color: darkred;
   padding: 5px 10px 5px 10px;
   font-size: 1.5em;
@@ -92,8 +92,12 @@ legend{
   border-radius: 5px;
 }
 
-#apply_filter, #clear_filter{
+#apply_filter, #clear_filter, #filter_control span{
   font-size: 1.1em;
+}
+
+#filter_control span {
+  display: inline-block;
 }
 
 #filter_control{

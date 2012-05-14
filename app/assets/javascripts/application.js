@@ -27,6 +27,10 @@ $.extend({
       dataType: 'html',
       success: function(html){
         $('#url_list').html(html);
+        if($.cookie('hide_filter_control') == 'hide'){
+          $('#filters').hide();
+          $('#filter_control span').html('Filter on');
+        }
       }
     });
   },
@@ -40,6 +44,10 @@ $.extend({
         dataType: 'html',
         success: function(html){
           $(paginationTarget).html(html);
+          if($.cookie('hide_filter_control') == 'hide'){
+            $('#filters').hide();
+            $('#filter_control span').html('Filter on');
+          }
         }
       });
     });
@@ -66,16 +74,21 @@ $(document).ready(function(){
   $('#filter_control').live({
     click: function(e){
       e.preventDefault();
-      var filter_viz = $.cookie('filter_control');
-      if(filter_viz == undefined || filter_viz == ''){
-        $('#filters').show();
-        $.cookie('filter_control',1);
+      var filter_viz = $.cookie('hide_filter_control');
+      if(filter_viz == undefined){
+        console.log('hide');
+        $('#filters').hide('slow');
+        $('#filter_control span').html('Filter on');
+        $.cookie('hide_filter_control','hide');
       } else {
-        $('#filters').hide();
-        $.cookie('filter_control',null);
+        console.log('show');
+        $('#filters').show('slow');
+        $('#filter_control span').html('Filter off');
+        $.cookie('hide_filter_control',null);
       }
     }
   });
+
 
   $('#filter').live({
     keydown: function(e){

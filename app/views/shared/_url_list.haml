@@ -8,7 +8,8 @@
   %tr
     %td{:colspan => 2, :class => "top_pagination"}
       = will_paginate @urls
-    %td{:id => 'filter_control'} Filter
+    %td{:id => 'filter_control'} 
+      %span Filter off
   = render :partial => 'urls/url_list', :collection => @urls
   %tr
     %td{:colspan => 3, :class => "bottom_pagination"}
