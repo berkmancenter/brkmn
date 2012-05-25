@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+normal:
+  id: 1
+  username: normal
+  email: normal@example.com
+  superadmin: false
+
+admin:
+  id: 2
+  username: superadmin
+  email: superadmin@example.com
+  superadmin: true
+
+secondnormal:
+  id: 3
+  username: secondnormal
+  email: secondnormal@example.com
+  superadmin: false

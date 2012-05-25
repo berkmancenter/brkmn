@@ -11,3 +11,152 @@
  *= require_self
  *= require_tree .
 */
+
+html{
+  min-height: 100%;
+}
+
+body{
+  background-image: linear-gradient(bottom, #000 0%, rgb(140,0,2) 100%);
+  background-image: -o-linear-gradient(bottom, #000 0%, rgb(140,0,2) 100%);
+  background-image: -moz-linear-gradient(bottom, #000 0%, rgb(140,0,2) 100%);
+  background-image: -webkit-linear-gradient(bottom, #000 0%, rgb(140,0,2) 100%);
+  background-image: -ms-linear-gradient(bottom, #000 0%,rgb(140,0,2)  100%);
+  font-family: verdana;
+  font-size: 12px;
+}
+
+a{
+  color: darkred;
+}
+
+a:hover{
+  color: black;
+}
+
+.wrapper{
+  width: 900px;
+  margin: 0px auto;
+  background-color: #e4e4e4;
+  padding: 10px;
+  border-radius: 20px;
+  border: 10px solid black;
+}
+
+
+h1{
+  margin: 0px;
+  padding: 10px;
+  color: white;
+  background-color:black;
+  margin: -10px -10px 0px -10px;
+  font-size: 72px;
+  letter-spacing: -5px;
+  font-family: times;
+  font-weight:normal;
+}
+
+legend{
+  font-size: 1.5em;
+  padding: 5px;
+}
+
+.messages{
+  margin: 5px;
+  padding: 5px;
+}
+
+.error{
+  font-size: 1.1em;
+  font-weight: bold;
+  color: darkred;
+}
+
+#url_to{
+  font-size: 1.5em;
+  width: 85%;
+  font-weight: bold;
+  padding: 5px;
+}
+
+.mine td{
+  background-color: #fff;
+}
+
+#submit, #apply_filter, #clear_filter, #filter_control span{
+  color: darkred;
+  padding: 5px 10px 5px 10px;
+  font-size: 1.5em;
+  font-weight: bold;
+  background-color: #aaa;
+  border-radius: 5px;
+}
+
+#apply_filter, #clear_filter, #filter_control span{
+  font-size: 1.1em;
+}
+
+#filter_control span {
+  display: inline-block;
+}
+
+#filter_control{
+  text-align: right;
+}
+
+.pagination{
+  text-align: center;
+}
+
+.top_pagination, .bottom_pagination{
+  border: 1px #ccc;
+}
+
+.top_pagination{
+  border-style: none none dotted none;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+
+.bottom_pagination{
+  border-style: dotted none none none;
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+table{
+  width: 100%;
+}
+
+td{
+  padding: 2px;
+}
+
+td.shortened{
+  width: 33%;
+}
+
+td.arrow{
+  font-size: 2em;
+  line-height: 1em;
+}
+
+#filters td{
+  text-align: right;
+}
+
+#submit:hover, #submit:focus{
+  background-color: #e4e4e4;
+}
+
+#url_shortened{
+  width: 25%;
+}
+
+footer{
+  font-size: .75em;
+  color: #ccc;
+  width: 900px;
+  margin: 10px auto 0px auto;
+  text-align: right;
+}
