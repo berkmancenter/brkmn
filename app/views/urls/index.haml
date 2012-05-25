@@ -1,0 +1,12 @@
+.add_form
+  %fieldset
+    %legend Shorten a URL
+    = form_for(Url.new) do |f|
+      .messages{:style => 'display: none;'}
+      = f.text_field(:to, :size => 80, :placeholder => "URL to shorten", :tabindex => 1)
+      = f.submit('Shorten', :tabindex => 3, :id => 'submit')
+      %br
+      = "http://#{REDIRECT_DOMAIN}/"
+      = f.text_field(:shortened, :size => 10, :placeholder => "OPTIONAL: shorten to. . . ", :tabindex => 2)
+.urls
+  #url_list

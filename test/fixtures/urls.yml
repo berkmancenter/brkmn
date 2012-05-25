@@ -1,0 +1,36 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+normalpublic:
+  id: 1
+  shortened: normalpublic
+  to: http://www.google.com
+  user_id: 1
+  auto: false
+
+normalprivate:
+  id: 2
+  shortened: normalprivate
+  to: http://www.google.com
+  user_id: 1
+  auto: false
+
+adminpublic:
+  id: 3
+  shortened: adminpublic
+  to: http://www.google.com
+  user_id: 2
+  auto: false
+
+adminprivate:
+  id: 4
+  shortened: adminprivate
+  to: http://www.google.com
+  user_id: 2
+  auto: false
+
+adminauto:
+  id: 5
+  shortened: a
+  to: http://www.google.com
+  user_id: 2
+  auto: true

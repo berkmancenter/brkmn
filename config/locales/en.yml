@@ -2,4 +2,8 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  activerecord:
+    attributes:
+      url:
+        shortened: This shortened URL
+        to: The URL to be shortened

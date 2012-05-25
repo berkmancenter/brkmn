@@ -12,4 +12,108 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.form
 //= require_tree .
+
+$.extend({
+  rootPath: function(){
+    return '/';
+  },
+  updateUrlList:function(){
+    $.ajax({
+      method: 'get',
+      url: $.rootPath() + 'urls/url_list',
+      data: {filter: $('#filter').val()},
+      dataType: 'html',
+      success: function(html){
+        $('#url_list').html(html);
+        if($.cookie('hide_filter_control') == 'hide'){
+          $('#filters').hide();
+          $('#filter_control span').html('Filter on');
+        }
+      }
+    });
+  },
+  observeListPagination: function(){
+    $('.pagination a').live('click',function(e){
+      var paginationTarget = $(this).closest('#url_list');
+      e.preventDefault();
+      $.ajax({
+        type: 'GET',
+        url: $(this).attr('href'),
+        dataType: 'html',
+        success: function(html){
+          $(paginationTarget).html(html);
+          if($.cookie('hide_filter_control') == 'hide'){
+            $('#filters').hide();
+            $('#filter_control span').html('Filter on');
+          }
+        }
+      });
+    });
+  }
+});
+
+$(document).ready(function(){
+  $('#url_to').focus();
+  $('#new_url').ajaxForm({
+    dataType: 'html',
+    success: function(html){
+      $('#new_url .messages').show().html('<span class="notice">' + html + '</span>');
+      $('#url_to').val('');
+      $('#url_shortened').val('');
+      $('#url_to').focus();
+      $.updateUrlList();
+    },
+    error: function(e){
+      $('#new_url .messages').show().html('<span class="error">' + e.responseText + '</span>');
+      $('#url_to').focus();
+    }
+  });
+
+  $('#filter_control').live({
+    click: function(e){
+      e.preventDefault();
+      var filter_viz = $.cookie('hide_filter_control');
+      if(filter_viz == undefined){
+        console.log('hide');
+        $('#filters').hide('slow');
+        $('#filter_control span').html('Filter on');
+        $.cookie('hide_filter_control','hide');
+      } else {
+        console.log('show');
+        $('#filters').show('slow');
+        $('#filter_control span').html('Filter off');
+        $.cookie('hide_filter_control',null);
+      }
+    }
+  });
+
+
+  $('#filter').live({
+    keydown: function(e){
+      if(e.which == 13){
+        e.preventDefault();
+        $.updateUrlList();
+      }
+    }
+  });
+
+  $('#apply_filter').live({
+    click: function(e){
+      e.preventDefault();
+      $.updateUrlList();
+    }
+  });
+
+  $('#clear_filter').live({
+    click: function(e){
+      e.preventDefault();
+      $('#filter').val('');
+      $.updateUrlList();
+    }
+  });
+
+  $.updateUrlList();
+  $.observeListPagination();
+});
