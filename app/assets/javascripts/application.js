@@ -29,7 +29,7 @@ $.extend({
         $('#url_list').html(html);
         if($.cookie('hide_filter_control') == 'hide'){
           $('#filters').hide();
-          $('#filter_control span').html('Filter on');
+          $('#filter_control span').html('Show filter');
         }
       }
     });
@@ -46,7 +46,7 @@ $.extend({
           $(paginationTarget).html(html);
           if($.cookie('hide_filter_control') == 'hide'){
             $('#filters').hide();
-            $('#filter_control span').html('Filter on');
+            $('#filter_control span').html('Show filter');
           }
         }
       });
@@ -78,17 +78,16 @@ $(document).ready(function(){
       if(filter_viz == undefined){
         console.log('hide');
         $('#filters').hide('slow');
-        $('#filter_control span').html('Filter on');
+        $('#filter_control span').html('Show filter');
         $.cookie('hide_filter_control','hide');
       } else {
         console.log('show');
         $('#filters').show('slow');
-        $('#filter_control span').html('Filter off');
+        $('#filter_control span').html('Hide filter');
         $.cookie('hide_filter_control',null);
       }
     }
   });
-
 
   $('#filter').live({
     keydown: function(e){
