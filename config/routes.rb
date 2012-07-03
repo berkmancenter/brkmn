@@ -3,6 +3,7 @@ Brkmn::Application.routes.draw do
   resources :urls do 
     collection do
       get 'url_list'
+      get 'bookmarklet'
     end
   end
   root :to => 'urls#index'
