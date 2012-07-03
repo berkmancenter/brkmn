@@ -50,8 +50,8 @@ h1{
   color: white;
   background-color:black;
   margin: -10px -10px 0px -10px;
-  font-size: 72px;
-  letter-spacing: -5px;
+  font-size: 36px;
+  letter-spacing: -2px;
   font-family: times;
   font-weight:normal;
 }
@@ -160,3 +160,13 @@ footer{
   margin: 10px auto 0px auto;
   text-align: right;
 }
+
+footer a.bookmarklet{
+  text-decoration: none;
+}
+
+footer a.bookmarklet:hover{
+  color: darkred;
+  text-decoration: underline;
+}
+

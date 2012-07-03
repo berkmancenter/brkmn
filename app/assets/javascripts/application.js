@@ -58,6 +58,8 @@ $.extend({
 
 $(document).ready(function(){
   $('#url_to').focus();
+  // The line below looks odd, but what it does is set the cursor focus to the end of the line in the url_to field.
+  $('#url_to').val($('#url_to').val());
   $('#new_url').ajaxForm({
     dataType: 'html',
     success: function(html){

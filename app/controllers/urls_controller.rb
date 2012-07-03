@@ -2,9 +2,11 @@ class UrlsController < ApplicationController
   before_filter :is_authenticated
 
   def bookmarklet
+    @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
   end
 
   def index
+    @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
     @urls = Url.order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
   end
 
@@ -33,7 +35,6 @@ class UrlsController < ApplicationController
         end
       }
     end
-    
   end
 
 end
