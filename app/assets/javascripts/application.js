@@ -20,9 +20,10 @@ $.extend({
     return '/';
   },
   updateUrlList:function(){
-    $.ajax({
-      method: 'get',
-      url: $.rootPath() + 'urls/url_list',
+    if($('#url_list').length > 0){
+      $.ajax({
+        method: 'get',
+        url: $.rootPath() + 'urls/url_list',
       data: {filter: $('#filter').val()},
       dataType: 'html',
       success: function(html){
@@ -33,7 +34,8 @@ $.extend({
         }
       }
     });
-  },
+  }
+},
   observeListPagination: function(){
     $('.pagination a').live('click',function(e){
       var paginationTarget = $(this).closest('#url_list');
@@ -56,6 +58,8 @@ $.extend({
 
 $(document).ready(function(){
   $('#url_to').focus();
+  // The line below looks odd, but what it does is set the cursor focus to the end of the line in the url_to field.
+  $('#url_to').val($('#url_to').val());
   $('#new_url').ajaxForm({
     dataType: 'html',
     success: function(html){
