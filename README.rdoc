@@ -28,7 +28,6 @@ This app assumes apache- (or nginx-) level authentication. We're using apache ld
         <LocationMatch "^/url|user|metric|redirector|preview">
                 # Your auth config here.
         </LocationMatch>
-
  </VirtualHost>
 
 This sets up the app so that access to "/" redirects you to an HTTPS connection that'll attempt authentication. Shortened URLs are available via http:// or https://, authenticated or not.

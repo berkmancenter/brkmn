@@ -1,6 +1,9 @@
 class UrlsController < ApplicationController
   before_filter :is_authenticated
 
+  def bookmarklet
+  end
+
   def index
     @urls = Url.order('created_at desc').paginate(:page => params[:page], :per_page => params[:per_page])
   end
