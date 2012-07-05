@@ -5,6 +5,7 @@
     %title= (@page_title.blank?) ? REDIRECT_DOMAIN : @page_title
     = stylesheet_link_tag "application", :media => "all"
     = csrf_meta_tags 
+    = javascript_include_tag "application" 
   %body
     .wrapper
       %h1 
@@ -18,4 +19,3 @@
       - unless @current_user.blank?
         Logged in as
         = @current_user.username
-    = javascript_include_tag "application" 
