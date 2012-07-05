@@ -15,7 +15,7 @@
 //= require jquery.form
 //= require_tree .
 
-$.extend({
+jQuery.extend({
   rootPath: function(){
     return '/';
   },
@@ -56,7 +56,7 @@ $.extend({
   }
 });
 
-$(document).ready(function(){
+jQuery(document).ready(function(){
   $('#url_to').focus();
   // The line below looks odd, but what it does is set the cursor focus to the end of the line in the url_to field.
   $('#url_to').val($('#url_to').val());
