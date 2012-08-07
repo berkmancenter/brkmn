@@ -16,3 +16,6 @@
 
 config/database.yml
 *.swp
+
+# Ignore RVM 
+/.rvmrc

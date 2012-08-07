@@ -12,6 +12,7 @@ $.extend
         dataType: 'html'
         success: (html)->
           $('#url_list').html(html)
+          $('#loader').hide()
           if $.cookie('hide_filter_control') == 'hide'
             $('#filters').hide()
             $('#filter_control span').html('Show filter')
