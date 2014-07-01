@@ -14,5 +14,11 @@
 /log/*.log
 /tmp
 
+# rails specific
 config/database.yml
+public/assets/**
+
 *.swp
+
+# Ignore RVM files
+/.rvmrc
