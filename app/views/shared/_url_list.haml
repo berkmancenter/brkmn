@@ -1,16 +1,19 @@
 %table
-  %tr{:id => 'filters'}
-    %td{:colspan => 3}
-      %label{:for => 'filter'} Search:
-      %input{:type => 'text', :name => 'filter', :id => 'filter', :value => params[:filter]}
-      %input{:type => 'submit', :id => 'apply_filter', :value => 'go'}
-      %input{:type => 'submit', :id => 'clear_filter', :value => 'reset'}
   %tr
-    %td{:colspan => 2, :class => "top_pagination"}
+    %td{:colspan => 4, :class => "search"}
+      = form_tag urls_path, :method => 'get' do
+        = text_field_tag :search, params[:search]
+        = submit_tag "Search", :class => "search_button"
+        = link_to "Clear", root_url, :search => nil
+  %tr
+    %td{:colspan => 4, :class => "top_pagination"}
       = will_paginate @urls
-    %td{:id => 'filter_control'} 
-      %span Hide Filter
-  = render :partial => 'urls/url_list', :collection => @urls
   %tr
-    %td{:colspan => 3, :class => "bottom_pagination"}
+    %th{:class => @shortened_header}= sortable 'shortened', 'Shortened URL'
+    %th{:class => "arrow"}
+    %th{:class => @to_header}= sortable '"to"', 'Full URL'
+    %th{:class => @clicks_header}= sortable 'clicks', 'Clicks'
+    = render :partial => 'urls/url_list', :collection => @urls
+  %tr
+    %td{:colspan => 4, :class => "bottom_pagination"}
       = will_paginate @urls

@@ -1,6 +1,8 @@
-%tr{:class =>  "#{(url_list.user_id == @current_user.id) ? 'mine' : 'not_mine'}"}
-  %td{:class=>"shortened"}
-    = link_to(shortened_url(url_list.shortened), shortened_url(url_list.shortened))
-  %td{:class => 'arrow'} →
-  %td{:class => 'to'}
-    = link_to(url_list.to, url_list.to)
+%tr{:class =>  "not_mine"}
+	%td{:class=>"shortened"}
+		= link_to(shortened_url(url_list.shortened), shortened_url(url_list.shortened))
+	%td{:class => 'arrow'} →
+	%td{:class => 'to'}
+		= link_to(url_list.to, url_list.to)
+	%td{:class => 'clicks'} 
+		= url_list.clicks
