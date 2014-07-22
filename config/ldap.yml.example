@@ -1,0 +1,6 @@
+bind_username: 'username'
+bind_password: 'password'
+bind_hostname: 'hostname'
+bind_port:     389
+base_tree:     'base_tree'
+

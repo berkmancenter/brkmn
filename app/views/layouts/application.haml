@@ -22,9 +22,8 @@
       - if @current_user
         &nbsp;&nbsp;&nbsp;&nbsp; &bull;&nbsp;&nbsp;&nbsp;&nbsp;
         Logged in as
-        = @current_user.email 
+        = @current_user.username 
         &nbsp;&nbsp;&nbsp;&nbsp; &bull;&nbsp;&nbsp;&nbsp;&nbsp;
-        = link_to 'Log Out', log_out_path
-
+        %a{:title=> "Click here to logout. Your browser may display a warning message.", :href=>"/logout/"} Logout
         
       

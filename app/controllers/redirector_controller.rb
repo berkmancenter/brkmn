@@ -12,8 +12,4 @@ class RedirectorController < ApplicationController
     render :status => :not_found
   end
 
-  def to_urls
-    redirect_to urls_path
-  end
-
 end

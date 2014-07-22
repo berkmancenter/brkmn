@@ -1,5 +1,6 @@
 class UrlsController < ApplicationController
-  before_filter :is_authenticated  
+  before_filter :is_authenticated
+  skip_before_filter :is_authenticated, :only => :logout
   helper_method :sort_column, :sort_direction
 
   def bookmarklet
