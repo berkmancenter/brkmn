@@ -1,16 +1,17 @@
 require 'base32/crockford'
+require 'uri'
 class Url < ActiveRecord::Base
   validates_presence_of :to
 
   validates_length_of :to, :maximum => 10.kilobytes, :allow_blank => false 
-  validates_format_of :to, :with => /^https?:\/\/.+/i, :message => 'should begin with http:// or https:// and look like a valid URL'
+  validates_format_of :to, :with => /^https?:\/\/.+/i, :message => 'should begin with http:// or https:// and contain a valid URL'
 
   belongs_to :user
 
-  attr_accessible :to, :shortened, :auto
+  attr_accessible :to, :shortened, :auto, :clicks
   before_create :generate_url
 
-  URL_FORMAT = /^[a-z\d\/]+$/i
+  URL_FORMAT = /^[a-z\d\/_]+$/i
 
   scope :auto, where({:auto => true})
   scope :mine, Proc.new{|u| 
@@ -19,23 +20,59 @@ class Url < ActiveRecord::Base
 
   validate :to do
     if self.to.match(PROTECTED_REDIRECT_REGEX)
-      self.errors.add(:to, "just can't go there. Not gonna happen.")
+      self.errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
+    end
+    if ! valid_url?(self.to.delete "https://", "http://")
+      self.errors.add(:to, "is not a valid URL and contains invalid characters.")
     end
   end
 
-  validate :shortened do
+  validate :shortened, :on => :create do
     # We will auto-create if it's blank.
     return if self.shortened.blank?
     if Url.count(:conditions =>{:shortened => self.shortened}) > 0
-      self.errors.add(:shortened, "is already in use. Please choose another.")
+      self.errors.add(:shortened, "(" + self.shortened + ") is already in use in the system. Please choose another.")
     end
     if self.shortened.match(PROTECTED_URL_REGEX)
-      self.errors.add(:shortened, "is a protected URL and you can't have it. It's mine.")
+      self.errors.add(:shortened, "is a protected URL and cannot be used. Please choose another.")
     end
-    if ! self.shortened.match(URL_FORMAT)
-      self.errors.add(:shortened, "needs to contains letters, numbers, or the forward slash")
+    if ! valid_url?(self.shortened)
+      self.errors.add(:shortened, "is not a valid URL and contains invalid characters.")
     end
     return 
+  end
+  
+  validate :shortened, :on => :update do
+    # We will auto-create if it's blank.
+    return if self.shortened.blank?
+    if Url.count(:conditions =>{:shortened => self.shortened, :to => self.to, :user_id => self.user_id}) > 0
+      self.errors.add(:shortened, "(" + self.shortened + ") is already in use for " + self.to + ". Please choose another.")
+    end
+    if self.shortened.match(PROTECTED_URL_REGEX)
+      self.errors.add(:shortened, "is a protected URL and cannot be used. Please choose another.")
+    end
+    if ! valid_url?(self.shortened)
+      self.errors.add(:shortened, "is not a valid URL and contains invalid characters.")
+    end
+    return 
+  end
+
+  def self.all_owners
+	%w(Others Mine)
+  end
+  
+  def self.search(search)
+    if search
+      where('lower(shortened) like lower(?) OR lower("to") like lower(?)', "%#{search}%", "%#{search}%")
+    else
+      scoped
+    end
+  end
+    
+  def valid_url?(url)
+      !!URI.parse(url)
+    rescue URI::InvalidURIError
+      false
   end
 
   def generate_url
@@ -59,6 +96,6 @@ class Url < ActiveRecord::Base
     end
     #Return true to ensure this doesn't look like a failed validation.
     return true
-  end
+  end  
 
 end
