@@ -9,7 +9,7 @@ A dirt-simple URL shortener.
 
 == Deployment
 
-The 1.1 version does not assume any apache- (or nginx-) level authentication. Using `net-ldap`, the whole authentication is handled using Ruby. Remove any other authentication done at a webserver level (or don't, it should work anyway; but then the LDAP server would receive twice the requests). 
+Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
 
 * Copy `config/ldap.yml.example` to `config/ldap.yml` and edit the contents so that they match those of your LDAP server. 
 
