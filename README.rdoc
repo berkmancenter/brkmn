@@ -9,34 +9,18 @@ A dirt-simple URL shortener.
 
 == Deployment
 
-This app assumes apache- (or nginx-) level authentication. We're using apache ldap auth to integrate with our ActiveDirectory server and a set of rewrite rules to ensure user credentials are NEVER passed over non-HTTPs connections. The virtualhost containers look like:
+Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
 
- <VirtualHost *:80>
-        ServerName example.com
-        DocumentRoot /your/railsroot/public
-        RewriteEngine On
-        RewriteRule ^/$ https://example.com/ [R=302,L]
-        RewriteRule ^/(url|user|metric|redirector|preview) https://example.com/$1 [R=302,L]
- </VirtualHost>
+* Copy `config/ldap.yml.example` to `config/ldap.yml` and edit the contents so that they match those of your LDAP server. 
 
- <VirtualHost *:443>
-        ServerName example.com
-        DocumentRoot /your/railsroot/public
-        SSLEngine On
-        # SSL cert / key config stuff here.
+* Make sure your `config/database.yml` file exists and contains the information required.
 
-        <LocationMatch "^/url|user|metric|redirector|preview">
-                # Your auth config here.
-        </LocationMatch>
- </VirtualHost>
-
-This sets up the app so that access to "/" redirects you to an HTTPS connection that'll attempt authentication. Shortened URLs are available via http:// or https://, authenticated or not.
-
-You can use any apache-level authentication module in the LocationMatch container above, even good ol' htpasswd basic auth.
+* Edit the links contained in `public/logout/*` to match your hostname. 
 
 == Contributors
 
 * Dan Collis-Puro: djcp@cyber.law.harvard.edu
+* Flavio Giobergia: flavio.giobergia@studenti.polito.it
 
 == License
 
@@ -44,4 +28,4 @@ brkmn is licensed under the terms of Rails 3.2 itself - the MIT license: http://
 
 == Copyright
 
-2012 President and Fellows of Harvard College
+2012-2014 President and Fellows of Harvard College

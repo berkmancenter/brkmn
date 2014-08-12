@@ -98,18 +98,49 @@ legend{
 
 #filter_control span {
   display: inline-block;
+  margin-bottom: 5px;
 }
 
 #filter_control{
+  border: 1px #ccc;
+  border-style: none none dotted none;
   text-align: right;
 }
 
+.save{
+  color: darkred;
+  padding: 5px 10px 5px 10px;
+  font-size: 1.0em;
+  font-weight: bold;
+  background-color: #aaa;
+  border-radius: 5px;
+}
+
+.search_button{
+  color: darkred;
+  padding: 5px 10px 5px 10px;
+  font-size: 1.0em;
+  font-weight: bold;
+  background-color: #aaa;
+  border-radius: 5px;
+}
+
+.owners{
+  border: 1px #ccc;
+  border-style: none none dotted none;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  text-align: left;
+}
+
 .pagination{
-  text-align: center;
+  display:inline;
+  text-align: left;
 }
 
 .top_pagination, .bottom_pagination{
   border: 1px #ccc;
+  text-align: right;
 }
 
 .top_pagination{
@@ -130,15 +161,36 @@ table{
 
 td{
   padding: 2px;
+  word-break: break-all;
 }
 
-td.shortened{
-  width: 33%;
+.shortened{
+  width: 30%;
 }
 
-td.arrow{
+.arrow{
+  width: 5%;
   font-size: 2em;
   line-height: 1em;
+  text-align: center;
+}
+
+.to{
+  width: 45%;
+}
+
+.clicks{
+  width: 10%;
+}
+
+.hilite{
+  background-color: LightYellow;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+th{
+  text-align: left;
 }
 
 #filters td{
@@ -152,7 +204,19 @@ td.arrow{
 #url_shortened{
   width: 25%;
 }
-
+#loader {
+  background: url(load.gif) center center no-repeat;
+  display:block;
+  height:20px;
+  margin:auto;
+  margin-top:10px;
+  background-color:#FFF;
+  border: 1px solid #333;
+  webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  width:50px;
+}
 footer{
   font-size: .75em;
   color: #ccc;
@@ -170,3 +234,97 @@ footer a.bookmarklet:hover{
   text-decoration: underline;
 }
 
+#notice, #warning {
+  background: rgb(140,0,2);
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin: 1em 0 0 0;
+  padding: 4px;
+  color: white;
+  text-align: center;
+}
+
+#error {
+  background-color: red;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  margin: 1em 0 0 0;
+  padding: 4px;
+  color: white;
+  text-align: center;
+}
+
+form label {
+  display: block;
+  line-height: 25px;
+  font-weight: bold;
+  color: maroon;
+}
+
+input.text {
+  margin: 0em 0 1em 0;
+  padding: 5px;
+}
+
+.link {
+  margin: 0em 0.25em;
+}
+
+.edit {
+  margin: 0em 0.25em;
+}
+
+.search{
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  text-align: right;
+  color: darkred;
+  font-size: 1.0em;
+  font-weight: bold;
+}
+
+th .current {
+  padding-right: 24px;
+  background-repeat: no-repeat;
+  background-position: right center;
+}
+
+th .asc { 
+  background-image: url(/images/up_arrow.gif);
+}
+
+th .desc { 
+  background-image: url(/images/down_arrow.gif); 
+}
+
+.error_messages {
+  width: 400px;
+  border: 2px solid #CF0000;
+  padding: 0px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+  font-size: 12px;
+}
+
+.error_messages h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 10px;
+  font-size: 12px;
+  margin: 0;
+  background-color: #c00;
+  color: #fff;
+}
+
+.error_messages p {
+  margin: 8px 10px;
+}
+
+.error_messages ul {
+  margin-bottom: 0;
+}
+
+.error_messages li {
+  margin: 0px 10px;
+}

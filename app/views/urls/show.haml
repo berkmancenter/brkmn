@@ -1,0 +1,15 @@
+%fieldset
+  %legend URL Details 
+  = form_for(@url) do |f|
+    = f.label :to, 'Full URL: '
+    = @url.to
+    %br
+    %br
+    = f.label :shortened, 'Shortened URL: '
+    = @url.shortened
+    %br
+    %br
+    = f.label :clicks, 'Clicks: '
+    = @url.clicks
+  %br
+  = link_to "Back", urls_path, :class => 'back'

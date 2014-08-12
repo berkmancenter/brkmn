@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 
+
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -9,6 +10,9 @@ gem 'pg'
 gem 'will_paginate'
 gem 'haml'
 gem 'base32-crockford'
+
+gem 'net-ldap', :path=>'/usr/local/rvm/gems/ruby-2.1.2/gems/net-ldap-0.6.1'
+
 
 # Gems used only for assets and not required
 # in production environments by default.
