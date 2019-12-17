@@ -290,11 +290,11 @@ th .current {
 }
 
 th .asc { 
-  background-image: url(/images/up_arrow.gif);
+  background-image: url(/images/up_arrow.png);
 }
 
 th .desc { 
-  background-image: url(/images/down_arrow.gif); 
+  background-image: url(/images/down_arrow.png); 
 }
 
 .error_messages {

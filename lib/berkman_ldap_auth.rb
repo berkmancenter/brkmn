@@ -26,6 +26,7 @@ module BerkmanLdapAuth
     Net::LDAP.new({
       :port => port,
       :host => host,
+      :encryption => :simple_tls,
       :auth => {
             :method => :simple, 
             :username => user, 
