@@ -22,3 +22,6 @@ public/assets/**
 
 # Ignore RVM files
 /.rvmrc
+
+# Misc
+.ssh/
