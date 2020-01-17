@@ -16,6 +16,8 @@
 
 config/database.yml
 config/ldap.yml
+config/ldap.yml.*
+!config/ldap.yml.example
 *.swp
 
 # Ignore RVM 
