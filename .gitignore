@@ -11,14 +11,18 @@
 /db/*.sqlite3
 
 # Ignore all logfiles and tempfiles.
-/log
+/log/*.log
 /tmp
+log/
 
+# rails specific
 config/database.yml
 config/ldap.yml
 config/ldap.yml.*
 !config/ldap.yml.example
+public/assets/**
+
 *.swp
 
-# Ignore RVM 
+# Ignore RVM files
 /.rvmrc

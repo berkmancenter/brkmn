@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   def is_authenticated
     # In production with the apache config in README.rdoc there should never be an app-level
     # authentication request.
-    authenticate_or_request_with_http_basic 'The Berkman URL Shortener' do |user_name, password|
+    authenticate_or_request_with_http_basic 'The Berkman URL Shortener: Log in with your HLS AD account' do |user_name, password|
 	  @current_user = User.authenticate(user_name,password)
 	  !@current_user.nil?
     end
