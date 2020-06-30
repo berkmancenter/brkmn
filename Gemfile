@@ -20,4 +20,9 @@ end
 
 group :development, :test do
   gem 'byebug'
+  gem 'rubocop', require: false
+end
+
+group :test do
+  gem 'simplecov', require: false
 end
