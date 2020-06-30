@@ -7,15 +7,34 @@ A dirt-simple URL shortener.
 * http://cyber.law.harvard.edu
 * https://github.com/berkmancenter/brkmn
 
+== Development
+
+* `rvm use 2.1.2@brkmn --create`
+* `bundle install`
+* Copy `config/database.yml.postgres` to `config/database.yml`
+* Copy `config/ldap.yml.example` to `config/ldap.yml`
+* Set up your database accordingly
+* `rake db:migrate`
+
+If you don't have an existing 2.1.2 install and you're on OS X, you will run into problems with openssl. To fix them:
+
+* Make sure you have openssl version 1.0 (1.1 is incompatible with older rubies).
+* `CONFIGURE_OPTS="--with-openssl-dir=/usr/local/Cellar/openssl/1.0.2s/bin/openssl" RUBY_CONFIGURE_OPTS="--with-openssl-dir=/usr/local/Cellar/openssl/1.0.2s/bin/openssl" rvm reinstall --autolibs=disable 2.1.2 --rubygems 2.6.6` (replace the paths with the actual location of openssl 1.0 on your machine)
+* If this doesn't work, you may also need to set the following first (again, replacing paths per your config):
+  - export PATH="/usr/local/Cellar/openssl/1.0.2s/bin:$PATH"
+  - export LDFLAGS="-L/usr/local/Cellar/openssl/1.0.2s/lib"
+  - export CPPFLAGS="-I/usr/local/Cellar/openssl/1.0.2s/include"
+  - export PKG_CONFIG_PATH="/usr/local/Cellar/openssl/1.0.2s/lib/pkgconfig"
+
 == Deployment
 
 Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
 
-* Copy `config/ldap.yml.example` to `config/ldap.yml` and edit the contents so that they match those of your LDAP server. 
+* Copy `config/ldap.yml.example` to `config/ldap.yml` and edit the contents so that they match those of your LDAP server.
 
 * Make sure your `config/database.yml` file exists and contains the information required.
 
-* Edit the links contained in `public/logout/*` to match your hostname. 
+* Edit the links contained in `public/logout/*` to match your hostname.
 
 == Contributors
 
@@ -24,7 +43,7 @@ Version 1.1 does not use any Apache or NGiNX server level authentication. Using 
 
 == License
 
-brkmn is licensed under the terms of Rails 3.2 itself - the MIT license: http://www.opensource.org/licenses/mit-license.php 
+brkmn is licensed under the terms of Rails 3.2 itself - the MIT license: http://www.opensource.org/licenses/mit-license.php
 
 == Copyright
 
