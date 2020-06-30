@@ -1,37 +1,205 @@
 require 'test_helper'
 
-class UrlTest < ActiveSupport::TestCase
-  test 'URL requirements' do
-    @url = Url.new(shortened: 'foobar', to: 'http://google.com')
-    assert @url.valid?, 'Should have been valid'
+describe Url do
+  describe '.to' do
+    it 'must be present present' do
+      @url = Url.new(shortened: 'foobar', to: nil)
+      assert !@url.valid?, 'Empty :to was allowed'
+    end
 
-    @url = Url.new(shortened: 'foobar', to: 'hp://google.com')
-    assert !@url.valid?, 'Should not have been valid'
+    it 'validates protocol' do
+      @url = Url.new(shortened: 'foobar', to: 'http://google.com')
+      assert @url.valid?, 'http protocol should have been allowed'
 
-    @url = Url.new(shortened: nil, to: 'http://google.com')
-    assert @url.valid?, 'Auto generated'
+      @url = Url.new(shortened: 'foobar', to: 'https://google.com')
+      assert @url.valid?, 'https protocol should have been allowed'
+
+      @url = Url.new(shortened: 'foobar', to: '//google.com')
+      assert !@url.valid?, 'allowed URL without protocol'
+
+      @url = Url.new(shortened: 'foobar', to: 'hp://google.com')
+      assert !@url.valid?, 'allowed URL despite invalid protocol'
+    end
+
+    it 'does not allow localhost' do
+      @url = Url.new(to: 'http://localhost.com')
+      assert !@url.valid?, 'localhost should not have been allowed'
+
+      @url = Url.new(to: 'https://localhost.com')
+      assert !@url.valid?, 'localhost should not have been allowed'
+    end
+
+    it 'does not allow brk.mn, no infinite redirects for you' do
+      @url = Url.new(to: 'http://brk.mn')
+      assert !@url.valid?, 'brk.mn should not have been allowed'
+
+      @url = Url.new(to: 'https://brk.mn')
+      assert !@url.valid?, 'brk.mn should not have been allowed'
+    end
+
+    it 'validates URLs' do
+      @url = Url.new(to: 'https://ex ample.com')
+      assert !@url.valid?, 'invalid URLs should not be allowed'
+    end
   end
 
-  test 'URL ownership' do
-    urls = Url.mine(users(:normal))
-    assert urls.length == 2, "The normal user didn't have 2 links"
+  describe '.shortened on creation' do
+    it 'autocreates if left blank' do
+      @url = Url.create(shortened: nil, to: 'http://google.com')
+      assert @url.shortened.present?
+    end
 
-    urls = Url.mine(users(:admin))
-    assert urls.length == 3, "The superadmin couldn't see their three links"
+    it 'generates shortcodes' do
+      Url.find_by_sql("select setval('urls_id_seq', 5, TRUE)")
 
-    urls = Url.mine(users(:secondnormal))
-    assert urls.length.zero?, 'The second normal user had links.'
+      u = Url.new(to: 'http://www.google.com')
+      assert u.save, "Couldn't save auto generated URL"
+      assert u.shortened == '6', "Didn't look like what we wanted."
+
+      u2 = Url.new(to: 'http://www.google.com')
+      assert u2.save, "Couldn't save auto generated URL"
+      assert u2.shortened == '7', "Didn't look like what we wanted."
+    end
+
+    it 'disallows shortcodes already in the system' do
+      shortcode = '42'
+      Url.create(shortened: shortcode, to: 'http://google.com')
+
+      @url = Url.new(shortened: shortcode, to: 'https://google.com')
+      assert !@url.valid?, 'Should not allow reuse of existing shortcodes'
+    end
+
+    it 'disallows protected URL regex elements' do
+      # Check expectation
+      assert PROTECTED_URL_REGEX == /^(url|user|metric|redirector|preview|logout)/i
+
+      assert !Url.new(shortened: 'url', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `url`'
+
+      assert !Url.new(shortened: 'user', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `user`'
+
+      assert !Url.new(shortened: 'metric', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `metric`'
+
+      assert !Url.new(shortened: 'redirector7', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `redirector`'
+
+      assert !Url.new(shortened: 'preview_yay', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `preview`'
+
+      assert !Url.new(shortened: 'logoutlogout', to: 'https://google.com').valid?,
+        'shortcode cannot begin with `logout`'
+    end
+
+    it "disallows characters that can't be used in a URL" do
+      assert !Url.new(shortened: '🤷‍', to: 'https://google.com').valid?,
+        'shortcode cannot contain invalid URL characters'
+
+      assert !Url.new(shortened: 'no spaces', to: 'https://google.com').valid?,
+        'shortcode cannot contain invalid URL characters'
+    end
   end
 
-  test 'Auto URL generation' do
-    Url.find_by_sql("select setval('urls_id_seq', 5,TRUE)")
+  describe '.shortened on update' do
+    it 'handles blank codes' do
+      url = Url.create(shortened: '42', to: 'http://google.com')
+      url.shortened = ''
+      url.save
+      assert url.shortened.present?, 'should not delete shortcode on update'
+    end
 
-    u = Url.new(to: 'http://www.google.com')
-    assert u.save, "Couldn't save auto generated URL"
-    assert u.shortened == '6', "Didn't look like what we wanted."
+    it 'does not allow duplicates' do
+      url1 = Url.new(
+        shortened: 'url1',
+        to: 'http://www.google.com'
+      )
+      # protected attributes can't be set via #create.
+      url1.user_id = users(:normal).id
+      url1.save
 
-    u2 = Url.new(to: 'http://www.google.com')
-    assert u2.save, "Couldn't save auto generated URL"
-    assert u2.shortened == '7', "Didn't look like what we wanted."
+      url2 = Url.new(
+        shortened: 'url2',
+        to: 'http://www.google.com'
+      )
+      url2.user_id = users(:normal).id
+      url1.save
+
+      url1.shortened = 'url2'
+
+      assert !url1.valid?
+    end
+
+    it 'disallows protected URL regex elements' do
+      # Check expectation
+      assert PROTECTED_URL_REGEX == /^(url|user|metric|redirector|preview|logout)/i
+
+      url = Url.create(to: 'https://google.com')
+
+      url.shortened = 'url'
+      assert !url.valid?, 'shortcode cannot begin with `url`'
+
+      url.shortened = 'user'
+      assert !url.valid?, 'shortcode cannot begin with `user`'
+
+      url.shortened = 'metric'
+      assert !url.valid?, 'shortcode cannot begin with `metric`'
+
+      url.shortened = 'redirector7'
+      assert !url.valid?, 'shortcode cannot begin with `redirector`'
+
+      url.shortened = 'preview_yay'
+      assert !url.valid?, 'shortcode cannot begin with `preview`'
+
+      url.shortened = 'logoutlogout'
+      assert !url.valid?, 'shortcode cannot begin with `logout`'
+    end
+
+    it "disallows characters that can't be used in a URL" do
+      url = Url.create(to: 'https://google.com')
+
+      url.shortened = '🤷‍'
+      assert url.valid?, 'shortcode cannot contain invalid URL characters'
+
+      url.shortened = 'no spaces'
+      assert url.valid?, 'shortcode cannot contain invalid URL characters'
+    end
+  end
+
+  describe 'mine scope' do
+    it 'counts properly' do
+      urls = Url.mine(users(:normal))
+      assert urls.length == 2, "The normal user didn't have 2 links"
+
+      urls = Url.mine(users(:admin))
+      assert urls.length == 3, "The superadmin couldn't see their three links"
+
+      urls = Url.mine(users(:secondnormal))
+      assert urls.length.zero?, 'The second normal user had links.'
+    end
+  end
+
+  describe 'search' do
+    it 'searches .shortened' do
+      url = Url.create(shortened: 'forty-two', to: 'http://google.com')
+
+      assert Url.search('forty-two').present?, 'it should find whole terms'
+      assert Url.search('forty').present?, 'it should find substrings'
+      assert Url.search('FORTY').present?, 'it should be case insensitive'
+    end
+
+    it 'searches .to' do
+      url = Url.create(shortened: 'forty-two', to: 'http://google.com')
+
+      assert Url.search('http://google.com').present?, 'it should find whole terms'
+      assert Url.search('google').present?, 'it should find substrings'
+      assert Url.search('GOOG').present?, 'it should be case insensitive'
+    end
+
+    it 'handles a nil argument' do
+      url = Url.create(shortened: 'forty-two', to: 'http://google.com')
+
+      assert Url.search(nil) == Url.all, 'nil search did not return properly'
+    end
   end
 end

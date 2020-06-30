@@ -24,5 +24,6 @@ group :development, :test do
 end
 
 group :test do
+  gem 'minitest-rails'
   gem 'simplecov', require: false
 end

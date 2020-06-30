@@ -1,8 +1,6 @@
 require 'base32/crockford'
 require 'uri'
 class Url < ActiveRecord::Base
-  validates_presence_of :to
-
   validates_length_of :to, maximum: 10.kilobytes, allow_blank: false
   validates_format_of :to, with: /^https?:\/\/.+/i,
     message: 'should begin with http:// or https:// and contain a valid URL'
@@ -18,6 +16,10 @@ class Url < ActiveRecord::Base
   scope :mine, proc { |u| where(['user_id = ?', u.id]) }
 
   validate :to do
+    unless to.present?
+      self.errors.add(:to, 'Target URL must be present.')
+      return
+    end
     if to.match(PROTECTED_REDIRECT_REGEX)
       self.errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
     end
@@ -29,7 +31,7 @@ class Url < ActiveRecord::Base
   validate :shortened, on: :create do
     # We will auto-create if it's blank.
     return if shortened.blank?
-    if Url.count(conditions: { shortened: shortened } ) > 0
+    if Url.where(shortened: shortened).present?
       self.errors.add(:shortened, "(#{shortened}) is already in use in the system. Please choose another.")
     end
     if shortened.match(PROTECTED_URL_REGEX)
@@ -72,6 +74,8 @@ class Url < ActiveRecord::Base
     end
   end
 
+  private
+
   def valid_url?(url)
     !!URI.parse(url)
   rescue URI::InvalidURIError
@@ -94,7 +98,7 @@ class Url < ActiveRecord::Base
       # character.
       suffix_array = %w[i l o u]
       until Url.count(conditions: { shortened: "#{encoded_shortened}#{suffix}" }).zero?
-        suffix = "#{suffix}#{suffix_array[rand(suffix_array.length)]}"
+        suffix = "#{suffix}#{suffix_array.sample}"
       end
       self.shortened = "#{encoded_shortened}#{suffix}"
       self.auto = true
