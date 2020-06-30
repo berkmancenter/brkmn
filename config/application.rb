@@ -55,5 +55,8 @@ module Brkmn
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # See config/development.rb.
+    config.use_fakeauth = false
   end
 end

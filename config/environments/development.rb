@@ -34,4 +34,9 @@ Brkmn::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # In development mode, you may want to avoid using the LDAP server.
+  # Setting this ENV will cause calls to BerkmanLdapAuth.authenticate to
+  # always return true.
+  config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'true') || false
 end

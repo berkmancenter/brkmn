@@ -3,7 +3,11 @@ module BerkmanLdapAuth
   require 'net/ldap'
   require 'yaml'
 
+  # See the Brief Introduction to LDAP in the Net::LDAP docs:
+  # https://www.rubydoc.info/gems/ruby-net-ldap/Net/LDAP
   def self.authenticate(uname,pword)
+    return true if Rails.application.config.use_fakeauth
+
   	ldap = YAML.load_file("#{Rails.root}/config/ldap.yml")
 
     ldap_con = initialize_ldap_con(ldap['bind_hostname'],ldap['bind_port'],ldap['bind_username'],ldap['bind_password'])
@@ -28,8 +32,8 @@ module BerkmanLdapAuth
       :host => host,
       :encryption => :simple_tls,
       :auth => {
-            :method => :simple, 
-            :username => user, 
+            :method => :simple,
+            :username => user,
             :password => pass
             }
       })
