@@ -31,7 +31,7 @@ If you don't have an existing 2.1.2 install and you're on OS X, you will run int
   - export PKG_CONFIG_PATH="/usr/local/Cellar/openssl/1.0.2s/lib/pkgconfig"
 
 === PG::Error
-brkmn is not compatible with postgres 10. If you are using pg10, you will see `ActiveRecord::StatementInvalid: PG::Error: ERROR:  column "increment_by" does not exist`.
+brkmn is not compatible with postgres 10. If you are using pg10, you will see `ActiveRecord::StatementInvalid: PG::Error: ERROR: column "increment_by" does not exist`.
 
 == Deployment
 

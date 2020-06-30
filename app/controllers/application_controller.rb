@@ -1,17 +1,14 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  attr_reader :current_user
 
-  def is_authenticated
-    # In production with the apache config in README.rdoc there should never be an app-level
-    # authentication request.
-    authenticate_or_request_with_http_basic 'The Berkman URL Shortener: Log in with your HLS AD account' do |user_name, password|
-	  @current_user = User.authenticate(user_name,password)
-	  !@current_user.nil?
+  def authenticated?
+    # In production with the apache config in README.rdoc there should never be
+    # an app-level authentication request.
+    msg = 'The Berkman URL Shortener: Log in with your HLS AD account'
+    authenticate_or_request_with_http_basic msg do |username, password|
+      @current_user = User.authenticate(username, password)
+      !@current_user.nil?
     end
   end
-
-  def current_user
-    @current_user
-  end
-
 end
