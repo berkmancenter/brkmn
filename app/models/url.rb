@@ -2,17 +2,16 @@ require 'base32/crockford'
 require 'uri'
 class Url < ActiveRecord::Base
   validates_length_of :to, maximum: 10.kilobytes, allow_blank: false
-  validates_format_of :to, with: /^https?:\/\/.+/i,
+  validates_format_of :to, with: /\Ahttps?:\/\/.+/i,
     message: 'should begin with http:// or https:// and contain a valid URL'
 
   belongs_to :user
 
-  attr_accessible :to, :shortened, :auto, :clicks
   before_create :generate_url
 
   URL_FORMAT = /^[a-z\d\/_]+$/i
 
-  scope :auto, where(auto: true)
+  scope :auto, -> { where(auto: true) }
   scope :mine, proc { |u| where(['user_id = ?', u.id]) }
 
   validate :to do
@@ -46,11 +45,7 @@ class Url < ActiveRecord::Base
   validate :shortened, on: :update do
     # We will auto-create if it's blank.
     return if shortened.blank?
-    if Url.count(conditions: {
-      shortened: shortened,
-      to: to,
-      user_id: user_id
-    }) > 0
+    if Url.where(shortened: shortened, to: to, user_id: user_id).present?
       self.errors.add(:shortened, "(#{shortened}) is already in use for #{to}. Please choose another.")
     end
     if shortened.match(PROTECTED_URL_REGEX)
@@ -97,7 +92,7 @@ class Url < ActiveRecord::Base
       # they'll occur giving us a high probability of matching with only one
       # character.
       suffix_array = %w[i l o u]
-      until Url.count(conditions: { shortened: "#{encoded_shortened}#{suffix}" }).zero?
+      until Url.where(shortened: "#{encoded_shortened}#{suffix}").empty?
         suffix = "#{suffix}#{suffix_array.sample}"
       end
       self.shortened = "#{encoded_shortened}#{suffix}"

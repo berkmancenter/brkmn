@@ -43,6 +43,8 @@ Version 1.1 does not use any Apache or NGiNX server level authentication. Using 
 
 * Edit the links contained in `public/logout/*` to match your hostname.
 
+* Create a file `config/initializers/secret_token.rb` with values for `Brkmn::Application.config.secret_token` and `Brkmn::Application.config.secret_key_base`. 
+
 == Contributors
 
 * Dan Collis-Puro: djcp@cyber.law.harvard.edu
