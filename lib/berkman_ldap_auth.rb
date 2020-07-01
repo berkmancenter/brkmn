@@ -6,7 +6,7 @@ module BerkmanLdapAuth
   # See the Brief Introduction to LDAP in the Net::LDAP docs:
   # https://www.rubydoc.info/gems/ruby-net-ldap/Net/LDAP
   def self.authenticate(username, password)
-    return true if Rails.application.config.use_fakeauth
+    return User.first if Rails.application.config.use_fakeauth
     return false if password.empty?
 
     ldap = YAML.load_file(Rails.root.join(Rails.root, 'config', 'ldap.yml'))

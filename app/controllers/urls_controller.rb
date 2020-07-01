@@ -39,7 +39,8 @@ class UrlsController < ApplicationController
   def create
     @url = Url.new(
       shortened: url_params[:url][:shortened],
-      to: url_params[:url][:to]
+      to: url_params[:url][:to],
+      user: current_user
     )
 
     respond_to do |f|

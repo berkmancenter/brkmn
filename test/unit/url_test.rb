@@ -52,20 +52,20 @@ describe Url do
     it 'generates shortcodes' do
       Url.find_by_sql("select setval('urls_id_seq', 5, TRUE)")
 
-      u = Url.new(to: 'http://www.google.com')
+      u = Url.new(to: 'http://www.google.com', user: users(:normal))
       assert u.save, "Couldn't save auto generated URL"
       assert u.shortened == '6', "Didn't look like what we wanted."
 
-      u2 = Url.new(to: 'http://www.google.com')
+      u2 = Url.new(to: 'http://www.google.com', user: users(:normal))
       assert u2.save, "Couldn't save auto generated URL"
       assert u2.shortened == '7', "Didn't look like what we wanted."
     end
 
     it 'disallows shortcodes already in the system' do
       shortcode = '42'
-      Url.create(shortened: shortcode, to: 'http://google.com')
+      Url.create(shortened: shortcode, to: 'http://google.com', user: users(:normal))
 
-      @url = Url.new(shortened: shortcode, to: 'https://google.com')
+      @url = Url.new(shortened: shortcode, to: 'https://google.com', user: users(:normal))
       assert !@url.valid?, 'Should not allow reuse of existing shortcodes'
     end
 
@@ -73,13 +73,13 @@ describe Url do
       # Check expectation
       assert PROTECTED_URL_REGEX == /^(url|user|metric|redirector|preview|logout)/i
 
-      assert !Url.new(shortened: 'url', to: 'https://google.com').valid?,
+      assert !Url.new(shortened: 'url', to: 'https://google.com', user: users(:normal)).valid?,
         'shortcode cannot begin with `url`'
 
-      assert !Url.new(shortened: 'user', to: 'https://google.com').valid?,
+      assert !Url.new(shortened: 'user', to: 'https://google.com', user: users(:normal)).valid?,
         'shortcode cannot begin with `user`'
 
-      assert !Url.new(shortened: 'metric', to: 'https://google.com').valid?,
+      assert !Url.new(shortened: 'metric', to: 'https://google.com', user: users(:normal)).valid?,
         'shortcode cannot begin with `metric`'
 
       assert !Url.new(shortened: 'redirector7', to: 'https://google.com').valid?,

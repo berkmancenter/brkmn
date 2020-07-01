@@ -18,6 +18,7 @@ gem 'therubyracer'
 gem 'uglifier'
 
 group :development do
+  gem 'listen'
   gem 'web-console'
 end
 

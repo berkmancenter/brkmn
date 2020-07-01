@@ -4,7 +4,7 @@ require 'uri'
 class Url < ActiveRecord::Base
   include ActiveModel::Validations
 
-  belongs_to :user
+  belongs_to :user, optional: true
 
   before_create :generate_url
 
