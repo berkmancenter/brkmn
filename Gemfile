@@ -7,7 +7,7 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'net-ldap'
 gem 'pg', '~> 0.12'
-gem 'rails', '~> 4.0.0'
+gem 'rails', '~> 4.1.0'
 gem 'will_paginate'
 
 # assets
@@ -15,7 +15,7 @@ gem 'coffee-rails'
 gem 'sass-rails'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer'
-gem 'uglifier', '>= 1.0.3'
+gem 'uglifier'
 
 group :development, :test do
   gem 'byebug'

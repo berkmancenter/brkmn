@@ -1,13 +1,18 @@
 require 'base32/crockford'
 require 'uri'
+
 class Url < ActiveRecord::Base
-  validates_length_of :to, maximum: 10.kilobytes, allow_blank: false
-  validates_format_of :to, with: /\Ahttps?:\/\/.+/i,
-    message: 'should begin with http:// or https:// and contain a valid URL'
+  include ActiveModel::Validations
 
   belongs_to :user
 
   before_create :generate_url
+
+  validates_length_of :to, maximum: 10.kilobytes, allow_blank: false
+  validates_format_of :to, with: /\Ahttps?:\/\/.+/i,
+    message: 'should begin with http:// or https:// and contain a valid URL'
+
+  validates :shortened, shortcode: true, on: [:create, :update]
 
   URL_FORMAT = /^[a-z\d\/_]+$/i
 
@@ -17,44 +22,13 @@ class Url < ActiveRecord::Base
   validate :to do
     unless to.present?
       self.errors.add(:to, 'Target URL must be present.')
-      return
     end
-    if to.match(PROTECTED_REDIRECT_REGEX)
+    if to&.match(PROTECTED_REDIRECT_REGEX)
       self.errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
     end
-    unless valid_url?(to.delete 'https://', 'http://')
+    unless valid_url?(to&.delete 'https://', 'http://')
       self.errors.add(:to, 'is not a valid URL and contains invalid characters.')
     end
-  end
-
-  validate :shortened, on: :create do
-    # We will auto-create if it's blank.
-    return if shortened.blank?
-    if Url.where(shortened: shortened).present?
-      self.errors.add(:shortened, "(#{shortened}) is already in use in the system. Please choose another.")
-    end
-    if shortened.match(PROTECTED_URL_REGEX)
-      self.errors.add(:shortened, 'is a protected URL and cannot be used. Please choose another.')
-    end
-    unless valid_url?(shortened)
-      self.errors.add(:shortened, 'is not a valid URL and contains invalid characters.')
-    end
-    return
-  end
-
-  validate :shortened, on: :update do
-    # We will auto-create if it's blank.
-    return if shortened.blank?
-    if Url.where(shortened: shortened, to: to, user_id: user_id).present?
-      self.errors.add(:shortened, "(#{shortened}) is already in use for #{to}. Please choose another.")
-    end
-    if shortened.match(PROTECTED_URL_REGEX)
-      self.errors.add(:shortened, 'is a protected URL and cannot be used. Please choose another.')
-    end
-    unless valid_url?(shortened)
-      self.errors.add(:shortened, 'is not a valid URL and contains invalid characters.')
-    end
-    return
   end
 
   def self.all_owners

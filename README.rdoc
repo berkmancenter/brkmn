@@ -12,8 +12,10 @@ A dirt-simple URL shortener.
 * `rvm use 2.1.2@brkmn --create`
 * `bundle install`
 * Copy `config/database.yml.postgres` to `config/database.yml`
+  * Set up your database accordingly
 * Copy `config/ldap.yml.example` to `config/ldap.yml`
-* Set up your database accordingly
+* Copy `config/secrets.yml.example` to `config/secrets.yml`.
+  * Fill in the `secret_key_base` values and set ENV["SECRET_KEY_BASE"].
 * `rake db:migrate`
 
 Test with `rake test`.
@@ -43,7 +45,7 @@ Version 1.1 does not use any Apache or NGiNX server level authentication. Using 
 
 * Edit the links contained in `public/logout/*` to match your hostname.
 
-* Create a file `config/initializers/secret_token.rb` with values for `Brkmn::Application.config.secret_token` and `Brkmn::Application.config.secret_key_base`. 
+* Copy `config/secrets.yml.example` to `config/secrets.yml`. Fill in the `secret_key_base` values and set ENV["SECRET_KEY_BASE"].
 
 == Contributors
 
