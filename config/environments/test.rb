@@ -34,4 +34,7 @@ Brkmn::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Default to true for convenience; override in tests to explicitly test auth.
+  config.use_fakeauth = true
 end
