@@ -7,7 +7,7 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'net-ldap'
 gem 'pg', '~> 0.12'
-gem 'rails', '~> 4.1.0'
+gem 'rails', '~> 4.2.0'
 gem 'will_paginate'
 
 # assets
@@ -17,6 +17,10 @@ gem 'sass-rails'
 gem 'therubyracer'
 gem 'uglifier'
 
+group :development do
+  gem 'web-console', '~> 2.0'
+end
+
 group :development, :test do
   gem 'byebug'
   gem 'rubocop', require: false
@@ -24,6 +28,7 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'database_cleaner-active_record'
   gem 'minitest-rails'
   gem 'simplecov', require: false
   gem 'webmock'

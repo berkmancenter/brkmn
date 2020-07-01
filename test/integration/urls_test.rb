@@ -48,6 +48,8 @@ class UrlsTest < IntegrationTest
 
   it 'lets you search for URLs on the index page' do
     Url.create(to: 'https://totallydifferent.domain.com')
+
+    visit urls_path
     fill_in 'search', with: 'scratch'
     click_on 'Search'
 
