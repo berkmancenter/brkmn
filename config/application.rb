@@ -58,5 +58,7 @@ module Brkmn
 
     # Default; should be used in prod.
     config.eager_load = true
+
+    config.action_controller.per_form_csrf_tokens = true
   end
 end

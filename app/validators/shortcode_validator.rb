@@ -3,7 +3,7 @@ class ShortcodeValidator < ActiveModel::EachValidator
     # We will auto-create if it's blank.
     # This needs to be a Validator subclass and not an inline function because
     # the return is only permissible here.
-    return if value.blank?
+    return if value.blank? && !record.persisted?
 
     if Url.where(shortened_conditions(record)).present?
       record.errors.add attribute, "(#{value}) is already in use. Please choose another."

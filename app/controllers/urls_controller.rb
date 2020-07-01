@@ -1,6 +1,6 @@
 class UrlsController < ApplicationController
-  before_filter :authenticated?
-  skip_before_filter :authenticated?, only: :logout
+  before_action :authenticated?
+  skip_before_action :authenticated?, only: :logout
   helper_method :sort_column, :sort_direction
 
   def bookmarklet
@@ -8,13 +8,13 @@ class UrlsController < ApplicationController
   end
 
   def show
-    @url = Url.find params[:id]
+    @url = Url.find url_params[:id]
   end
 
   def index
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
 
-    @search = params[:search]
+    @search = url_params[:search]
 
     if @search != nil
       redirect_to '/urls/search/' + @search.strip.gsub(' ', '-')
@@ -23,7 +23,7 @@ class UrlsController < ApplicationController
     hilite
 
     @urls = Url.order(sort_column + ' ' + sort_direction)
-               .paginate(page: params[:page], per_page: params[:per_page])
+               .paginate(page: url_params[:page], per_page: url_params[:per_page])
   end
 
   def search
@@ -31,15 +31,15 @@ class UrlsController < ApplicationController
 
     hilite
 
-    @urls = Url.search(params[:search])
+    @urls = Url.search(url_params[:search])
                .order(sort_column + ' ' + sort_direction)
-               .paginate(page: params[:page], per_page: params[:per_page])
+               .paginate(page: url_params[:page], per_page: url_params[:per_page])
   end
 
   def create
     @url = Url.new(
-      shortened: params[:url][:shortened],
-      to: params[:url][:to]
+      shortened: url_params[:url][:shortened],
+      to: url_params[:url][:to]
     )
 
     respond_to do |f|
@@ -58,24 +58,31 @@ class UrlsController < ApplicationController
 
   private
 
-  def sort_column
-    sort = params[:sort] || session[:sort]
+  def url_params
+    params.permit(
+      :id, :search, :page, :per_page, :sort, :direction,
+      url: %i[shortened to]
+    )
+  end
 
-    session[:sort] = sort if params[:sort] != session[:sort]
+  def sort_column
+    sort = url_params[:sort] || session[:sort]
+
+    session[:sort] = sort if url_params[:sort] != session[:sort]
 
     %w[shortened "to" clicks].include?(sort) ? sort : 'shortened'
   end
 
   def sort_direction
-    direction = params[:direction] || session[:direction]
+    direction = url_params[:direction] || session[:direction]
 
-    session[:direction] = direction if params[:direction] != session[:direction]
+    session[:direction] = direction if url_params[:direction] != session[:direction]
 
     %w[asc desc].include?(direction) ? direction : 'asc'
   end
 
   def hilite
-    case params[:sort] || session[:sort]
+    case url_params[:sort] || session[:sort]
     when '"to"'
       @to_header = 'to hilite'
       @clicks_header = 'clicks'

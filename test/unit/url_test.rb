@@ -106,6 +106,7 @@ describe Url do
       url = Url.create(shortened: '42', to: 'http://google.com')
       url.shortened = ''
       url.save
+      url.reload
       assert url.shortened.present?, 'should not delete shortcode on update'
     end
 
@@ -159,10 +160,10 @@ describe Url do
       url = Url.create(to: 'https://google.com')
 
       url.shortened = '🤷‍'
-      assert url.valid?, 'shortcode cannot contain invalid URL characters'
+      assert !url.valid?, 'shortcode cannot contain invalid URL characters'
 
       url.shortened = 'no spaces'
-      assert url.valid?, 'shortcode cannot contain invalid URL characters'
+      assert !url.valid?, 'shortcode cannot contain invalid URL characters'
     end
   end
 

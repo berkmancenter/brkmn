@@ -7,7 +7,7 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'net-ldap'
 gem 'pg', '~> 0.12'
-gem 'rails', '~> 4.2.0'
+gem 'rails', '~> 5.0.0'
 gem 'will_paginate'
 
 # assets
@@ -18,7 +18,7 @@ gem 'therubyracer'
 gem 'uglifier'
 
 group :development do
-  gem 'web-console', '~> 2.0'
+  gem 'web-console'
 end
 
 group :development, :test do

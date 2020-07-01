@@ -11,7 +11,6 @@ class Url < ActiveRecord::Base
   validates_length_of :to, maximum: 10.kilobytes, allow_blank: false
   validates_format_of :to, with: /\Ahttps?:\/\/.+/i,
     message: 'should begin with http:// or https:// and contain a valid URL'
-
   validates :shortened, shortcode: true, on: [:create, :update]
 
   URL_FORMAT = /^[a-z\d\/_]+$/i
@@ -41,6 +40,12 @@ class Url < ActiveRecord::Base
     else
       all
     end
+  end
+
+  # Don't let shortcodes be overwritten with blank data.
+  def shortened=(value)
+    return unless value.present?
+    super
   end
 
   private
