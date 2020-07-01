@@ -31,4 +31,6 @@ Brkmn::Application.configure do
 
   # Default to true for convenience; override in tests to explicitly test auth.
   config.use_fakeauth = true
+
+  config.eager_load = false
 end

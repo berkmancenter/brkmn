@@ -16,10 +16,6 @@ Brkmn::Application.configure do
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
-  # Log the query plan for queries taking more than this (works
-  # with SQLite, MySQL, and PostgreSQL)
-  config.active_record.auto_explain_threshold_in_seconds = 0.5
-
   # Do not compress assets
   config.assets.compress = false
 
@@ -30,4 +26,6 @@ Brkmn::Application.configure do
   # Setting this ENV will cause calls to BerkmanLdapAuth.authenticate to
   # always return true.
   config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'true') || false
+
+  config.eager_load = false
 end

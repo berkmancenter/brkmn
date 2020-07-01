@@ -65,7 +65,7 @@ class Url < ActiveRecord::Base
     if search
       where('lower(shortened) like lower(?) OR lower("to") like lower(?)', "%#{search}%", "%#{search}%")
     else
-      scoped
+      all
     end
   end
 

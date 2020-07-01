@@ -55,5 +55,8 @@ module Brkmn
 
     # See config/development.rb.
     config.use_fakeauth = false
+
+    # Default; should be used in prod.
+    config.eager_load = true
   end
 end
