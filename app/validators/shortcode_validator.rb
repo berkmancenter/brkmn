@@ -13,7 +13,7 @@ class ShortcodeValidator < ActiveModel::EachValidator
       record.errors.add attribute, 'is a protected URL and cannot be used. Please choose another.'
     end
 
-    unless URI.encode(value) == value
+    unless URI.encode_www_form_component(value) == value
       record.errors.add attribute, 'contains invalid URL characters.'
     end
   end

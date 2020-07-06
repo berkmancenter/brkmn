@@ -114,8 +114,11 @@ config/master.key
 /.bundle
 /vendor/bundle
 
-# these should all be checked in to normalize the environment:
+# these should usually all be checked in to normalize the environment:
 # Gemfile.lock, .ruby-version, .ruby-gemset
+# However, since we use .rvmrc on some servers, and we have server-specific
+# gemset names, we're actually leaving .ruby-gemset out.
+.ruby-gemset
 
 # unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
 .rvmrc
