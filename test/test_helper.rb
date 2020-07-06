@@ -26,7 +26,6 @@ class ActiveSupport::TestCase
 end
 
 class IntegrationTest < MiniTest::Spec
-  include ActiveSupport::Testing::SetupAndTeardown
   include Capybara::DSL
   include DatabaseCleanerSupport
   include Rails.application.routes.url_helpers

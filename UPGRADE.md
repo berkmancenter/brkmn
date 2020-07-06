@@ -9,6 +9,9 @@ removed when that is done.
   - and you needed to update the net-ldap library because of deprecations
 - remove `config/initializers/secret_token.rb`
 - set `ENV['SECRET_KEY_BASE']` using `rake secret`
+- install yarn
+- `rails db:migrate`
+- check SSL situation
 
 ## FYI
-- All existing cookies will be invalidated.
+- All existing cookies will be automatically invalidated.

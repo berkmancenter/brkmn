@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'bootsnap'
 gem 'base32-crockford'
 gem 'cancan'
 gem 'dotenv-rails'
@@ -7,7 +8,8 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'net-ldap'
 gem 'pg', '~> 0.12'
-gem 'rails', '~> 5.1.0'
+gem 'rails', '~> 6.0.0'
+gem 'webpacker'
 gem 'will_paginate'
 
 # assets
@@ -30,6 +32,7 @@ end
 group :test do
   gem 'capybara'
   gem 'database_cleaner-active_record'
+  gem 'minitest-around'
   gem 'minitest-rails'
   gem 'simplecov', require: false
   gem 'webmock'

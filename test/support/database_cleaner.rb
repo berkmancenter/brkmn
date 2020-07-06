@@ -2,13 +2,11 @@ DatabaseCleaner.clean_with :truncation
 DatabaseCleaner.strategy = :transaction
 
 module DatabaseCleanerSupport
-  def before_setup
-    super
+  def setup
     DatabaseCleaner.start
   end
 
-  def after_teardown
+  def teardown
     DatabaseCleaner.clean
-    super
   end
 end
