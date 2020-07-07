@@ -7,16 +7,23 @@ A dirt-simple URL shortener.
 * http://cyber.law.harvard.edu
 * https://github.com/berkmancenter/brkmn
 
+== System requirements
+* ruby 2.7.1
+* bundler
+* rvm
+* yarn
+* postgres 9
+
 == Development
 
 * `rvm use 2.7.1@brkmn --create`
 * `bundle install`
-* Copy `config/database.yml.postgres` to `config/database.yml`
-  * Set up your database accordingly
-* Copy `config/ldap.yml.example` to `config/ldap.yml`
-* Copy `config/secrets.yml.example` to `config/secrets.yml`.
-  * Fill in the `secret_key_base` values and set ENV["SECRET_KEY_BASE"].
-* Set ENV["USE_FAKEAUTH"] to `true` if you want to bypass LDAP for development.
+* Copy `config/database.yml.postgres` to `config/database.yml` and set up your database accordingly
+* Copy `config/ldap.yml.example` to `config/ldap.yml` and fill in locally appropriate values.
+* Copy `config/secrets.yml.example` to `config/secrets.yml` and fill in the `secret_key_base` values for dev/test.
+* Add the following to .env:
+  * USE_FAKEAUTH (optional; set to to `true` if you want to bypass LDAP for development; cannot be used in production).
+  * SECRET_KEY_BASE (required in production, optional otherwise; use `rails secret` to generate a value).
 * `rails db:migrate`
 
 Test with `rails test`.
@@ -28,15 +35,12 @@ brkmn is not compatible with postgres 10. If you are using pg10, you will see `A
 
 == Deployment
 
-Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
-
-* Copy `config/ldap.yml.example` to `config/ldap.yml` and edit the contents so that they match those of your LDAP server.
-
-* Make sure your `config/database.yml` file exists and contains the information required.
-
+* Follow the steps above for development.
 * Edit the links contained in `public/logout/*` to match your hostname.
 
 * Copy `config/secrets.yml.example` to `config/secrets.yml`. Fill in the `secret_key_base` values and set ENV["SECRET_KEY_BASE"].
+
+Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
 
 == Contributors
 
@@ -46,7 +50,7 @@ Version 1.1 does not use any Apache or NGiNX server level authentication. Using 
 
 == License
 
-brkmn is licensed under the terms of Rails 3.2 itself - the MIT license: http://www.opensource.org/licenses/mit-license.php
+brkmn is licensed under the terms of Rails itself - the MIT license: http://www.opensource.org/licenses/mit-license.php
 
 == Copyright
 
