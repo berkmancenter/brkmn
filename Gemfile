@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'bootsnap'
 gem 'base32-crockford'
-gem 'cancan'
 gem 'dotenv-rails'
 gem 'haml'
 gem 'jquery-rails'
