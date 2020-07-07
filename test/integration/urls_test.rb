@@ -60,11 +60,11 @@ class UrlsTest < IntegrationTest
   end
 
   it 'redirects from index to search when search in params' do
-    skip('this was broken in the original code -- fix later')
     Url.create(to: 'https://totallydifferent.domain.com')
-    visit urls_path, params: { search: 'scratch' }
+    visit urls_path(search: 'scratch')
 
     assert page.has_content?('https://scratch.mit.edu/')
     assert page.has_no_content?('https://totallydifferent.domain.com')
+    assert page.current_path == search_urls_path
   end
 end

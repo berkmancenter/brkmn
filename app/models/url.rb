@@ -8,13 +8,16 @@ class Url < ApplicationRecord
   before_create :generate_url
 
   validates :to, length: { maximum: 10.kilobytes }, allow_blank: false
-  validates :to, format: { with: %r{\Ahttps?://.+}i.freeze, message: 'should begin with http:// or https:// and contain a valid URL' }
+  validates :to, format: {
+    with: %r{\Ahttps?://.+}i.freeze,
+    message: 'should begin with http:// or https:// and contain a valid URL'
+  }
   validates :shortened, shortcode: true, on: %i[create update]
 
   URL_FORMAT = %r{^[a-z\d/_]+$}i.freeze
 
   scope :auto, -> { where(auto: true) }
-  scope :mine, proc { |u| where(['user_id = ?', u.id]) }
+  scope :mine, ->(u) { where(['user_id = ?', u.id]) }
 
   validate :to do
     # rubocop:disable Style/IfUnlessModifier

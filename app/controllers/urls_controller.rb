@@ -16,11 +16,8 @@ class UrlsController < ApplicationController
   def index
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
 
-    @search = url_params[:search]
-
-    if @search != nil
-      redirect_to '/urls/search/' + @search.strip.gsub(' ', '-')
-    end
+    search = url_params[:search]&.strip&.tr(' ', '-')
+    redirect_to search_urls_path(search: search) if search.present?
 
     hilite
 
