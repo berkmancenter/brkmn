@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UrlsController < ApplicationController
   before_action :authenticated?
   skip_before_action :authenticated?, only: :logout
@@ -36,6 +38,7 @@ class UrlsController < ApplicationController
                .paginate(page: url_params[:page], per_page: url_params[:per_page])
   end
 
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def create
     @url = Url.new(
       shortened: url_params[:url][:shortened],
@@ -56,6 +59,7 @@ class UrlsController < ApplicationController
 
     redirect_to urls_path
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 
@@ -82,6 +86,7 @@ class UrlsController < ApplicationController
     %w[asc desc].include?(direction) ? direction : 'asc'
   end
 
+  # rubocop:disable Metrics/MethodLength
   def hilite
     case url_params[:sort] || session[:sort]
     when '"to"'
@@ -98,4 +103,5 @@ class UrlsController < ApplicationController
       @to_header = 'to'
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

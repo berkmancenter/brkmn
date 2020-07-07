@@ -1,19 +1,19 @@
-Documentation:
-  Enabled: false
-
-Rails:
-  Enabled: true
+require: rubocop-rails
 
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.7
+  NewCops: enable
   Exclude:
     - db/**/*
     - config/**/*
-    - script/**
+    - bin/**
     - 'Rakefile'
     - 'config.ru'
+    - node_modules/**/*
+    - lib/berkman_ldap_auth_mixin.rb  # until we add LDAP testing
+    - lib/berkman_ldap_auth.rb        # until we add LDAP testing
 
-ClassLength:
+Metrics/ClassLength:
   Exclude:
     - test/**/*
 
@@ -25,23 +25,14 @@ Metrics/BlockLength:
     - 'test/**/*.rb'
     - 'test/test_helper.rb'
 
+Rails:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
 Style/ClassAndModuleChildren:
-  Enabled: false
-
-# Temporarily disabling the following. At this point they've been resolved
-# as much as they can be without doing things that might implicate test
-# coverage.
-Metrics/MethodLength:
-  Enabled: false
-
-Style/GuardClause:
-  Enabled: false
-
-Rails/DynamicFindBy:
-  Enabled: false
-
-Metrics/AbcSize:
-  Enabled: false
-
-Rails/Validation:
   Enabled: false

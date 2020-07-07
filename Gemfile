@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
-gem 'bootsnap'
 gem 'base32-crockford'
+gem 'bootsnap'
 gem 'dotenv-rails'
 gem 'haml'
 gem 'jquery-rails'
@@ -26,6 +28,7 @@ end
 group :development, :test do
   gem 'byebug'
   gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
 end
 
 group :test do

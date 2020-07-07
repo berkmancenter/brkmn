@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 
 class RedirectionTest < IntegrationTest
@@ -11,7 +13,7 @@ class RedirectionTest < IntegrationTest
     visit "/#{@url.shortened}"
 
     assert page.current_url == @redirect_url,
-      "Did not redirect; current_url is #{page.current_url}"
+           "Did not redirect; current_url is #{page.current_url}"
   end
 
   it 'updates the view count' do

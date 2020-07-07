@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BerkmanLdapAuthMixin
   def authenticate(username, password)
     return unless BerkmanLdapAuth.authenticate(username, password)

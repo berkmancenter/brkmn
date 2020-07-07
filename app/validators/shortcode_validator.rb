@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ShortcodeValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     # We will auto-create if it's blank.
@@ -5,17 +7,31 @@ class ShortcodeValidator < ActiveModel::EachValidator
     # the return is only permissible here.
     return if value.blank? && !record.persisted?
 
-    if Url.where(shortened_conditions(record)).present?
-      record.errors.add attribute, "(#{value}) is already in use. Please choose another."
-    end
+    @record = record
+    @attribute = attribute
+    @value = value
 
-    if value.match(PROTECTED_URL_REGEX)
-      record.errors.add attribute, 'is a protected URL and cannot be used. Please choose another.'
-    end
+    already_in_use?
+    protected_regex?
+    invalid_characters?
+  end
 
-    unless URI.encode_www_form_component(value) == value
-      record.errors.add attribute, 'contains invalid URL characters.'
-    end
+  def already_in_use?
+    return if Url.where(shortened_conditions(@record)).blank?
+
+    @record.errors.add @attribute, "(#{@value}) is already in use. Please choose another."
+  end
+
+  def protected_regex?
+    return unless @value.match(PROTECTED_URL_REGEX)
+
+    @record.errors.add @attribute, 'is a protected URL and cannot be used. Please choose another.'
+  end
+
+  def invalid_characters?
+    return if URI.encode_www_form_component(@value) == @value
+
+    @record.errors.add @attribute, 'contains invalid URL characters.'
   end
 
   def shortened_conditions(record)
