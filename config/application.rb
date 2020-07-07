@@ -21,5 +21,6 @@ module Brkmn
     # See config/development.rb.
     config.use_fakeauth = false
     config.action_controller.per_form_csrf_tokens = true
+    config.hosts << ENV['ALLOWED_HOST'] if ENV['ALLOWED_HOST'].present?
   end
 end
