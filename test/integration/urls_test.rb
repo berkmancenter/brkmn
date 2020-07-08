@@ -67,4 +67,14 @@ class UrlsTest < IntegrationTest
     assert page.has_no_content?('https://totallydifferent.domain.com')
     assert page.current_path == search_urls_path
   end
+
+  it 'adds users to urls automatically on url creation' do
+    visit urls_path
+    fill_in 'URL to shorten', with: 'https://a.new.url'
+    click_on 'Shorten'
+
+    current_user = User.find_by(username: USERNAME)
+
+    assert Url.last.user == current_user
+  end
 end
