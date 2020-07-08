@@ -35,8 +35,10 @@ class IntegrationTest < MiniTest::Spec
 
   ActiveRecord::FixtureSet.create_fixtures('test/fixtures', %w[urls users])
 
+  USERNAME = 'username'
+
   def authorize
     visit '/'
-    page.driver.browser.authorize('username', 'password')
+    page.driver.browser.authorize(USERNAME, 'password')
   end
 end
