@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'annotate'
 gem 'base32-crockford'
 gem 'bootsnap'
 gem 'dotenv-rails'
@@ -13,12 +14,13 @@ gem 'rails', '~> 6.0.0'
 gem 'webpacker'
 gem 'will_paginate'
 
-# assets
-gem 'coffee-rails'
-gem 'sass-rails'
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-gem 'therubyracer'
-gem 'uglifier'
+group :assets do
+  gem 'coffee-rails'
+  gem 'sass-rails'
+  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  gem 'therubyracer'
+  gem 'uglifier'
+end
 
 group :development do
   gem 'listen'

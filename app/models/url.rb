@@ -1,5 +1,25 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: urls
+#
+#  id         :integer          not null, primary key
+#  auto       :boolean          default(TRUE)
+#  clicks     :integer          default(0)
+#  shortened  :string(255)
+#  to         :string(10240)    not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :integer
+#
+# Indexes
+#
+#  index_urls_on_auto       (auto)
+#  index_urls_on_shortened  (shortened)
+#  index_urls_on_to         (to)
+#  index_urls_on_user_id    (user_id)
+#
 class Url < ApplicationRecord
   include ActiveModel::Validations
 

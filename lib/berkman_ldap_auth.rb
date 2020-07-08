@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 module BerkmanLdapAuth
-  gem 'net-ldap'
-  require 'net/ldap'
-  require 'yaml'
-
   # See the Brief Introduction to LDAP in the Net::LDAP docs:
   # https://www.rubydoc.info/gems/ruby-net-ldap/Net/LDAP
   def self.authenticate(username, password)
