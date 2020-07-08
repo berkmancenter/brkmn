@@ -1,89 +1,96 @@
+# frozen_string_literal: true
+
 class UrlsController < ApplicationController
-  before_filter :is_authenticated
-  skip_before_filter :is_authenticated, :only => :logout
+  before_action :authenticated?
+  skip_before_action :authenticated?, only: :logout
   helper_method :sort_column, :sort_direction
 
   def bookmarklet
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
   end
-  
+
   def show
-    @url = Url.find params[:id]
+    @url = Url.find url_params[:id]
   end
 
   def index
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
-    
-    @search = params[:search]
-    
-    if @search != nil
-      redirect_to '/urls/search/' + @search.strip.gsub(' ', '-')
-    end
-    
+
+    search = url_params[:search]&.strip&.tr(' ', '-')
+    redirect_to search_urls_path(search: search) if search.present?
+
     hilite
-    
-    @urls = Url.order(sort_column + ' ' + sort_direction).paginate(:page => params[:page], :per_page => params[:per_page])
-  end
-  
-  def search
-    @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
-    
-    hilite
-    
-    @urls = Url.search(params[:search]).order(sort_column + ' ' + sort_direction).paginate(:page => params[:page], :per_page => params[:per_page])
+
+    @urls = Url.order(sort_column + ' ' + sort_direction)
+               .paginate(page: url_params[:page], per_page: url_params[:per_page])
   end
 
+  def search
+    @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
+
+    hilite
+
+    @urls = Url.search(url_params[:search])
+               .order(sort_column + ' ' + sort_direction)
+               .paginate(page: url_params[:page], per_page: url_params[:per_page])
+  end
+
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def create
     @url = Url.new(
-      :shortened  => params[:url][:shortened],
-      :to => params[:url][:to]
+      shortened: url_params[:url][:shortened],
+      to: url_params[:url][:to],
+      user: current_user
     )
-    
+
     respond_to do |f|
-      f.html {
+      f.html do
         if @url.save
           flash[:notice] = "Shortened URL (http://brk.mn/#{@url.shortened}) was successfully created."
         else
           logger.warn(@url.errors.inspect)
           flash[:error] = "ERROR: #{@url.errors.full_messages}"
         end
-      }
-    end
-    
-    redirect_to urls_path
-  end
-  
-  
-  private
-  def sort_column
-  
-    sort = params[:sort] || session[:sort]
-  
-    if params[:sort] != session[:sort]
-      session[:sort] = sort
+      end
     end
 
-    %w[shortened "to" clicks].include?(sort) ? sort : "shortened"
+    redirect_to urls_path
   end
-  
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+  private
+
+  def url_params
+    params.permit(
+      :id, :search, :page, :per_page, :sort, :direction,
+      url: %i[shortened to]
+    )
+  end
+
+  def sort_column
+    sort = url_params[:sort] || session[:sort]
+
+    session[:sort] = sort if url_params[:sort] != session[:sort]
+
+    %w[shortened "to" clicks].include?(sort) ? sort : 'shortened'
+  end
+
   def sort_direction
-  
-    direction = params[:direction] || session[:direction]
-  
-    if params[:direction] != session[:direction]
-      session[:direction] = direction
-    end
-    
-    %w[asc desc].include?(direction) ?  direction : "asc"
+    direction = url_params[:direction] || session[:direction]
+
+    session[:direction] = direction if url_params[:direction] != session[:direction]
+
+    %w[asc desc].include?(direction) ? direction : 'asc'
   end
-  
-  def hilite   
-    case params[:sort] || session[:sort]
+
+  # rubocop:disable Metrics/MethodLength
+  def hilite
+    case url_params[:sort] || session[:sort]
     when '"to"'
       @to_header = 'to hilite'
       @clicks_header = 'clicks'
       @shortened_header = 'shortened'
-    when "clicks"
+    when 'clicks'
       @clicks_header = 'clicks hilite'
       @to_header = 'to'
       @shortened_header = 'shortened'
@@ -93,5 +100,5 @@ class UrlsController < ApplicationController
       @to_header = 'to'
     end
   end
-
+  # rubocop:enable Metrics/MethodLength
 end

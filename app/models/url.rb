@@ -1,101 +1,93 @@
-require 'base32/crockford'
-require 'uri'
-class Url < ActiveRecord::Base
-  validates_presence_of :to
+# frozen_string_literal: true
 
-  validates_length_of :to, :maximum => 10.kilobytes, :allow_blank => false 
-  validates_format_of :to, :with => /^https?:\/\/.+/i, :message => 'should begin with http:// or https:// and contain a valid URL'
+class Url < ApplicationRecord
+  include ActiveModel::Validations
 
-  belongs_to :user
+  belongs_to :user, optional: true
 
-  attr_accessible :to, :shortened, :auto, :clicks
   before_create :generate_url
 
-  URL_FORMAT = /^[a-z\d\/_]+$/i
-
-  scope :auto, where({:auto => true})
-  scope :mine, Proc.new{|u| 
-      where(['user_id = ?',u.id])
+  validates :to, length: { maximum: 10.kilobytes }, allow_blank: false
+  validates :to, format: {
+    with: %r{\Ahttps?://.+}i.freeze,
+    message: 'should begin with http:// or https:// and contain a valid URL'
   }
+  validates :shortened, shortcode: true, on: %i[create update]
+
+  URL_FORMAT = %r{^[a-z\d/_]+$}i.freeze
+
+  scope :auto, -> { where(auto: true) }
+  scope :mine, ->(u) { where(['user_id = ?', u.id]) }
 
   validate :to do
-    if self.to.match(PROTECTED_REDIRECT_REGEX)
-      self.errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
+    # rubocop:disable Style/IfUnlessModifier
+    if to.blank?
+      errors.add(:to, 'Target URL must be present.')
     end
-    if ! valid_url?(self.to.delete "https://", "http://")
-      self.errors.add(:to, "is not a valid URL and contains invalid characters.")
+    if to&.match(PROTECTED_REDIRECT_REGEX)
+      errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
     end
-  end
-
-  validate :shortened, :on => :create do
-    # We will auto-create if it's blank.
-    return if self.shortened.blank?
-    if Url.count(:conditions =>{:shortened => self.shortened}) > 0
-      self.errors.add(:shortened, "(" + self.shortened + ") is already in use in the system. Please choose another.")
+    unless valid_url?(to&.delete 'https://', 'http://')
+      errors.add(:to, 'is not a valid URL and contains invalid characters.')
     end
-    if self.shortened.match(PROTECTED_URL_REGEX)
-      self.errors.add(:shortened, "is a protected URL and cannot be used. Please choose another.")
-    end
-    if ! valid_url?(self.shortened)
-      self.errors.add(:shortened, "is not a valid URL and contains invalid characters.")
-    end
-    return 
-  end
-  
-  validate :shortened, :on => :update do
-    # We will auto-create if it's blank.
-    return if self.shortened.blank?
-    if Url.count(:conditions =>{:shortened => self.shortened, :to => self.to, :user_id => self.user_id}) > 0
-      self.errors.add(:shortened, "(" + self.shortened + ") is already in use for " + self.to + ". Please choose another.")
-    end
-    if self.shortened.match(PROTECTED_URL_REGEX)
-      self.errors.add(:shortened, "is a protected URL and cannot be used. Please choose another.")
-    end
-    if ! valid_url?(self.shortened)
-      self.errors.add(:shortened, "is not a valid URL and contains invalid characters.")
-    end
-    return 
+    # rubocop:enable Style/IfUnlessModifier
   end
 
   def self.all_owners
-	%w(Others Mine)
+    %w[Others Mine]
   end
-  
+
   def self.search(search)
     if search
       where('lower(shortened) like lower(?) OR lower("to") like lower(?)', "%#{search}%", "%#{search}%")
     else
-      scoped
+      all
     end
   end
-    
+
+  # Don't let shortcodes be overwritten with blank data.
+  def shortened=(value)
+    return if value.blank?
+
+    super
+  end
+
+  private
+
   def valid_url?(url)
-      !!URI.parse(url)
-    rescue URI::InvalidURIError
-      false
+    !!URI.parse(url)
+  rescue URI::InvalidURIError
+    false
   end
 
   def generate_url
-    if self.shortened.blank?
-      # Auto create here. If the auto-create URL has already been used, give it a suffix.
-      next_id = Url.find_by_sql('select last_value from urls_id_seq').first['last_value'].to_i
-      #This burps on the second autocreated URL. Not worth fixing.
-      next_id = next_id + 1 unless next_id == 1
-      encoded_shortened = Base32::Crockford.encode(next_id).downcase
-      suffix = ''
-      # These will never be used by Base32 encoding, so it's pretty unlikely they'll occur giving us a high probability
-      # of matching with only one character. 
-      suffix_array = ['i','l','o','u'] 
-      until Url.count(:conditions => {:shortened => "#{encoded_shortened}#{suffix}"}) == 0
-        suffix = "#{suffix}#{suffix_array[rand(suffix_array.length)]}" 
-      end
-      self.shortened = "#{encoded_shortened}#{suffix}"
-      self.auto = true
-    else
+    if shortened.present?
       self.auto = false
+    else
+      self.auto = true
+      create_shortcode
     end
-    #Return true to ensure this doesn't look like a failed validation.
-    return true
-  end  
+  end
 
+  def create_shortcode
+    self.shortened = base_shortcode
+
+    self.shortened += suffix until Url.where(shortened: shortened).empty?
+  end
+
+  def suffix
+    # These will never be used by Base32 encoding, so it's pretty unlikely
+    # they'll occur giving us a high probability of matching with only one
+    # character.
+    %w[i l o u].sample
+  end
+
+  def base_shortcode
+    # This is not guaranteed to work, due e.g. to race conditions; only the
+    # database can provide ACID guarantees. We need to actually create a Url
+    # to be certain of what its ID will be. For a low-usage system this is
+    # probably good enough, though.
+    next_id = Url.last.id + 1
+    Base32::Crockford.encode(next_id).downcase
+  end
 end

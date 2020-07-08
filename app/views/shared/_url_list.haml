@@ -1,19 +1,19 @@
 %table
   %tr
-    %td{:colspan => 4, :class => "search"}
-      = form_tag search_urls_path, :method => 'get' do
+    %td{:colspan => 4, class: "search"}
+      = form_tag search_urls_path, method: 'get' do
         = text_field_tag :search, params[:search]
-        = submit_tag "Search", :class => "search_button"
+        = submit_tag "Search", class: "search_button"
         = link_to "Clear", root_url, :search => nil
   %tr
-    %td{:colspan => 4, :class => "top_pagination"}
+    %td{:colspan => 4, class: "top_pagination"}
       = will_paginate @urls
   %tr
-    %th{:class => @shortened_header}= sortable 'shortened', 'Shortened URL'
-    %th{:class => "arrow"}
-    %th{:class => @to_header}= sortable '"to"', 'Full URL'
-    %th{:class => @clicks_header}= sortable 'clicks', 'Clicks'
+    %th{class: @shortened_header}= sortable 'shortened', 'Shortened URL'
+    %th{class: "arrow"}
+    %th{class: @to_header}= sortable '"to"', 'Full URL'
+    %th{class: @clicks_header}= sortable 'clicks', 'Clicks'
     = render :partial => 'urls/url_list', :collection => @urls
   %tr
-    %td{:colspan => 4, :class => "bottom_pagination"}
+    %td{:colspan => 4, class: "bottom_pagination"}
       = will_paginate @urls

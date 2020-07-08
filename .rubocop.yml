@@ -1,0 +1,38 @@
+require: rubocop-rails
+
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  Exclude:
+    - db/**/*
+    - config/**/*
+    - bin/**
+    - 'Rakefile'
+    - 'config.ru'
+    - node_modules/**/*
+    - lib/berkman_ldap_auth_mixin.rb  # until we add LDAP testing
+    - lib/berkman_ldap_auth.rb        # until we add LDAP testing
+
+Metrics/ClassLength:
+  Exclude:
+    - test/**/*
+
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Max: 25
+  Exclude:
+    - '**/*.rake'
+    - 'test/**/*.rb'
+    - 'test/test_helper.rb'
+
+Rails:
+  Enabled: true
+
+Style/Documentation:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false

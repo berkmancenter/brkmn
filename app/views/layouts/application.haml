@@ -11,12 +11,12 @@
       %h1 
         = REDIRECT_DOMAIN
       - flash.each do |name, msg|
-        = content_tag :div, msg, :class => "message", :id => "#{name}"
+        = content_tag :div, msg, class: "message", :id => "#{name}"
       = yield
       /%div{:id => 'loader'}/
     %footer 
       Bookmarklet:
-      %a{:class => 'bookmarklet', :title => "Drag this link to your bookmarks toolbar to shorten any page via #{REDIRECT_DOMAIN}", :href => "javascript:(function(){f='#{bookmarklet_urls_url}?url%5bto%5d='+encodeURIComponent(window.location.href)+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','brkmn','location=1,links=0,scrollbars=0,toolbar=0,width=1000,height=400'))location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()"} Shorten on #{REDIRECT_DOMAIN}
+      %a{class: 'bookmarklet', :title => "Drag this link to your bookmarks toolbar to shorten any page via #{REDIRECT_DOMAIN}", :href => "javascript:(function(){f='#{bookmarklet_urls_url}?url%5bto%5d='+encodeURIComponent(window.location.href)+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','brkmn','location=1,links=0,scrollbars=0,toolbar=0,width=1000,height=400'))location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()"} Shorten on #{REDIRECT_DOMAIN}
       &nbsp;&nbsp;&nbsp;&nbsp; &bull;&nbsp;&nbsp;&nbsp;&nbsp;
       Berkman Center for Internet &amp; Society 
       - if @current_user
