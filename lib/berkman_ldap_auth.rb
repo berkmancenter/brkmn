@@ -11,7 +11,7 @@ module BerkmanLdapAuth
     return User.first if Rails.application.config.use_fakeauth
     return false if password.empty?
 
-    ldap = YAML.load_file(Rails.root.join(Rails.root, 'config', 'ldap.yml'))
+    ldap = load_ldap_conf
 
     ldap_con = initialize_ldap_con(
       ldap['bind_hostname'],
@@ -21,13 +21,13 @@ module BerkmanLdapAuth
     )
     name_filter = Net::LDAP::Filter.eq('sAMAccountName', username)
     dn = ''
-    ldap_con.search(
+    entry = ldap_con.search(
       base: ldap['base_tree'],
       filter: name_filter,
       attributes: ['dn']
-    ) do |entry|
-      dn = entry.dn
-    end
+    )
+    dn = entry.dn
+
     login_succeeded = false
 
     unless dn.empty?
@@ -40,6 +40,10 @@ module BerkmanLdapAuth
       login_succeeded = true if ldap_con.bind
     end
     login_succeeded
+  end
+
+  def self.load_ldap_conf
+    YAML.load_file(Rails.root.join(Rails.root, 'config', 'ldap.yml'))
   end
 
   def self.initialize_ldap_con(host, port, user, pass)

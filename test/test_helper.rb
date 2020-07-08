@@ -9,9 +9,10 @@ require 'rails/test_help'
 
 require 'capybara/rails'
 require 'database_cleaner'
-require 'support/database_cleaner'
 require 'minitest/rails' # must go after rails/test_help or fixtures won't load
-require 'webmock'
+require 'webmock/minitest'
+
+Dir[Rails.root.join('test/support/**/*.rb')].sort.each { |f| require f }
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
