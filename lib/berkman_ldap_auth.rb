@@ -54,15 +54,24 @@ module BerkmanLdapAuth
   def self.dn_found?
     name_filter = Net::LDAP::Filter.eq('sAMAccountName', @username)
 
-    entry = search_connection.search(
+    result = search_connection.search(
       base: ldap['base_tree'],
       filter: name_filter,
       attributes: ['dn']
     )
 
-    @dn = entry.dn
+    @dn = extract_entry(result).dn
 
     @dn.present?
+  end
+
+  def self.extract_entry(result)
+    case result
+    when Array
+      result.first
+    else
+      result
+    end
   end
 
   def self.initialize_ldap_con(host, port, user, pass)

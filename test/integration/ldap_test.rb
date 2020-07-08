@@ -89,7 +89,7 @@ class LdapTest < IntegrationTest
 
     def mock.search(*)
       # Based on actual data from performing #search against production LDAP.
-      Net::LDAP::Entry.new('CN=Kermit Frog,OU=Muppets,DC=law,DC=harvard,DC=edu')
+      [Net::LDAP::Entry.new('CN=Kermit Frog,OU=Muppets,DC=law,DC=harvard,DC=edu')]
     end
 
     # Yes, this is very weird. `successful` isn't defined inside of
