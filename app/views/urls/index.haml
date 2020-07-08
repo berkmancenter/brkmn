@@ -1,3 +1,10 @@
 = render :partial => 'shared/add_url'
-.urls
-  #url_list
+= render :partial => 'shared/search'
+- unless @my_urls.nil?
+  #my_urls
+    %h2 My URLs
+    = render 'shared/url_list', urls: @my_urls
+- unless @not_my_urls.nil?
+  #not_my_urls
+    %h2 Others' URLs
+    = render 'shared/url_list', urls: @not_my_urls

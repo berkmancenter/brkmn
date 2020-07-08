@@ -9,6 +9,10 @@ class UrlsTest < IntegrationTest
     authorize
   end
 
+  after do
+    @url.destroy
+  end
+
   it 'lets you see a url' do
     visit url_path(@url.id)
 
@@ -76,5 +80,25 @@ class UrlsTest < IntegrationTest
     current_user = User.find_by(username: USERNAME)
 
     assert Url.last.user == current_user
+  end
+
+  it "shows you your links separately from everyone else's" do
+    my_link = 'https://en.wikipedia.org/wiki/List_of_software_bugs'
+    Url.create(
+      to: my_link,
+      user: User.find_by(username: USERNAME)
+    )
+
+    visit urls_path
+
+    within '#my_urls' do
+      find_link my_link
+      assert find_all('td.to').count == 1
+    end
+
+    within '#not_my_urls' do
+      find_link @redirect_url
+      assert find_all('td.to').count == Url.count - 1
+    end
   end
 end

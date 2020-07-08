@@ -37,7 +37,10 @@ class Url < ApplicationRecord
   URL_FORMAT = %r{^[a-z\d/_]+$}i.freeze
 
   scope :auto, -> { where(auto: true) }
-  scope :mine, ->(u) { where(['user_id = ?', u.id]) }
+  scope :mine, ->(u) { where(user_id: u.id) }
+  scope :not_mine, ->(u) {
+    where.not(user_id: u.id).or(Url.default_scoped.where(user_id: nil))
+  }
 
   validate :to do
     # rubocop:disable Style/IfUnlessModifier
