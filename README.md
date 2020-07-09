@@ -1,20 +1,20 @@
-= brkmn
+# brkmn
 
 A dirt-simple URL shortener.
 
-== Links
+## Links
 
 * http://cyber.law.harvard.edu
 * https://github.com/berkmancenter/brkmn
 
-== System requirements
+## System requirements
 * ruby 2.7.1
 * bundler
 * rvm
 * yarn
 * postgres 9
 
-== Development
+## Development
 
 * `rvm use 2.7.1@brkmn --create`
 * (Optional, but convenient) Create a .ruby-gemset file with the name of your gemset.
@@ -30,12 +30,12 @@ A dirt-simple URL shortener.
 
 Test with `rails test`.
 
-== Troubleshooting
+## Troubleshooting
 
-=== PG::Error
+### PG::Error
 brkmn is not compatible with postgres 10. If you are using pg10, you will see `ActiveRecord::StatementInvalid: PG::Error: ERROR: column "increment_by" does not exist`.
 
-== Deployment
+## Deployment
 
 * The first time
   * Follow the steps above for development.
@@ -50,16 +50,16 @@ brkmn is not compatible with postgres 10. If you are using pg10, you will see `A
 
 Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
 
-== Contributors
+## Contributors
 
 * Dan Collis-Puro: djcp@cyber.law.harvard.edu
 * Flavio Giobergia: flavio.giobergia@studenti.polito.it
 * Andromeda Yelton: ayelton@cyber.harvard.edu
 
-== License
+## License
 
 brkmn is licensed under the terms of Rails itself - the MIT license: http://www.opensource.org/licenses/mit-license.php
 
-== Copyright
+## Copyright
 
 2012-2020 President and Fellows of Harvard College
