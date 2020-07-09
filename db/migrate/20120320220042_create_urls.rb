@@ -1,4 +1,4 @@
-class CreateUrls < ActiveRecord::Migration
+class CreateUrls < ActiveRecord::Migration[3.2]
   def change
     create_table :urls do |t|
       t.string :shortened, limit: 255

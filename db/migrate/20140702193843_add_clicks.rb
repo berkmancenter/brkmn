@@ -1,4 +1,4 @@
-class AddClicks < ActiveRecord::Migration
+class AddClicks < ActiveRecord::Migration[3.2]
   def up
     add_column :urls, :clicks, :integer
   end
