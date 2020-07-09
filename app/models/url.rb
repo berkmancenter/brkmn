@@ -37,7 +37,10 @@ class Url < ApplicationRecord
   URL_FORMAT = %r{^[a-z\d/_]+$}i.freeze
 
   scope :auto, -> { where(auto: true) }
-  scope :mine, ->(u) { where(['user_id = ?', u.id]) }
+  scope :mine, ->(u) { where(user_id: u.id) }
+  scope :not_mine, ->(u) {
+    where.not(user_id: u.id).or(Url.default_scoped.where(user_id: nil))
+  }
 
   validate :to do
     # rubocop:disable Style/IfUnlessModifier
@@ -51,10 +54,6 @@ class Url < ApplicationRecord
       errors.add(:to, 'is not a valid URL and contains invalid characters.')
     end
     # rubocop:enable Style/IfUnlessModifier
-  end
-
-  def self.all_owners
-    %w[Others Mine]
   end
 
   def self.search(search)
@@ -90,7 +89,7 @@ class Url < ApplicationRecord
   end
 
   def create_shortcode
-    self.shortened = base_shortcode
+    self.shortened = base_shortcode.to_s
 
     self.shortened += suffix until Url.where(shortened: shortened).empty?
   end
@@ -107,7 +106,7 @@ class Url < ApplicationRecord
     # database can provide ACID guarantees. We need to actually create a Url
     # to be certain of what its ID will be. For a low-usage system this is
     # probably good enough, though.
-    next_id = Url.last.id + 1
+    next_id = Url.last ? Url.last.id + 1 : 1
     Base32::Crockford.encode(next_id).downcase
   end
 end

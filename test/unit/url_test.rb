@@ -189,16 +189,23 @@ describe Url do
     end
   end
 
-  describe 'mine scope' do
-    it 'counts properly' do
-      urls = Url.mine(users(:normal))
-      assert urls.length == 2, "The normal user didn't have 2 links"
+  describe 'scopes' do
+    it 'returns only my urls with .mine' do
+      Url.destroy_all
+      u1 = Url.create(to: 'https://indigodragonfly.ca/', user: users(:normal))
+      u2 = Url.create(to: 'https://fiberopticyarns.com/')
+      u3 = Url.create(to: 'https://shop.thebluebrick.ca/', user: users(:secondnormal))
 
-      urls = Url.mine(users(:admin))
-      assert urls.length == 3, "The superadmin couldn't see their three links"
+      assert Url.mine(users(:normal)).to_a == [u1]
+    end
 
-      urls = Url.mine(users(:secondnormal))
-      assert urls.length.zero?, 'The second normal user had links.'
+    it "returns only others' urls with .not_mine" do
+      Url.destroy_all
+      u1 = Url.create(to: 'https://indigodragonfly.ca/', user: users(:normal))
+      u2 = Url.create(to: 'https://fiberopticyarns.com/')
+      u3 = Url.create(to: 'https://shop.thebluebrick.ca/', user: users(:secondnormal))
+
+      assert Url.not_mine(users(:normal)).to_a == [u2, u3]
     end
   end
 

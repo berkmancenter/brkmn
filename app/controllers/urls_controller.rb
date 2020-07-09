@@ -21,8 +21,8 @@ class UrlsController < ApplicationController
 
     hilite
 
-    @urls = Url.order(sort_column + ' ' + sort_direction)
-               .paginate(page: url_params[:page], per_page: url_params[:per_page])
+    @not_my_urls = organized(Url.not_mine(current_user))
+    @my_urls = organized(Url.mine(current_user))
   end
 
   def search
@@ -30,9 +30,7 @@ class UrlsController < ApplicationController
 
     hilite
 
-    @urls = Url.search(url_params[:search])
-               .order(sort_column + ' ' + sort_direction)
-               .paginate(page: url_params[:page], per_page: url_params[:per_page])
+    @urls = organized(Url.search(url_params[:search]))
   end
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
@@ -46,7 +44,7 @@ class UrlsController < ApplicationController
     respond_to do |f|
       f.html do
         if @url.save
-          flash[:notice] = "Shortened URL (http://brk.mn/#{@url.shortened}) was successfully created."
+          flash[:notice] = "Shortened URL (#{root_url}#{@url.shortened}) was successfully created."
         else
           logger.warn(@url.errors.inspect)
           flash[:error] = "ERROR: #{@url.errors.full_messages}"
@@ -81,6 +79,11 @@ class UrlsController < ApplicationController
     session[:direction] = direction if url_params[:direction] != session[:direction]
 
     %w[asc desc].include?(direction) ? direction : 'asc'
+  end
+
+  def organized(relation)
+    relation.order(sort_column + ' ' + sort_direction)
+            .paginate(page: url_params[:page], per_page: url_params[:per_page])
   end
 
   # rubocop:disable Metrics/MethodLength

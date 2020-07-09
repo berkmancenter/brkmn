@@ -1,3 +1,4 @@
-= render :partial => 'shared/add_url'
-.urls
-  #url_list
+= render 'shared/add_url'
+= render 'shared/search'
+- unless @urls.nil?
+  = render 'shared/url_list', urls: @urls
