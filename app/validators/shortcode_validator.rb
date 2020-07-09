@@ -17,7 +17,7 @@ class ShortcodeValidator < ActiveModel::EachValidator
   end
 
   def already_in_use?
-    return if Url.where(shortened_conditions(@record)).blank?
+    return unless conflicting_urls.present?
 
     @record.errors.add @attribute, "(#{@value}) is already in use. Please choose another."
   end
@@ -34,11 +34,13 @@ class ShortcodeValidator < ActiveModel::EachValidator
     @record.errors.add @attribute, 'contains invalid URL characters.'
   end
 
-  def shortened_conditions(record)
-    if record.persisted?
-      { shortened: record.shortened, to: record.to, user_id: record.user_id }
+  def conflicting_urls
+    if @record.persisted?
+      Url.where(
+        shortened: @record.shortened, to: @record.to, user_id: @record.user_id
+      ).where.not(id: @record.id)
     else
-      { shortened: record.shortened }
+      Url.where(shortened: @record.shortened)
     end
   end
 end
