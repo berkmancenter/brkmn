@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     collection do
       get 'url_list'
       get 'bookmarklet'
-	  get 'search'
+  	  get 'search'
     end
   end
   root to: 'urls#index'

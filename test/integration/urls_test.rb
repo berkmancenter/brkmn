@@ -13,63 +13,153 @@ class UrlsTest < IntegrationTest
     @url.destroy
   end
 
-  it 'lets you see a url' do
-    visit url_path(@url.id)
+  context 'url#show' do
+    it 'lets you see a url' do
+      visit url_path(@url)
 
-    assert page.has_content?("Full URL: #{@url.to}")
-    assert page.has_content?("Shortened URL: #{@url.shortened}")
-    assert page.has_content?("Clicks: #{@url.clicks}")
-  end
-
-  it 'lets you create a URL on the index page' do
-    orig_count = Url.count
-
-    visit urls_path
-    fill_in 'URL to shorten', with: 'https://a.new.url'
-    click_on 'Shorten'
-
-    assert Url.count == orig_count + 1
-    assert Url.where(to: 'https://a.new.url').present?
-  end
-
-  it 'lets you create a URL with a specific shortcode on the index page' do
-    orig_count = Url.count
-
-    visit urls_path
-    fill_in 'URL to shorten', with: 'https://a.new.url'
-    fill_in 'OPTIONAL: shorten to. . . ', with: 'new'
-    click_on 'Shorten'
-
-    assert Url.count == orig_count + 1
-    assert Url.where(to: 'https://a.new.url', shortened: 'new').present?
-  end
-
-  it 'shows you the list of URLs on the index page' do
-    visit urls_path
-
-    Url.all.each do |url|
-      assert page.has_content? url.to
+      assert page.has_content?("Full URL: #{@url.to}")
+      assert page.has_content?("Shortened URL: #{@url.shortened}")
+      assert page.has_content?("Clicks: #{@url.clicks}")
     end
   end
 
-  it 'lets you search for URLs on the index page' do
-    Url.create(to: 'https://totallydifferent.domain.com')
+  context 'url#edit' do
+    it 'resolves' do
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: true)
 
-    visit urls_path
-    fill_in 'search', with: 'scratch'
-    click_on 'Search'
+      visit edit_url_path(@url)
+    end
 
-    assert page.has_content?('https://scratch.mit.edu/')
-    assert page.has_no_content?('https://totallydifferent.domain.com')
+    it 'lets users see a url they own' do
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: false)
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: u
+      )
+
+      visit edit_url_path(url)
+
+      assert page.status_code == 200
+    end
+
+    it 'lets superadmins see a url they do not own' do
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: true)
+      normal = User.where(superadmin: false).first
+      url = Url.create(
+        to: 'https://cyber.law.harvard.edu/publications/2015/digitallyconnected_globalperspectives',
+        user: normal
+      )
+
+      visit edit_url_path(url)
+
+      assert page.status_code == 200
+    end
+
+    it 'does not let regular users see a url they do not own' do
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: false)
+      normal = User.find_by(username: 'normal')
+      url = Url.create(
+        to: 'http://wilkins.law.harvard.edu/courses/CopyrightX2015/3.3_hi.mp4',
+        user: normal
+      )
+
+      assert_raises CanCan::AccessDenied do
+        visit edit_url_path(url)
+      end
+    end
+
+    it 'lets you edit the url' do
+      u = User.find_by(username: USERNAME)
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: u
+      )
+      new_url = 'https://cyber.harvard.edu/getinvolved/fellowships/opencall20172018'
+
+      visit edit_url_path(url)
+      fill_in 'url_to', with: new_url
+      click_on 'Update'
+      url.reload
+
+      assert url.to == new_url
+    end
   end
 
-  it 'redirects from index to search when search in params' do
-    Url.create(to: 'https://totallydifferent.domain.com')
-    visit urls_path(search: 'scratch')
+  context 'index page' do
+    it 'lets you create a URL on the index page' do
+      orig_count = Url.count
 
-    assert page.has_content?('https://scratch.mit.edu/')
-    assert page.has_no_content?('https://totallydifferent.domain.com')
-    assert page.current_path == search_urls_path
+      visit urls_path
+      fill_in 'URL to shorten', with: 'https://a.new.url'
+      click_on 'Shorten'
+
+      assert Url.count == orig_count + 1
+      assert Url.where(to: 'https://a.new.url').present?
+    end
+
+    it 'lets you create a URL with a specific shortcode on the index page' do
+      orig_count = Url.count
+
+      visit urls_path
+      fill_in 'URL to shorten', with: 'https://a.new.url'
+      fill_in 'OPTIONAL: shorten to. . . ', with: 'new'
+      click_on 'Shorten'
+
+      assert Url.count == orig_count + 1
+      assert Url.where(to: 'https://a.new.url', shortened: 'new').present?
+    end
+
+    it 'shows you the list of URLs on the index page' do
+      visit urls_path
+
+      Url.all.each do |url|
+        assert page.has_content? url.to
+      end
+    end
+
+    it 'lets you search for URLs on the index page' do
+      Url.create(to: 'https://totallydifferent.domain.com')
+
+      visit urls_path
+      fill_in 'search', with: 'scratch'
+      click_on 'Search'
+
+      assert page.has_content?('https://scratch.mit.edu/')
+      assert page.has_no_content?('https://totallydifferent.domain.com')
+    end
+
+    it 'redirects from index to search when search in params' do
+      Url.create(to: 'https://totallydifferent.domain.com')
+      visit urls_path(search: 'scratch')
+
+      assert page.has_content?('https://scratch.mit.edu/')
+      assert page.has_no_content?('https://totallydifferent.domain.com')
+      assert page.current_path == search_urls_path
+    end
+
+    it "shows you your links separately from everyone else's" do
+      my_link = 'https://en.wikipedia.org/wiki/List_of_software_bugs'
+      Url.create(
+        to: my_link,
+        user: User.find_by(username: USERNAME)
+      )
+
+      visit urls_path
+
+      within '#my_urls' do
+        find_link my_link
+        assert find_all('td.to').count == 1
+      end
+
+      within '#not_my_urls' do
+        find_link @redirect_url
+        assert find_all('td.to').count == Url.count - 1
+      end
+    end
   end
 
   it 'adds users to urls automatically on url creation' do
@@ -80,25 +170,5 @@ class UrlsTest < IntegrationTest
     current_user = User.find_by(username: USERNAME)
 
     assert Url.last.user == current_user
-  end
-
-  it "shows you your links separately from everyone else's" do
-    my_link = 'https://en.wikipedia.org/wiki/List_of_software_bugs'
-    Url.create(
-      to: my_link,
-      user: User.find_by(username: USERNAME)
-    )
-
-    visit urls_path
-
-    within '#my_urls' do
-      find_link my_link
-      assert find_all('td.to').count == 1
-    end
-
-    within '#not_my_urls' do
-      find_link @redirect_url
-      assert find_all('td.to').count == Url.count - 1
-    end
   end
 end

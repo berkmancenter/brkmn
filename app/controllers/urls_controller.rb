@@ -56,6 +56,22 @@ class UrlsController < ApplicationController
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+  def edit
+    @url = Url.find(params[:id])
+    authorize! :update, @url
+  end
+
+  def update
+    @url = Url.find(params[:id])
+    authorize! :update, @url
+
+    if @url.update(update_url_params)
+      redirect_to @url
+    else
+      render 'edit'
+    end
+  end
+
   private
 
   def url_params
@@ -63,6 +79,10 @@ class UrlsController < ApplicationController
       :id, :search, :page, :per_page, :sort, :direction,
       url: %i[shortened to]
     )
+  end
+
+  def update_url_params
+    params.permit(url: :to)[:url]
   end
 
   def sort_column

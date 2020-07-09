@@ -1,8 +1,12 @@
 %fieldset
   %legend URL Details
   = form_for(@url) do |f|
+    - if @url.errors.any?
+      #error
+        - @url.errors.full_messages.each do |msg|
+          %div.error= msg
     = f.label :to, 'Full URL: '
-    = @url.to
+    = f.text_field :to
     %br
     %br
     = f.label :shortened, 'Shortened URL: '
@@ -11,5 +15,8 @@
     %br
     = f.label :clicks, 'Clicks: '
     = @url.clicks
+    %br
+    %br
+    = f.submit 'Update'
   %br
   = link_to "Home", urls_path, class: 'back'
