@@ -44,7 +44,7 @@ class UrlsController < ApplicationController
     respond_to do |f|
       f.html do
         if @url.save
-          flash[:notice] = "Shortened URL (http://brk.mn/#{@url.shortened}) was successfully created."
+          flash[:notice] = "Shortened URL (#{root_url}#{@url.shortened}) was successfully created."
         else
           logger.warn(@url.errors.inspect)
           flash[:error] = "ERROR: #{@url.errors.full_messages}"

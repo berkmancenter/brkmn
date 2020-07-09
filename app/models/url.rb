@@ -56,10 +56,6 @@ class Url < ApplicationRecord
     # rubocop:enable Style/IfUnlessModifier
   end
 
-  def self.all_owners
-    %w[Others Mine]
-  end
-
   def self.search(search)
     if search
       where('lower(shortened) like lower(?) OR lower("to") like lower(?)', "%#{search}%", "%#{search}%")
@@ -93,7 +89,7 @@ class Url < ApplicationRecord
   end
 
   def create_shortcode
-    self.shortened = base_shortcode
+    self.shortened = base_shortcode.to_s
 
     self.shortened += suffix until Url.where(shortened: shortened).empty?
   end
@@ -110,7 +106,7 @@ class Url < ApplicationRecord
     # database can provide ACID guarantees. We need to actually create a Url
     # to be certain of what its ID will be. For a low-usage system this is
     # probably good enough, though.
-    next_id = Url.last.id + 1
+    next_id = Url.last ? Url.last.id + 1 : 1
     Base32::Crockford.encode(next_id).downcase
   end
 end
