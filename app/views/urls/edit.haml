@@ -1,8 +1,10 @@
 %fieldset
   %legend URL Details
   = form_for(@url) do |f|
-    - @url.errors.full_messages.each do |msg|
-      %div.error= msg
+    - if @url.errors.any?
+      #error
+        - @url.errors.full_messages.each do |msg|
+          %div.error= msg
     = f.label :to, 'Full URL: '
     = f.text_field :to
     %br

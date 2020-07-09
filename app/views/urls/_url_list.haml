@@ -1,8 +1,10 @@
-%tr{class: "not_mine"}
+%tr
 	%td{:class=>"shortened"}
 		= link_to(shortened_url(url_list.shortened), shortened_url(url_list.shortened))
 	%td{class: 'arrow'} →
 	%td{class: 'to'}
 		= link_to(url_list.to, url_list.to)
+		- if can?(:update, url_list)
+			= link_to('(✏️edit)', edit_url_path(url_list))
 	%td{class: 'clicks'}
 		= url_list.clicks
