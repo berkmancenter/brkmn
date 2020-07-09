@@ -24,43 +24,60 @@ class UrlsTest < IntegrationTest
   end
 
   context 'url#edit' do
-    it 'resolves' do  # this will raise an error if it does not resolve
+    it 'resolves' do
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: true)
+
       visit edit_url_path(@url)
     end
 
     it 'lets users see a url they own' do
-      normal = User.find_by(username: 'normal')
-      url = Url.create(to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer', user: normal)
-      User.authenticate(normal, 'password')
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: false)
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: u
+      )
 
       visit edit_url_path(url)
+
       assert page.status_code == 200
     end
 
     it 'lets superadmins see a url they do not own' do
-      superadmin = User.find_by(username: 'superadmin')
-      url = Url.create(to: 'https://cyber.law.harvard.edu/publications/2015/digitallyconnected_globalperspectives', user: superadmin)
-      User.authenticate(superadmin, 'password')
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: true)
+      normal = User.where(superadmin: false).first
+      url = Url.create(
+        to: 'https://cyber.law.harvard.edu/publications/2015/digitallyconnected_globalperspectives',
+        user: normal
+      )
 
       visit edit_url_path(url)
+
       assert page.status_code == 200
     end
 
     it 'does not let regular users see a url they do not own' do
-      skip('authorization not yet implemented')
+      u = User.find_by(username: USERNAME)
+      u.update(superadmin: false)
       normal = User.find_by(username: 'normal')
-      secondnormal = User.find_by(username: 'secondnormal')
-      url = Url.create(to: 'http://wilkins.law.harvard.edu/courses/CopyrightX2015/3.3_hi.mp4', user: secondnormal)
-      User.authenticate(normal, 'password')
+      url = Url.create(
+        to: 'http://wilkins.law.harvard.edu/courses/CopyrightX2015/3.3_hi.mp4',
+        user: normal
+      )
 
-      visit edit_url_path(url)
-      assert page.status_code == 401
+      assert_raises CanCan::AccessDenied do
+        visit edit_url_path(url)
+      end
     end
 
     it 'lets you edit the url' do
-      normal = User.find_by(username: 'normal')
-      url = Url.create(to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer', user: normal)
-      User.authenticate(normal, 'password')
+      u = User.find_by(username: USERNAME)
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: u
+      )
       new_url = 'https://cyber.harvard.edu/getinvolved/fellowships/opencall20172018'
 
       visit edit_url_path(url)

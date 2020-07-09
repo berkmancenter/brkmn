@@ -58,10 +58,12 @@ class UrlsController < ApplicationController
 
   def edit
     @url = Url.find(params[:id])
+    authorize! :update, @url
   end
 
   def update
     @url = Url.find(params[:id])
+    authorize! :update, @url
 
     if @url.update(update_url_params)
       redirect_to @url
