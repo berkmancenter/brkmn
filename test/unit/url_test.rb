@@ -25,23 +25,14 @@ require 'test_helper'
 
 describe Url do
   describe '.to' do
-    it 'must be present present' do
+    it 'must be present' do
       @url = Url.new(shortened: 'foobar', to: nil)
       assert_not @url.valid?, 'Empty :to was allowed'
     end
 
-    it 'validates protocol' do
-      @url = Url.new(shortened: 'foobar', to: 'http://google.com')
-      assert @url.valid?, 'http protocol should have been allowed'
-
-      @url = Url.new(shortened: 'foobar', to: 'https://google.com')
-      assert @url.valid?, 'https protocol should have been allowed'
-
-      @url = Url.new(shortened: 'foobar', to: '//google.com')
-      assert_not @url.valid?, 'allowed URL without protocol'
-
-      @url = Url.new(shortened: 'foobar', to: 'hp://google.com')
-      assert_not @url.valid?, 'allowed URL despite invalid protocol'
+    it 'validates URLs' do
+      @url = Url.new(to: 'https://ex ample.com')
+      assert_not @url.valid?, 'invalid URLs should not be allowed'
     end
 
     it 'does not allow localhost' do
@@ -60,9 +51,32 @@ describe Url do
       assert_not @url.valid?, 'brk.mn should not have been allowed'
     end
 
-    it 'validates URLs' do
-      @url = Url.new(to: 'https://ex ample.com')
-      assert_not @url.valid?, 'invalid URLs should not be allowed'
+    it 'ensures that the protocol appears in the URL exactly once' do
+      # Well-formed case: keep the protocol you're given.
+      url = Url.create(shortened: 'foobar', to: 'http://google.com')
+      assert url.to == 'http://google.com'
+
+      url = Url.create(shortened: 'foobar', to: 'https://google.com')
+      assert url.to == 'https://google.com'
+
+      # No protocol given: add one.
+      url = Url.create(shortened: 'foobar', to: 'google.com')
+      assert url.to == 'https://google.com'
+
+      # Protocol given twice, e.g. due to both form and user supplying it;
+      # use only one. (The last one, as that is likely the one copy-pasted
+      # in by the user.)
+      url = Url.create(shortened: 'foobar', to: 'http://http://google.com')
+      assert url.to == 'http://google.com'
+
+      url = Url.create(shortened: 'foobar', to: 'http://https://google.com')
+      assert url.to == 'https://google.com'
+
+      url = Url.create(shortened: 'foobar', to: 'https://http://google.com')
+      assert url.to == 'http://google.com'
+
+      url = Url.create(shortened: 'foobar', to: 'https://https://google.com')
+      assert url.to == 'https://google.com'
     end
   end
 
