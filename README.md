@@ -48,7 +48,7 @@ brkmn is not compatible with postgres 10. If you are using pg10, you will see `A
   * `rails db:migrate` if db schema changes
   * `touch tmp/restart.txt`
 
-Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via the steps below.
+Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via `config/ldap.yml`.
 
 ## Contributors
 

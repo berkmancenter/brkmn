@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 class UrlsController < ApplicationController
-  before_action :authenticated?
-  skip_before_action :authenticated?, only: :logout
+  before_action :authenticate_user!
   helper_method :sort_column, :sort_direction
 
   def bookmarklet
