@@ -205,7 +205,7 @@ th{
   width: 25%;
 }
 #loader {
-  background: url(load.gif) center center no-repeat;
+  background: image-url("load.gif") center center no-repeat;
   display:block;
   height:20px;
   margin:auto;
@@ -289,12 +289,12 @@ th .current {
   background-position: right center;
 }
 
-th .asc { 
-  background-image: url(/images/up_arrow.png);
+th .asc {
+  background-image: image-url("up_arrow.png");
 }
 
-th .desc { 
-  background-image: url(/images/down_arrow.png); 
+th .desc {
+  background-image: image-url("down_arrow.png");
 }
 
 .error_messages {
