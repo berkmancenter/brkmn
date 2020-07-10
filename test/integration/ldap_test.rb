@@ -81,6 +81,19 @@ class LdapTest < IntegrationTest
     end
   end
 
+  it 'lets you log out' do
+    skip('need to mock out ldap system')
+    authorize
+
+    visit '/'
+    assert page.has_content? 'Logged in as'
+
+    click_on 'Logout'
+
+    visit '/'
+    assert page.has_no_content? 'Logged in as'
+  end
+
   # Create a mock LDAP entry that we can inject via initialize_ldap_con.
   # We can't use webmock + VCR to record/replay http interactions because LDAP
   # uses TCP, and thus flies beneath what webmock can see.

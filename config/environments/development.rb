@@ -64,4 +64,6 @@ Rails.application.configure do
   # Setting this ENV will cause calls to BerkmanLdapAuth.authenticate to
   # always return true.
   config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'true') || false
+
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end

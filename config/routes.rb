@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   resources :urls do
     collection do
       get 'url_list'
@@ -6,7 +7,12 @@ Rails.application.routes.draw do
   	  get 'search'
     end
   end
-  root to: 'urls#index'
+  unauthenticated do
+    root 'devise/sessions#new', as: :anonymous_user_root
+  end
+  authenticated do
+    root 'urls#index'
+  end
 
   # So anything that doesn't match the resource controllers or the root path
   # goes to the redirector controller.

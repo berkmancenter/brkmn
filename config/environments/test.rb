@@ -49,4 +49,6 @@ Rails.application.configure do
   # Default to fakeauth so that we're only testing/mocking LDAP if we really
   # want to.
   config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'false') || true
+
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 end
