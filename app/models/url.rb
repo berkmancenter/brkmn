@@ -87,14 +87,18 @@ class Url < ApplicationRecord
       self.auto = false
     else
       self.auto = true
-      create_shortcode
+      self.shortened = create_shortcode
     end
   end
 
   def create_shortcode
-    self.shortened = base_shortcode.to_s
+    shortened = random_shortcode
 
-    self.shortened += suffix until Url.where(shortened: shortened).empty?
+    until Url.where(shortened: shortened).empty?
+      shortened = random_shortcode
+    end
+
+    shortened
   end
 
   def suffix
@@ -104,12 +108,7 @@ class Url < ApplicationRecord
     %w[i l o u].sample
   end
 
-  def base_shortcode
-    # This is not guaranteed to work, due e.g. to race conditions; only the
-    # database can provide ACID guarantees. We need to actually create a Url
-    # to be certain of what its ID will be. For a low-usage system this is
-    # probably good enough, though.
-    next_id = Url.last ? Url.last.id + 1 : 1
-    Base32::Crockford.encode(next_id).downcase
+  def random_shortcode
+    (0...6).map { (65 + rand(26)).chr }.join
   end
 end

@@ -3,7 +3,6 @@
 source 'https://rubygems.org'
 
 gem 'annotate'
-gem 'base32-crockford'
 gem 'bootsnap'
 gem 'cancancan'
 gem 'dotenv-rails'
@@ -12,6 +11,7 @@ gem 'jquery-rails'
 gem 'net-ldap'
 gem 'pg', '~> 0.12'
 gem 'rails', '~> 6.0.0'
+gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
 gem 'webpacker'
 gem 'will_paginate'
 
