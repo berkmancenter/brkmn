@@ -21,8 +21,8 @@ class UrlsController < ApplicationController
 
     hilite
 
-    @not_my_urls = organized(Url.not_mine(current_user))
-    @my_urls = organized(Url.mine(current_user))
+    @not_my_urls = organized(Url.not_mine(current_user), :others_page)
+    @my_urls = organized(Url.mine(current_user), :my_page)
   end
 
   def search
@@ -76,7 +76,7 @@ class UrlsController < ApplicationController
 
   def url_params
     params.permit(
-      :id, :search, :page, :per_page, :sort, :direction,
+      :id, :search, :my_page, :others_page, :per_page, :sort, :direction,
       url: %i[shortened to]
     )
   end
@@ -101,9 +101,12 @@ class UrlsController < ApplicationController
     %w[asc desc].include?(direction) ? direction : 'asc'
   end
 
-  def organized(relation)
+  def organized(relation, page_indicator)
     relation.order(sort_column + ' ' + sort_direction)
-            .paginate(page: url_params[:page], per_page: url_params[:per_page])
+            .paginate(
+              page: url_params[page_indicator],
+              per_page: url_params[:per_page]
+            )
   end
 
   # rubocop:disable Metrics/MethodLength

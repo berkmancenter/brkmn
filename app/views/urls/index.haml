@@ -1,10 +1,12 @@
 = render :partial => 'shared/add_url'
 = render :partial => 'shared/search'
-- unless @my_urls.nil?
+- if @my_urls.present?
   #my_urls
     %h2 My URLs
-    = render 'shared/url_list', urls: @my_urls
-- unless @not_my_urls.nil?
+    = render 'shared/url_list', urls: @my_urls, page_param: :my_page
+- if @my_urls.present? && @not_my_urls.present?
+  %hr 
+- if @not_my_urls.present?
   #not_my_urls
     %h2 Others' URLs
-    = render 'shared/url_list', urls: @not_my_urls
+    = render 'shared/url_list', urls: @not_my_urls, page_param: :others_page
