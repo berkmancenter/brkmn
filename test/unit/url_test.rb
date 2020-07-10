@@ -87,15 +87,9 @@ describe Url do
     end
 
     it 'generates shortcodes' do
-      ActiveRecord::Base.connection.execute("select setval('urls_id_seq', 5, TRUE)")
-
       u = Url.new(to: 'http://www.google.com', user: users(:normal))
       assert u.save, "Couldn't save auto generated URL"
-      assert u.shortened == '6', "Expected shortcode to be 6; was #{u.shortened}."
-
-      u2 = Url.new(to: 'http://www.google.com', user: users(:normal))
-      assert u2.save, "Couldn't save auto generated URL"
-      assert u2.shortened == '7', "Expected shortcode to be 6; was #{u.shortened}."
+      assert u.shortened.present?, "Expected shortcode to be present"
     end
 
     it 'disallows shortcodes already in the system' do
