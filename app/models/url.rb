@@ -29,13 +29,13 @@ class Url < ApplicationRecord
   before_create :generate_url
 
   validates :to, length: { maximum: 10.kilobytes }, allow_blank: false
-  validates :to, format: {
-    with: %r{\Ahttps?://.+}i.freeze,
-    message: 'should begin with http:// or https:// and contain a valid URL'
-  }
+  validates :to, presence: true
+  validate :to do
+    errors.add(:to, "cannot be 'localhost' or 'brk.mn'.") if
+      to&.match(PROTECTED_REDIRECT_REGEX)
+    errors.add(:to, 'must be a valid url') unless valid_url?(to)
+  end
   validates :shortened, shortcode: true, on: %i[create update]
-
-  URL_FORMAT = %r{^[a-z\d/_]+$}i.freeze
 
   scope :auto, -> { where(auto: true) }
   scope :mine, ->(u) { where(user_id: u.id) }
@@ -43,23 +43,12 @@ class Url < ApplicationRecord
     where.not(user_id: u.id).or(Url.default_scoped.where(user_id: nil))
   }
 
-  validate :to do
-    # rubocop:disable Style/IfUnlessModifier
-    if to.blank?
-      errors.add(:to, 'Target URL must be present.')
-    end
-    if to&.match(PROTECTED_REDIRECT_REGEX)
-      errors.add(:to, "cannot be 'localhost' or 'brk.mn'.")
-    end
-    unless valid_url?(to&.delete 'https://', 'http://')
-      errors.add(:to, 'is not a valid URL and contains invalid characters.')
-    end
-    # rubocop:enable Style/IfUnlessModifier
-  end
-
   def self.search(search)
     if search
-      where('lower(shortened) like lower(?) OR lower("to") like lower(?)', "%#{search}%", "%#{search}%")
+      where(
+        'lower(shortened) like lower(?) OR lower("to") like lower(?)',
+        "%#{search}%", "%#{search}%"
+      )
     else
       all
     end
@@ -68,6 +57,19 @@ class Url < ApplicationRecord
   # Don't let shortcodes be overwritten with blank data.
   def shortened=(value)
     return if value.blank?
+
+    super
+  end
+
+  # Ensure protocol appears exactly once.
+  def to=(value)
+    if value.present?
+      protocols = value.scan(%r{https?://})
+      protocol = protocols.last || 'https://'
+
+      base_url = value.gsub(%r{https?://}, '')
+      value = "#{protocol}#{base_url}"
+    end
 
     super
   end
