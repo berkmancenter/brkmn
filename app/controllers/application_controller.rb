@@ -4,6 +4,10 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   attr_reader :current_user
 
+  before_action do
+    Rack::MiniProfiler.authorize_request if current_user&.superadmin
+  end
+
   def authenticated?
     # In production with the apache config in README.rdoc there should never be
     # an app-level authentication request.
