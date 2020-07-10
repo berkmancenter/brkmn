@@ -1,7 +1,7 @@
 %table
   %tr
     %td{:colspan => 4, class: "top_pagination"}
-      = will_paginate urls
+      = will_paginate urls, param_name: page_param
   %tr
     %th{class: @shortened_header}= sortable 'shortened', 'Shortened URL'
     %th{class: "arrow"}
@@ -10,4 +10,4 @@
     = render :partial => 'urls/url_list', :collection => urls
   %tr
     %td{:colspan => 4, class: "bottom_pagination"}
-      = will_paginate urls
+      = will_paginate urls, param_name: page_param
