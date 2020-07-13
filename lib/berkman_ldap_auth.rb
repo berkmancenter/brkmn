@@ -56,7 +56,7 @@ module BerkmanLdapAuth
       attributes: ['dn']
     )
 
-    @dn = extract_entry(result).dn
+    @dn = extract_entry(result)&.dn
 
     @dn.present?
   end
