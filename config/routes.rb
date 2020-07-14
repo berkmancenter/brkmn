@@ -8,11 +8,12 @@ Rails.application.routes.draw do
     end
   end
   unauthenticated do
-    root 'devise/sessions#new', as: :anonymous_user_root
+    as :user do
+      root to: 'devise/sessions#new', as: :anonymous_root
+    end
   end
-  authenticated do
-    root 'urls#index'
-  end
+
+  root to: 'urls#index'
 
   # So anything that doesn't match the resource controllers or the root path
   # goes to the redirector controller.
