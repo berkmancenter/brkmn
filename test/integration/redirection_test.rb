@@ -3,10 +3,13 @@
 require 'test_helper'
 
 class RedirectionTest < IntegrationTest
-  before do
+  def setup
     @redirect_url = 'https://theuselessweb.com/'
     @url = Url.create(to: @redirect_url)
-    authorize
+  end
+
+  def teardown
+    @url.destroy
   end
 
   it 'redirects when given a known url' do
@@ -34,17 +37,3 @@ class RedirectionTest < IntegrationTest
     assert page.status_code == 404
   end
 end
-
-# class RedirectorController < ApplicationController
-#   def index
-#     @url = Url.find_by_shortened(params[:id])
-#     @url.update_attribute(:clicks, @url.clicks + 1)
-#     redirect_to @url.to
-#   rescue StandardError
-#     render status: :not_found, action: :invalid
-#   end
-#
-#   def invalid
-#     render status: :not_found
-#   end
-# end

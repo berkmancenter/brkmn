@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_09_185052) do
+ActiveRecord::Schema.define(version: 2020_07_14_154139) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 2020_07_09_185052) do
     t.string "to", limit: 10240, null: false
     t.integer "user_id"
     t.boolean "auto", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer "clicks", default: 0
     t.index ["auto"], name: "index_urls_on_auto"
     t.index ["clicks"], name: "index_urls_on_clicks"
@@ -34,8 +34,10 @@ ActiveRecord::Schema.define(version: 2020_07_09_185052) do
     t.string "username", limit: 100, null: false
     t.string "email", limit: 100
     t.boolean "superadmin", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string "encrypted_password", default: "", null: false
+    t.datetime "remember_created_at"
     t.index ["email"], name: "index_users_on_email"
     t.index ["superadmin"], name: "index_users_on_superadmin"
     t.index ["username"], name: "index_users_on_username"

@@ -3,14 +3,16 @@
 require 'test_helper'
 
 class UrlsTest < IntegrationTest
-  before do
+  def setup
     @redirect_url = 'https://scratch.mit.edu/'
     @url = Url.create(to: @redirect_url)
-    authorize
+    @user = User.find_or_create_by(username: USERNAME)
+    login_as @user
   end
 
-  after do
-    @url.destroy
+  def teardown
+    logout
+    Url.destroy_all
   end
 
   context 'url#show' do
@@ -25,18 +27,16 @@ class UrlsTest < IntegrationTest
 
   context 'url#edit' do
     it 'resolves' do
-      u = User.find_by(username: USERNAME)
-      u.update(superadmin: true)
+      @user.update(superadmin: true)
 
       visit edit_url_path(@url)
     end
 
     it 'lets users see a url they own' do
-      u = User.find_by(username: USERNAME)
-      u.update(superadmin: false)
+      @user.update(superadmin: false)
       url = Url.create(
         to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
-        user: u
+        user: @user
       )
 
       visit edit_url_path(url)
@@ -45,8 +45,7 @@ class UrlsTest < IntegrationTest
     end
 
     it 'lets superadmins see a url they do not own' do
-      u = User.find_by(username: USERNAME)
-      u.update(superadmin: true)
+      @user.update(superadmin: true)
       normal = User.where(superadmin: false).first
       url = Url.create(
         to: 'https://cyber.law.harvard.edu/publications/2015/digitallyconnected_globalperspectives',
@@ -59,8 +58,7 @@ class UrlsTest < IntegrationTest
     end
 
     it 'does not let regular users see a url they do not own' do
-      u = User.find_by(username: USERNAME)
-      u.update(superadmin: false)
+      @user.update(superadmin: false)
       normal = User.find_by(username: 'normal')
       url = Url.create(
         to: 'http://wilkins.law.harvard.edu/courses/CopyrightX2015/3.3_hi.mp4',
@@ -73,10 +71,9 @@ class UrlsTest < IntegrationTest
     end
 
     it 'lets you edit the url' do
-      u = User.find_by(username: USERNAME)
       url = Url.create(
         to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
-        user: u
+        user: @user
       )
       new_url = 'https://cyber.harvard.edu/getinvolved/fellowships/opencall20172018'
 
@@ -145,7 +142,7 @@ class UrlsTest < IntegrationTest
       my_link = 'https://en.wikipedia.org/wiki/List_of_software_bugs'
       Url.create(
         to: my_link,
-        user: User.find_by(username: USERNAME)
+        user: @user
       )
 
       visit urls_path
@@ -167,8 +164,6 @@ class UrlsTest < IntegrationTest
     fill_in 'URL to shorten', with: 'https://a.new.url'
     click_on 'Shorten'
 
-    current_user = User.find_by(username: USERNAME)
-
-    assert Url.last.user == current_user
+    assert Url.last.user == @user
   end
 end
