@@ -39,7 +39,6 @@ brkmn is not compatible with postgres 10. If you are using pg10, you will see `A
 
 * The first time
   * Follow the steps above for development.
-  * Edit the links contained in `public/logout/*` to match your hostname.
   * Make sure you've set the server hostname in ALLOWED_HOST.
 * Every time
   * `git pull`
