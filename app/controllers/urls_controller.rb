@@ -29,7 +29,10 @@ class UrlsController < ApplicationController
 
     hilite
 
-    @urls = organized(Url.search(url_params[:search]))
+    @not_my_urls = organized(Url.not_mine(current_user).search(url_params[:search]), :others_page)
+    @my_urls = organized(Url.mine(current_user).search(url_params[:search]), :my_page)
+
+    render 'index'
   end
 
   # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
