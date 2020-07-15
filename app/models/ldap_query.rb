@@ -61,7 +61,7 @@ class LdapQuery
       password
     )
 
-    login_succeeded = true if ldap_connection.bind
+    self.login_succeeded = true if ldap_connection.bind
   end
 
   def dn_found?
@@ -71,7 +71,7 @@ class LdapQuery
       attributes: ['dn']
     )
 
-    dn = extract_entry(result).dn
+    self.dn = extract_entry(result).dn
 
     dn.present?
   end
