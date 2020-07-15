@@ -61,7 +61,7 @@ class LdapQuery
       password
     )
 
-    login_succeeded = true if ldap_connection.bind
+    self.login_succeeded = true if ldap_connection.bind
   end
 
   def dn_found?
