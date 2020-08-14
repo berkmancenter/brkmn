@@ -86,6 +86,50 @@ class UrlsTest < IntegrationTest
     end
   end
 
+  context 'url#delete' do
+    it 'lets users delete a url they own' do
+      @user.update(superadmin: false)
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: @user
+      )
+      orig_id = url.id
+
+      page.driver.delete url_path(url)
+
+      assert page.status_code == 204
+      assert Url.where(id: orig_id).empty?
+    end
+
+    it 'lets superadmins delete a url they do not own' do
+      @user.update(superadmin: true)
+      normal = User.where(superadmin: false).first
+      url = Url.create(
+        to: 'http://cyber.law.harvard.edu/getinvolved/internships_summer',
+        user: normal
+      )
+      orig_id = url.id
+
+      page.driver.delete url_path(url)
+
+      assert page.status_code == 204
+      assert Url.where(id: orig_id).empty?
+    end
+
+    it 'does not let regular users delete a url they do not own' do
+      @user.update(superadmin: false)
+      normal = User.find_by(username: 'normal')
+      url = Url.create(
+        to: 'http://wilkins.law.harvard.edu/courses/CopyrightX2015/3.3_hi.mp4',
+        user: normal
+      )
+
+      assert_raises CanCan::AccessDenied do
+        page.driver.delete url_path(url)
+      end
+    end
+  end
+
   context 'index page' do
     it 'lets you create a URL on the index page' do
       orig_count = Url.count
