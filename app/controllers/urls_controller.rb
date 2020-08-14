@@ -78,6 +78,9 @@ class UrlsController < ApplicationController
     @url = Url.find(params[:id])
     authorize! :destroy, @url
     @url.destroy
+    respond_to do |format|
+      format.html { redirect_to root_path }
+    end
   end
 
   private
