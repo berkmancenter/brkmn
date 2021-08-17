@@ -9,7 +9,6 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'haml'
 gem 'jquery-rails'
-gem 'net-ldap'
 gem 'pg', '~> 0.12'
 gem 'rails', '~> 6.0.0'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']

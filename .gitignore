@@ -17,9 +17,6 @@ log/
 
 # rails specific
 config/database.yml
-config/ldap.yml
-config/ldap.yml.*
-!config/ldap.yml.example
 config/secrets.yml
 public/assets/**
 

@@ -20,10 +20,9 @@ A dirt-simple URL shortener.
 * (Optional, but convenient) Create a .ruby-gemset file with the name of your gemset.
 * `bundle install`
 * Copy `config/database.yml.postgres` to `config/database.yml` and set up your database accordingly
-* Copy `config/ldap.yml.example` to `config/ldap.yml` and fill in locally appropriate values.
 * Copy `config/secrets.yml.example` to `config/secrets.yml` and fill in the `secret_key_base` values for dev/test.
 * Add the following to .env:
-  * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass LDAP for development; any username/password will work; cannot be used in production).
+  * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass CAS for development; any username/password will work; cannot be used in production).
   * `SECRET_KEY_BASE` (required in production, optional otherwise; use `rails secret` to generate a value).
   * `ALLOWED_HOST` (localhost is allowed by default; anything else must be explicit; may be a single string or a regex)
 * `rails db:migrate`

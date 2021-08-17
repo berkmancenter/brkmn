@@ -60,9 +60,7 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-  # In development mode, you may want to avoid using the LDAP server.
-  # Setting this ENV will cause calls to BerkmanLdapAuth.authenticate to
-  # always return true.
+  # In development mode, you may want to avoid using the CAS server.
   config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'true') || false
 
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }

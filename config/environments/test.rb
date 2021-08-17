@@ -46,7 +46,7 @@ Rails.application.configure do
   # Raises error for missing translations.
   # config.action_view.raise_on_missing_translations = true
 
-  # Default to fakeauth so that we're only testing/mocking LDAP if we really
+  # Default to fakeauth so that we're only testing/mocking CAS if we really
   # want to.
   config.use_fakeauth = (ENV['USE_FAKEAUTH'] == 'false') || true
 

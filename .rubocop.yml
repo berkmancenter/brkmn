@@ -10,8 +10,6 @@ AllCops:
     - 'Rakefile'
     - 'config.ru'
     - node_modules/**/*
-    - lib/berkman_ldap_auth_mixin.rb  # until we add LDAP testing
-    - lib/berkman_ldap_auth.rb        # until we add LDAP testing
 
 Metrics/ClassLength:
   Exclude:
