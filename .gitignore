@@ -105,7 +105,6 @@ config/master.key
 # dotenv, dotenv-rails
 # TODO Comment out these rules if environment variables can be committed
 .env
-.env.*
 
 ## Environment normalization:
 /.bundle
@@ -158,9 +157,6 @@ yarn-debug.log*
 /test/tmp/
 /test/version_tmp/
 /tmp/
-
-# Used by dotenv library to load environment variables.
-# .env
 
 # Ignore Byebug command history file.
 
