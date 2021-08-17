@@ -43,3 +43,5 @@ group :test do
   gem 'simplecov', require: false
   gem 'webmock'
 end
+
+gem "mini_racer", "~> 0.4.0"
