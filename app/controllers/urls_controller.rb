@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 class UrlsController < ApplicationController
-  before_action :authenticate_user!
   helper_method :sort_column, :sort_direction
+
+  before_action :login_or_authenticate_user
 
   def bookmarklet
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"

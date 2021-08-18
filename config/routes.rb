@@ -7,11 +7,6 @@ Rails.application.routes.draw do
   	  get 'search'
     end
   end
-  unauthenticated do
-    as :user do
-      root to: 'devise/sessions#new', as: :anonymous_root
-    end
-  end
 
   root to: 'urls#index'
 
