@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     end
   end
 
-  root to: 'urls#index'
+  root to: redirect('/urls')
 
   # So anything that doesn't match the resource controllers or the root path
   # goes to the redirector controller.
