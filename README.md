@@ -33,6 +33,7 @@ Test with `rails test`.
 * Every time
   * `git pull`
   * `bundle install`
+  * `yarn install`
   * `rails assets:clobber && rails assets:precompile` if assets changes
   * `rails db:migrate` if db schema changes
   * `touch tmp/restart.txt`
