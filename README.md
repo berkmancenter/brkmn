@@ -2,22 +2,17 @@
 
 A dirt-simple URL shortener.
 
-## Links
-
-* http://cyber.law.harvard.edu
-* https://github.com/berkmancenter/brkmn
-
 ## System requirements
 * ruby 2.7.1
 * bundler
 * rvm
 * yarn
-* postgres 9
+* postgres 9.x - 14.x
 
 ## Development
 
-* `rvm use 2.7.1@brkmn --create`
-* (Optional, but convenient) Create a .ruby-gemset file with the name of your gemset.
+* `docker-composer up`
+* `docker-compose exec website bash`
 * `bundle install`
 * Copy `config/database.yml.postgres` to `config/database.yml` and set up your database accordingly
 * Copy `config/secrets.yml.example` to `config/secrets.yml` and fill in the `secret_key_base` values for dev/test.
@@ -25,14 +20,11 @@ A dirt-simple URL shortener.
   * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass CAS for development; any username/password will work; cannot be used in production).
   * `SECRET_KEY_BASE` (required in production, optional otherwise; use `rails secret` to generate a value).
   * `ALLOWED_HOST` (localhost is allowed by default; anything else must be explicit; may be a single string or a regex)
+  * `CAS_DATA_DIRECTORY` (required in production, directory for storing CAS data, in development use `USE_FAKEAUTH`)
 * `rails db:migrate`
+* `rails s -b 0.0.0.0`
 
 Test with `rails test`.
-
-## Troubleshooting
-
-### PG::Error
-brkmn is not compatible with postgres 10. If you are using pg10, you will see `ActiveRecord::StatementInvalid: PG::Error: ERROR: column "increment_by" does not exist`.
 
 ## Deployment
 
@@ -46,13 +38,14 @@ brkmn is not compatible with postgres 10. If you are using pg10, you will see `A
   * `rails db:migrate` if db schema changes
   * `touch tmp/restart.txt`
 
-Version 1.1 does not use any Apache or NGiNX server level authentication. Using `net-ldap`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level and configure the authentication sources via `config/ldap.yml`.
+Version `>= 1.1` does not use any Apache or NGiNX server level authentication. Using `CAS`, authentication is handled in the application using Ruby. If you are upgrading from the initial release (v1.0) please remove any authentication done at a webserver level.
 
 ## Contributors
 
 * Dan Collis-Puro: djcp@cyber.law.harvard.edu
 * Flavio Giobergia: flavio.giobergia@studenti.polito.it
 * Andromeda Yelton: ayelton@cyber.harvard.edu
+* Peter Hankiewicz: peter.hankiewicz@gmail.com
 
 ## License
 

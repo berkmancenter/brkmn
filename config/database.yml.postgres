@@ -1,5 +1,3 @@
-# PostgreSQL. Versions 8.2-9.x are supported.
-
 development:
   adapter: postgresql
   encoding: unicode
