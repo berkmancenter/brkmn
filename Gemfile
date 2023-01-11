@@ -9,9 +9,11 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'haml'
 gem 'jquery-rails'
-gem 'pg', '~> 0.12'
-gem 'rails', '~> 6.0.0'
+gem 'mini_racer', '~> 0.4.0'
+gem 'pg'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
+gem 'rails', '~> 7.0'
+gem 'sprockets-rails'
 gem 'webpacker'
 gem 'will_paginate'
 
@@ -43,5 +45,3 @@ group :test do
   gem 'simplecov', require: false
   gem 'webmock'
 end
-
-gem "mini_racer", "~> 0.4.0"
