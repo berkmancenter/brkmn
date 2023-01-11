@@ -3,9 +3,8 @@
 A dirt-simple URL shortener.
 
 ## System requirements
-* ruby 2.7.1
+* ruby 2.7.x
 * bundler
-* rvm
 * yarn
 * postgres 9.x - 14.x
 
