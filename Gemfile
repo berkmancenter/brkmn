@@ -14,7 +14,6 @@ gem 'pg'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
 gem 'rails', '~> 7.0'
 gem 'sprockets-rails'
-gem 'webpacker'
 gem 'will_paginate'
 
 group :assets do

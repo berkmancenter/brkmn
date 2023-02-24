@@ -5,7 +5,6 @@ A dirt-simple URL shortener.
 ## System requirements
 * ruby 2.7.x
 * bundler
-* yarn
 * postgres 9.x - 14.x
 
 ## Development
@@ -33,7 +32,6 @@ Test with `rails test`.
 * Every time
   * `git pull`
   * `bundle install`
-  * `yarn install`
   * `rails assets:clobber && rails assets:precompile` if assets changes
   * `rails db:migrate` if db schema changes
   * `touch tmp/restart.txt`
