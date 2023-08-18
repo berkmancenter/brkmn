@@ -13,6 +13,7 @@ gem 'mini_racer', '~> 0.4.0'
 gem 'pg'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
 gem 'rails', '~> 7.0'
+gem 'rqrcode'
 gem 'sprockets-rails'
 gem 'will_paginate'
 

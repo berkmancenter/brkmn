@@ -6,6 +6,9 @@ Rails.application.routes.draw do
       get 'bookmarklet'
   	  get 'search'
     end
+    member do
+      get :qr
+    end
   end
 
   root to: redirect('/urls')

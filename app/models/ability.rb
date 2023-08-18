@@ -11,6 +11,7 @@ class Ability
     if user.present?
       can :update, Url, user_id: user.id
       can :destroy, Url, user_id: user.id
+      can :qr, Url, user_id: user.id
     end
   end
 end
