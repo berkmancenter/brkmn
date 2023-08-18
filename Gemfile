@@ -26,6 +26,7 @@ group :assets do
 end
 
 group :development do
+  gem 'bundler-audit'
   gem 'listen'
   gem 'web-console'
 end
