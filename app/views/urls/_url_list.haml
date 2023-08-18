@@ -14,10 +14,8 @@
         = '('
         = image_tag('delete.svg')
         = 'delete)'
-    - if can?(:qr, url_list)
-      = link_to(qr_url_path(url_list), target: '_blank') do
-        = '('
-        = image_tag('qr.svg')
-        = 'qr code)'
+  %td
+    = link_to(qr_url_path(url_list), target: '_blank') do
+      = image_tag('qr.svg')
   %td{class: 'clicks'}
     = url_list.clicks

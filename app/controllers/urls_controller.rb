@@ -101,7 +101,7 @@ class UrlsController < ApplicationController
       size: 400,
     )
 
-    send_data png, type: 'image/png', disposition: 'inline'
+    send_data png, type: 'image/png', disposition: 'inline', filename: "brkmn-qr-#{url.shortened}.png"
   end
 
   private

@@ -159,9 +159,20 @@ table{
   width: 100%;
 }
 
+tr {
+  &:hover {
+    background-color: #fff;
+  }
+}
+
 td{
-  padding: 2px;
+  padding: 5px;
   word-break: break-all;
+
+  img {
+    max-height: 15px;
+    vertical-align: middle;
+  }
 }
 
 .shortened{
@@ -177,11 +188,6 @@ td{
 
 .to{
   width: 45%;
-
-  img {
-    max-height: 15px;
-    vertical-align: middle;
-  }
 }
 
 .clicks{
