@@ -18,5 +18,5 @@ Rails.application.routes.draw do
 
   get '/redirector/invalid' => 'redirector#invalid'
 
-  get '/:id' => 'redirector#index', as: :shortened
+  get '/:id' => 'redirector#index', as: :shortened, id: /.*/
 end
