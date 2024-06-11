@@ -1,3 +1,5 @@
+[![Build Status](https://circleci.com/gh/berkmancenter/brkmn.svg?style=shield)](https://circleci.com/gh/berkmancenter/brkmn)
+
 # brkmn
 
 A dirt-simple URL shortener.
