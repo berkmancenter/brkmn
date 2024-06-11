@@ -16,8 +16,6 @@
 log/
 
 # rails specific
-config/database.yml
-config/secrets.yml
 public/assets/**
 
 *.swp

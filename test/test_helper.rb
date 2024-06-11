@@ -28,7 +28,7 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
-class IntegrationTest < MiniTest::Spec
+class IntegrationTest < Minitest::Spec
   include Capybara::DSL
   include DatabaseCleanerSupport
   include Rails.application.routes.url_helpers
@@ -41,22 +41,11 @@ class IntegrationTest < MiniTest::Spec
   after do
     Warden.test_reset!
   end
+end
 
-  def authorize
-    visit '/'
-    page.driver.browser.authorize(USERNAME, 'password')
-  end
-
-  def sign_in_as_user(options={}, &block)
-    user = User.find_or_create_by(username: options[:username])
-
-    visit new_user_session_path
-    fill_in 'user_username', with: options[:username] || 'normal'
-    fill_in 'user_password', with: options[:password] || '12345678'
-    check 'user_remember me' if options[:remember_me] == true
-    yield if block_given?
-    click_on 'Log in'
-
-    user
-  end
+Capybara.register_driver :no_redirects do |app|
+  Capybara::RackTest::Driver.new app,
+    redirect_limit: 0,
+    follow_redirects: false,
+    respect_data_method: true
 end

@@ -13,19 +13,26 @@ class RedirectionTest < IntegrationTest
   end
 
   it 'redirects when given a known url' do
+    Capybara.current_driver = :no_redirects
+
     visit "/#{@url.shortened}"
 
-    assert page.current_url == @redirect_url,
-           "Did not redirect; current_url is #{page.current_url}"
+    assert page.response_headers['location'] == @redirect_url
+
+    Capybara.use_default_driver
   end
 
   it 'updates the view count' do
+    Capybara.current_driver = :no_redirects
+
     orig_count = @url.clicks
 
     visit "/#{@url.shortened}"
     @url.reload
 
     assert @url.clicks == orig_count + 1
+
+    Capybara.use_default_driver
   end
 
   it '404s for unknown urls' do

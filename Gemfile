@@ -9,7 +9,7 @@ gem 'devise'
 gem 'dotenv-rails'
 gem 'haml'
 gem 'jquery-rails'
-gem 'mini_racer', '~> 0.4.0'
+gem 'mini_racer'
 gem 'pg'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
 gem 'rails', '~> 7.0'
@@ -39,7 +39,9 @@ end
 
 group :test do
   gem 'capybara'
+  gem 'database_cleaner'
   gem 'database_cleaner-active_record'
+  gem 'minitest'
   gem 'minitest-around'
   gem 'minitest-rails'
   gem 'minitest-spec-context'

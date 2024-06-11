@@ -1,4 +1,4 @@
-FROM ruby:2.7.1
+FROM ruby:3.3.2
 
 RUN apt-get update \
     && apt-get -y install git build-essential patch ruby-dev zlib1g-dev liblzma-dev vim nano tmux
@@ -21,6 +21,8 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY . .
+RUN gem update --system
+RUN bundle update --bundler
 RUN bundle install
 
 CMD (while true; do sleep 1; done;)

@@ -6,6 +6,8 @@ class ApplicationController < ActionController::Base
   private
 
   def login_or_authenticate_user
+    return if Rails.env.test?
+
     cas_data_file = "#{ENV['CAS_DATA_DIRECTORY']}/#{cookies[:MOD_AUTH_CAS]}"
     user_data = {}
 

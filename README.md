@@ -3,17 +3,15 @@
 A dirt-simple URL shortener.
 
 ## System requirements
-* ruby 2.7.x
-* bundler
-* postgres 9.x - 14.x
+* ruby 2.7.x+
+* postgres 9.x+
 
 ## Development
 
 * `docker-composer up`
 * `docker-compose exec website bash`
 * `bundle install`
-* Copy `config/database.yml.postgres` to `config/database.yml` and set up your database accordingly
-* Copy `config/secrets.yml.example` to `config/secrets.yml` and fill in the `secret_key_base` values for dev/test.
+* Copy `.env.example` to `.env` and set up your database accordingly
 * Add the following to .env:
   * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass CAS for development; any username/password will work; cannot be used in production).
   * `SECRET_KEY_BASE` (required in production, optional otherwise; use `rails secret` to generate a value).
@@ -51,4 +49,4 @@ brkmn is licensed under the terms of Rails itself - the MIT license: http://www.
 
 ## Copyright
 
-2012-2020 President and Fellows of Harvard College
+2012 President and Fellows of Harvard College

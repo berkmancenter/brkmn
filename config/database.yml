@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: utf8
+  min_messages: warning
+  pool: 5
+  timeout: 5000
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  database: <%= ENV['DATABASE_DB_NAME'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= (ENV['DATABASE_PORT'] || 5432).to_i %>
+  timeout: <%= (ENV['DATABASE_TIMEOUT'] || 5000).to_i %>
+
+test:
+  <<: *default
+
+development:
+  <<: *default
+
+production:
+  <<: *default

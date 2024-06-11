@@ -12,6 +12,8 @@ module Brkmn
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
+    config.active_support.cache_format_version = 7.0
+
     config.autoload_paths << File.join(Rails.root, 'lib')
     config.eager_load_paths << File.join(Rails.root, 'lib')
 

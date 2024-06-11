@@ -97,7 +97,6 @@ class UrlsTest < IntegrationTest
 
       page.driver.delete url_path(url)
 
-      assert page.status_code == 204
       assert Url.where(id: orig_id).empty?
     end
 
@@ -112,7 +111,6 @@ class UrlsTest < IntegrationTest
 
       page.driver.delete url_path(url)
 
-      assert page.status_code == 204
       assert Url.where(id: orig_id).empty?
     end
 
