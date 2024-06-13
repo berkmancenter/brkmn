@@ -51,4 +51,4 @@ brkmn is licensed under the terms of Rails itself - the MIT license: http://www.
 
 ## Copyright
 
-2012 President and Fellows of Harvard College
+© 2012 President and Fellows of Harvard College
