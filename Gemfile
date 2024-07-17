@@ -11,6 +11,7 @@ gem 'haml'
 gem 'jquery-rails'
 gem 'mini_racer'
 gem 'pg'
+gem 'rack', '2.2.9'
 gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
 gem 'rails', '~> 7.0'
 gem 'rqrcode'
