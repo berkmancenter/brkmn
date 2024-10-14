@@ -23,6 +23,22 @@ $body-font: 'verdana';
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+@mixin button() {
+  display: inline-block;
+  background-color: $primary-color;
+  color: #fff;
+  cursor: pointer;
+  @include transition(background-color, 0.3s);
+  @include rounded-corners(0.5rem);
+  border: 1px solid $primary-color;
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
+}
+
 // Styles
 html {
   min-height: 100%;
@@ -41,6 +57,17 @@ body {
 *:before,
 *:after {
   box-sizing:inherit
+}
+
+input[type="text"] {
+  padding: 10px;
+  border: 1px solid $light-border;
+  @include rounded-corners(0.5rem);
+  max-width: 100%;
+}
+
+input[type="submit"] {
+  @include button;
 }
 
 .header-items {
@@ -152,13 +179,19 @@ h1.site-title {
     justify-content: end;
     align-items: center;
 
+    > div {
+      max-width: 100%;
+    }
+
     @media (max-width: 700px) {
       flex: 1 1 100%;
       justify-content: center;
+      flex-direction: column;
     }
 
     #search {
       width: 300px;
+      max-width: 100%;
     }
   }
 }
@@ -187,6 +220,29 @@ h1.site-title {
   }
 }
 
+.edit-form {
+  border: 1px solid $light-border;
+  border-radius: 1rem;
+  @include box-shadow;
+  background-color: $light-blue;
+
+  h2 {
+    margin: 0;
+    margin-bottom: -0.5rem;
+    background-color: #ffffff;
+    padding: 1rem;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  form {
+    padding: 1rem;
+  }
+}
+
+#my_urls + #not_my_urls {
+  margin-top: 1rem;
+}
+
 #my_urls,
 #not_my_urls {
   h2 {
@@ -202,25 +258,6 @@ form {
   label {
     font-weight: bold;
     color: $primary-color;
-  }
-
-  input[type="text"],
-  input[type="submit"] {
-    padding: 10px;
-    border: 1px solid $light-border;
-    @include rounded-corners(0.5rem);
-    max-width: 100%;
-  }
-
-  input[type="submit"] {
-    background-color: $primary-color;
-    color: #fff;
-    cursor: pointer;
-    @include transition(background-color, 0.3s);
-
-    &:hover {
-      background-color: $secondary-color;
-    }
   }
 
   input[type="text"] {
@@ -373,6 +410,10 @@ footer {
 .bottom_pagination {
   background-color: #ffffff;
 
+  td {
+    padding: 0;
+  }
+
   &:hover {
     background-color: #ffffff;
   }
@@ -382,29 +423,17 @@ footer {
     justify-content: center;
     align-items: center;
     list-style: none;
-    padding: 0;
+    padding: 0.5rem;
     margin: 20px 0;
-  
+
     > * {
-      margin: 0 5px;
-      display: block;
-      padding: 8px 12px;
-      color: $primary-color;
-      background-color: #fff;
-      border: 1px solid $light-border;
-      text-decoration: none;
-      @include rounded-corners(0.5rem);
-      @include transition(background-color, 0.3s);
-      
-      &:hover {
-        background-color: $primary-color;
-        color: #fff;
-      }
-  
+      @include button;
+      margin-right: 0.5rem;
+
       &.current {
-        background-color: $primary-color;
-        color: #fff;
-        cursor: default;
+        background-color: #ffffff;
+        border: 1px solid $primary-color;
+        color: $primary-color;
       }
     }
 

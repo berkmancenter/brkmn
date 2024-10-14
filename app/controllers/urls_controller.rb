@@ -69,7 +69,7 @@ class UrlsController < ApplicationController
     authorize! :update, @url
 
     if @url.update(update_url_params)
-      redirect_to @url
+      redirect_to urls_path
     else
       render 'edit'
     end

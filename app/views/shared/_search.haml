@@ -2,5 +2,6 @@
   = form_tag search_urls_path, method: 'get', class: 'search-form' do
     %div
       = text_field_tag :search, params[:search]
+    %div
       = submit_tag "Search", class: "search_button"
-    = link_to "Clear", root_url, :search => nil
+      = link_to "Clear", root_url, :search => nil

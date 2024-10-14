@@ -4,8 +4,6 @@
   #my_urls
     %div{:class => 'urls-table-wrapper'}
       = render 'shared/url_list', urls: @my_urls, page_param: :my_page, table_title: 'My URLs'
-- if @my_urls.present? && @not_my_urls.present?
-  %hr 
 - if @not_my_urls.present?
   #not_my_urls
     %div{:class => 'urls-table-wrapper'}
