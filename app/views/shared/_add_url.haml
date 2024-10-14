@@ -1,10 +1,11 @@
 .add_form
-  %fieldset
-    %legend Shorten a URL
-    = form_for(Url.new(to: (params[:url].blank?) ? 'http://' : params[:url][:to])) do |f|
-      .messages{:style => 'display: none;'}
-      = f.text_field(:to, :size => 80, :placeholder => "URL to shorten", :tabindex => 1)
+  = form_for(Url.new(to: (params[:url].blank?) ? 'https://' : params[:url][:to])) do |f|
+
+    %h2 Shorten a URL
+    .messages{:style => 'display: none;'}
+    %div
+      = f.text_field(:to, :placeholder => "URL to shorten", :tabindex => 1)
       = f.submit('Shorten', :tabindex => 3, :id => 'submit')
-      %br
+    %div
       = "#{root_url}"
-      = f.text_field(:shortened, :size => 10, :placeholder => "OPTIONAL: shorten to. . . ", :tabindex => 2)
+      = f.text_field(:shortened, :placeholder => "OPTIONAL: shorten to. . . ", :tabindex => 2)

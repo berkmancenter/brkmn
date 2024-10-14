@@ -2,11 +2,11 @@
 = render :partial => 'shared/search'
 - if @my_urls.present?
   #my_urls
-    %h2 My URLs
-    = render 'shared/url_list', urls: @my_urls, page_param: :my_page
+    %div{:class => 'urls-table-wrapper'}
+      = render 'shared/url_list', urls: @my_urls, page_param: :my_page, table_title: 'My URLs'
 - if @my_urls.present? && @not_my_urls.present?
   %hr 
 - if @not_my_urls.present?
   #not_my_urls
-    %h2 Others' URLs
-    = render 'shared/url_list', urls: @not_my_urls, page_param: :others_page
+    %div{:class => 'urls-table-wrapper'}
+      = render 'shared/url_list', urls: @not_my_urls, page_param: :others_page, table_title: 'Others\' URLs'

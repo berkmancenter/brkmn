@@ -1,7 +1,6 @@
-%table
-  %tr
-    %td{:colspan => 4, class: "search"}
-      = form_tag search_urls_path, method: 'get' do
-        = text_field_tag :search, params[:search]
-        = submit_tag "Search", class: "search_button"
-        = link_to "Clear", root_url, :search => nil
+%div{:class => 'search'}
+  = form_tag search_urls_path, method: 'get', class: 'search-form' do
+    %div
+      = text_field_tag :search, params[:search]
+      = submit_tag "Search", class: "search_button"
+    = link_to "Clear", root_url, :search => nil

@@ -1,6 +1,9 @@
 %table
-  %tr
-    %td{:colspan => 4, class: "top_pagination"}
+  %tr{}
+    %td{:colspan => 6}
+      %h2= table_title
+  %tr{:class => 'top_pagination'}
+    %td{:colspan => 6}
       = will_paginate urls, param_name: page_param
   %tr
     %th{class: @shortened_header}= sortable 'shortened', 'Shortened URL'
@@ -8,7 +11,8 @@
     %th{class: @to_header}= sortable '"to"', 'Full URL'
     %th{class: "qr"}= 'QR'
     %th{class: @clicks_header}= sortable 'clicks', 'Clicks'
+    %th{class: "actions"}= 'Actions'
     = render :partial => 'urls/url_list', :collection => urls
-  %tr
-    %td{:colspan => 4, class: "bottom_pagination"}
+  %tr{:class => 'bottom_pagination'}
+    %td{:colspan => 6}
       = will_paginate urls, param_name: page_param

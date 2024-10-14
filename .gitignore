@@ -17,6 +17,7 @@ log/
 
 # rails specific
 public/assets/**
+/app/assets/images/logo.png
 
 *.swp
 
