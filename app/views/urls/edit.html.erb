@@ -1,0 +1,30 @@
+<div class="edit-form">
+  <h4 class="is-size-4">URL Details</h4>
+
+  <%= form_for(@url) do |f| %>
+    <% if @url.errors.any? %>
+      <div id="error">
+        <% @url.errors.full_messages.each do |msg| %>
+          <div class="error"><%= msg %></div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= f.label :to, 'Full URL' %>
+    <%= f.text_field :to %>
+    <br>
+    <br>
+
+    <%= f.label :shortened, 'Shortened URL' %>
+    <%= @url.shortened %>
+    <br>
+    <br>
+
+    <%= f.label :clicks, 'Clicks' %>
+    <%= @url.clicks %>
+    <br>
+    <br>
+
+    <%= f.submit 'Update' %>
+  <% end %>
+</div>
