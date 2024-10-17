@@ -1,20 +1,24 @@
 services:
   postgres:
-    image: 'postgres:14.6'
+    image: 'postgres:14'
     volumes:
       - 'postgres:/var/lib/postgresql/data'
+      - '.:/app'
     environment:
-      - POSTGRES_PASSWORD=so_wow
-      - POSTGRES_DB=brkmn
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB_NAME}
 
-  website:
+  app:
     depends_on:
-      - postgres
+      - 'postgres'
     build: .
     ports:
       - '5656:3000'
     volumes:
       - '.:/app'
+    env_file:
+      - '.env.development'
 
 volumes:
   postgres:

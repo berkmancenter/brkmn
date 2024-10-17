@@ -1,0 +1,21 @@
+<table>
+  <tr class="top_pagination">
+    <td colspan="6">
+      <%= will_paginate urls, param_name: page_param %>
+    </td>
+  </tr>
+  <tr>
+    <th class="<%= @shortened_header %>"><%= sortable 'shortened', 'Shortened URL' %></th>
+    <th class="arrow"></th>
+    <th class="<%= @to_header %>"><%= sortable '"to"', 'Full URL' %></th>
+    <th class="qr">QR</th>
+    <th class="<%= @clicks_header %>"><%= sortable 'clicks', 'Clicks' %></th>
+    <th class="actions">Actions</th>
+  </tr>
+  <%= render partial: 'urls/url_list', collection: urls %>
+  <tr class="bottom_pagination">
+    <td colspan="6">
+      <%= will_paginate urls, param_name: page_param %>
+    </td>
+  </tr>
+</table>

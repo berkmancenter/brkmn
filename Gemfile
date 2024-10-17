@@ -2,50 +2,60 @@
 
 source 'https://rubygems.org'
 
-gem 'annotate'
-gem 'bootsnap'
+gem 'bootsnap', require: false
 gem 'cancancan'
+gem 'cssbundling-rails'
 gem 'devise'
-gem 'dotenv-rails'
-gem 'haml'
-gem 'jquery-rails'
-gem 'mini_racer'
-gem 'pg'
-gem 'rack', '2.2.9'
-gem 'rack-mini-profiler', require: ['enable_rails_patches', 'rack-mini-profiler']
-gem 'rails', '~> 7.0'
+gem 'good_migrations'
+gem 'importmap-rails'
+gem 'jbuilder'
+gem 'pg', '~> 1.1'
+gem 'puma', '>= 5.0'
+gem 'rack-canonical-host'
+gem 'rails', '~> 7.2.1', '>= 7.2.1.1'
 gem 'rqrcode'
 gem 'sprockets-rails'
+gem 'stimulus-rails'
+gem 'turbo-rails'
+gem 'tzinfo-data', platforms: %i[windows jruby]
 gem 'will_paginate'
 
-group :assets do
-  gem 'coffee-rails'
-  gem 'sass-rails'
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'therubyracer'
-  gem 'uglifier'
+group :development, :test do
+  gem 'brakeman', require: false
+  gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
+  gem 'dotenv', '>= 3.0'
+  gem 'factory_bot_rails'
+  gem 'sassc'
+  gem 'rspec-rails'
 end
 
 group :development do
-  gem 'bundler-audit'
-  gem 'listen'
+  gem 'annotate'
+  gem 'bundler-audit', require: false
+  gem 'erb_lint', require: false
+  gem 'rack-mini-profiler'
+  gem 'rubocop', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'rubocop-factory_bot', require: false
+  gem 'rubocop-performance', require: false
+  gem 'rubocop-rails', '>= 2.22.0', require: false
+  gem 'tomo', '~> 1.18', require: false
   gem 'web-console'
 end
 
-group :development, :test do
-  gem 'byebug'
-  gem 'rubocop', require: false
-  gem 'rubocop-rails', require: false
+group :test do
+  gem 'capybara', require: false
+  gem 'capybara-lockstep', require: false
+  gem 'capybara-selenium'
+  gem 'database_cleaner'
+  gem 'faker'
+  gem 'selenium-webdriver', require: false
+  gem 'shoulda-matchers'
+  gem 'vcr'
+  gem 'webdrivers'
+  gem 'webmock'
 end
 
-group :test do
-  gem 'capybara'
-  gem 'database_cleaner'
-  gem 'database_cleaner-active_record'
-  gem 'minitest'
-  gem 'minitest-around'
-  gem 'minitest-rails'
-  gem 'minitest-spec-context'
-  gem 'simplecov', require: false
-  gem 'webmock'
+group :production do
+  gem 'sidekiq', '~> 7.0'
 end

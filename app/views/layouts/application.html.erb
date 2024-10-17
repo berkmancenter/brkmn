@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= capybara_lockstep if defined?(Capybara::Lockstep) %>
+    <title><%= @page_title.blank? ? REDIRECT_DOMAIN : @page_title %></title>
+    <meta name="apple-mobile-web-app-title" content="Brkmn">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="<%= image_url('icon.png') %>" type="image/png">
+    <link rel="apple-touch-icon" href="<%= image_url('icon.png') %>">
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="header-items">
+        <div class="header-items-item">
+          <a class="header-items-item-bookmarklet"
+             title="Drag this link to your bookmarks toolbar to shorten any page via <%= REDIRECT_DOMAIN %>"
+             href="javascript:(function(){f='<%= bookmarklet_urls_url %>?url%5bto%5d='+encodeURIComponent(window.location.href)+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','brkmn','location=1,links=0,scrollbars=0,toolbar=0,width=1000,height=400'))location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()">
+            <span>
+              <%= image_tag('bookmark.svg') %>
+            </span>
+            <span>
+              Shorten on <%= REDIRECT_DOMAIN %>
+            </span>
+          </a>
+        </div>
+        <div class="header-items-item">
+          <% if @current_user %>
+            <span>
+              <%= image_tag('user.svg') %>
+              <span class='header-items-item-user'>
+                <%= @current_user.username %>
+              </span>
+            </span>
+          <% end %>
+        </div>
+      </div>
+
+      <h1 class="site-title is-size-2">
+        <a href="<%= root_path %>" class="header-logo-link">
+          <% if File.exist?(Rails.root.join('app', 'assets', 'images', 'logo.png')) %>
+            <%= image_tag('logo.png', class: 'header-logo-image') %>
+          <% end %>
+          brk.mn
+        </a>
+      </h1>
+
+      <% flash.each do |name, msg| %>
+        <div class="message" id="<%= name %>">
+          <%= msg %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </div>
+
+    <footer>
+      Berkman Center for Internet &amp; Society
+    </footer>
+  </body>
+</html>
