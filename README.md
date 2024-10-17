@@ -13,6 +13,7 @@ A dirt-simple URL shortener.
 * `docker-composer up`
 * `docker-compose exec website bash`
 * `bundle install`
+* `yarn install`
 * Copy `.env.example` to `.env` and set up your database accordingly
 * Add the following to .env:
   * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass CAS for development; any username/password will work; cannot be used in production).
@@ -20,9 +21,9 @@ A dirt-simple URL shortener.
   * `ALLOWED_HOST` (localhost is allowed by default; anything else must be explicit; may be a single string or a regex)
   * `CAS_DATA_DIRECTORY` (required in production, directory for storing CAS data, in development use `USE_FAKEAUTH`)
 * `rails db:migrate`
-* `rails s -b 0.0.0.0`
+* `./bin/dev`
 
-Test with `rails test`.
+Test with `bundle exec rspec`.
 
 ## Deployment
 
@@ -32,6 +33,7 @@ Test with `rails test`.
 * Every time
   * `git pull`
   * `bundle install`
+  * `yarn install`
   * `rails assets:clobber && rails assets:precompile` if assets changes
   * `rails db:migrate` if db schema changes
   * `touch tmp/restart.txt`
