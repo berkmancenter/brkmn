@@ -18,7 +18,7 @@ A dirt-simple URL shortener.
 * Add the following to .env:
   * `USE_FAKEAUTH` (optional; set to to `true` if you want to bypass CAS for development; any username/password will work; cannot be used in production).
   * `SECRET_KEY_BASE` (required in production, optional otherwise; use `rails secret` to generate a value).
-  * `ALLOWED_HOST` (localhost is allowed by default; anything else must be explicit; may be a single string or a regex)
+  * `ALLOWED_HOSTS` (localhost is allowed by default; anything else must be explicit; may be a single string or a regex or a comma-separated list)
   * `CAS_DATA_DIRECTORY` (required in production, directory for storing CAS data, in development use `USE_FAKEAUTH`)
 * `rails db:migrate`
 * `./bin/dev`
