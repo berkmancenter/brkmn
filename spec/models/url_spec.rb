@@ -78,13 +78,9 @@ RSpec.describe Url, type: :model do
       expect(url).not_to be_valid
     end
 
-    it 'disallows protected URL regex elements' do
-      expect(PROTECTED_URL_REGEX).to eq(/^(url|user|metric|redirector|preview|logout)/i)
-
-      ['url', 'user', 'metric', 'redirector7', 'preview_yay', 'logoutlogout'].each do |shortcode|
-        url = Url.new(shortened: shortcode, to: 'https://google.com')
-        expect(url).not_to be_valid
-      end
+    it 'disallows shortcodes that conflict with valid site URLs' do
+      url = Url.new(shortened: 'urls', to: 'https://google.com')
+      expect(url).not_to be_valid
     end
 
     it "disallows characters that can't be used in a URL" do
@@ -113,15 +109,10 @@ RSpec.describe Url, type: :model do
       expect(url1).not_to be_valid
     end
 
-    it 'disallows protected URL regex elements' do
-      expect(PROTECTED_URL_REGEX).to eq(/^(url|user|metric|redirector|preview|logout)/i)
-
-      url = create(:url, to: 'https://google.com')
-
-      ['url', 'user', 'metric', 'redirector7', 'preview_yay', 'logoutlogout'].each do |shortcode|
-        url.shortened = shortcode
-        expect(url).not_to be_valid
-      end
+    it 'disallows shortcodes that conflict with valid site URLs on update' do
+      url = Url.create(shortened: '42', to: 'http://google.com')
+      url.shortened = 'urls'
+      expect(url).not_to be_valid
     end
 
     it "disallows characters that can't be used in a URL" do

@@ -12,7 +12,7 @@ class ShortcodeValidator < ActiveModel::EachValidator
     @value = value
 
     already_in_use?
-    protected_regex?
+    conflicts_with_valid_route?
     invalid_characters?
   end
 
@@ -22,10 +22,11 @@ class ShortcodeValidator < ActiveModel::EachValidator
     @record.errors.add @attribute, "(#{@value}) is already in use. Please choose another."
   end
 
-  def protected_regex?
-    return unless @value.match(PROTECTED_URL_REGEX)
+  def conflicts_with_valid_route?
+    recognized_route = Rails.application.routes.recognize_path(@value) rescue nil
+    return if recognized_route.nil? || recognized_route[:controller] == 'redirector'
 
-    @record.errors.add @attribute, 'is a protected URL and cannot be used. Please choose another.'
+    @record.errors.add @attribute, "(#{@value}) conflicts with a valid site URL. Please choose another."
   end
 
   def invalid_characters?
