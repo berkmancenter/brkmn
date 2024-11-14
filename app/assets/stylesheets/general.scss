@@ -61,7 +61,6 @@ $body-font: 'Verdana', sans-serif;
 html {
   min-height: 100%;
   box-sizing: border-box;
-  background-color: $light-bg;
 }
 
 body {
@@ -69,6 +68,12 @@ body {
   font-size: 16px;
   color: $text-color;
   line-height: 1.6;
+  background-color: $light-bg;
+  padding: 1rem 0;
+
+  > .wrapper {
+    margin: 0 auto;
+  }
 }
 
 *,
@@ -101,9 +106,11 @@ input[type="submit"] {
       justify-content: center;
     }
 
-    > * {
+    > *,
+    turbo-frame > * {
       display: flex;
       align-items: center;
+      margin-right: 0.5rem;
 
       span {
         display: flex;
@@ -111,7 +118,9 @@ input[type="submit"] {
     }
 
     &:first-child {
-      margin-right: 1rem;
+      > * {
+        margin-right: 0;
+      }
     }
 
     &:last-child {
@@ -120,7 +129,7 @@ input[type="submit"] {
 
     img {
       max-height: 2rem;
-      margin-right: 0.5rem;
+      margin-right: 0.2rem;
       height: 2rem;
     }
 
@@ -157,7 +166,6 @@ a {
 h1.site-title {
   font-size: 2rem;
   color: $primary-color;
-  margin-bottom: 20px;
   margin-top: 0;
   max-height: 4rem;
   display: flex;
@@ -210,7 +218,7 @@ h1.site-title {
   }
 }
 
-.add_form {
+.add-form {
   @include header;
 
   form {
@@ -382,7 +390,7 @@ table {
 }
 
 footer {
-  margin: 40px 0;
+  margin: 1rem 0;
   text-align: center;
   font-size: 0.9em;
 

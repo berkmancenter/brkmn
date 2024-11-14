@@ -31,6 +31,7 @@
 !/tmp/storage/.keep
 
 /public/assets
+/public/packs
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
@@ -42,3 +43,5 @@
 node_modules/
 /spec/examples.txt
 !/.env.sample
+
+/coverage

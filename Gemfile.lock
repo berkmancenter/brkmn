@@ -157,6 +157,7 @@ GEM
       railties (>= 5.0.0)
     faker (3.4.2)
       i18n (>= 1.8.11, < 2)
+    ffi (1.17.0-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
     good_migrations (0.2.1)
@@ -328,6 +329,8 @@ GEM
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
+    sassc (2.4.0)
+      ffi (~> 1.9)
     securerandom (0.3.1)
     selenium-webdriver (4.25.0)
       base64 (~> 0.2)
@@ -431,6 +434,7 @@ DEPENDENCIES
   rubocop-factory_bot
   rubocop-performance
   rubocop-rails (>= 2.22.0)
+  sassc
   selenium-webdriver
   shoulda-matchers
   sidekiq (~> 7.0)

@@ -6,6 +6,7 @@
     <meta name="apple-mobile-web-app-title" content="Brkmn">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="turbo-prefetch" content="false">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -34,6 +35,9 @@
           </a>
         </div>
         <div class="header-items-item">
+          <turbo-frame id="viewing-mode-toggle">
+            <%= render 'theme/toggle_link' %>
+          </turbo-frame>
           <% if @current_user %>
             <span>
               <%= image_tag('user.svg') %>

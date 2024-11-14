@@ -1,0 +1,41 @@
+body.viewing-mode-classic {
+  background-image: linear-gradient(to top, #000 0%, #8c0002 100%);
+
+  @mixin header {
+    h4 {
+      background-color: #000;
+      color: #fff;
+    }
+  }
+
+  > .wrapper {
+    background-color: #000;
+  }
+
+  .header-items,
+  .header-logo-link,
+  .search,
+  footer {
+    color: #fff;
+
+    a {
+      color: #fff;
+    }
+
+    img {
+      background-color: #fff;
+      border-radius: 1rem;
+    }
+  }
+
+  .header-logo-image {
+    display: none;
+  }
+
+  .add-form,
+  .edit-form,
+  #my_urls,
+  #not_my_urls {
+    @include header;
+  }
+}

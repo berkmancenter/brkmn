@@ -9,4 +9,8 @@ module ApplicationHelper
             params.permit.merge(sort: column, direction: direction, page: nil),
             class: css_class
   end
+
+  def viewing_mode
+    cookies[:viewing_mode] || 'modern'
+  end
 end

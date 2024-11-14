@@ -1,0 +1,23 @@
+<%= link_to toggle_mode_path, id: 'toggle-link' do %>
+  <span>
+    <%= image_tag("#{viewing_mode}mode.svg") %>
+  </span>
+  <span>
+    <%= viewing_mode == 'classic' ? 'Light' : 'Classic' %>
+  </span>
+<% end %>
+
+<div data-controller="execute-js">
+  <script>
+    (function() {
+      const newBodyClass = "<%= viewing_mode == 'classic' ? 'viewing-mode-classic' : 'viewing-mode-light' %>";
+      const modeClasses = ['viewing-mode-classic', 'viewing-mode-light'];
+
+      // Remove existing mode classes
+      document.body.classList.remove(...modeClasses);
+
+      // Add the new class
+      document.body.classList.add(newBodyClass);
+    })();
+  </script>
+</div>

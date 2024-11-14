@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get '/redirector/invalid' => 'redirector#invalid'
 
+  get '/toggle_mode' => 'theme#toggle_mode'
+
   get '/:id' => 'redirector#index', as: :shortened, id: /.*/
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

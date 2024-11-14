@@ -1,4 +1,4 @@
-<div class="add_form">
+<div class="add-form">
   <h4 class="is-size-4">Shorten a URL</h4>
 
   <%= form_for(Url.new(to: (params[:url].blank?) ? 'https://' : params[:url][:to])) do |f| %>
