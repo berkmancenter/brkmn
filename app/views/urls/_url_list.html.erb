@@ -1,37 +1,38 @@
 <tr>
   <td class="shortened">
-    <%= link_to(url_list.shortened, shortened_url(url_list.shortened)) %>
-    <span class="urls-table-clipboard"
-          title="Click to copy to clipboard"
-          data-action="click->urls-table#copy"
-          data-url="<%= shortened_url(url_list.shortened) %>">
-      <%= image_tag('clipboard.svg') %>
-    </span>
+    <div>
+      <div class="shortened-title">
+        <%= link_to(url_list.shortened, shortened_url(url_list.shortened)) %>
+      </div>
+      <div class="shortened-actions">
+        <a class="urls-table-clipboard"
+              title="Click to copy to clipboard"
+              data-action="click->urls-table#copy"
+              data-url="<%= shortened_url(url_list.shortened) %>">
+          <%= image_tag('clipboard.svg', title: 'Copy url to clipboard') %>
+        </a>
+        <% if can?(:update, url_list) %>
+          <%= link_to(edit_url_path(url_list), title: 'Edit') do %>
+            <%= image_tag('edit.svg') %>
+          <% end %>
+        <% end %>
+
+        <% if can?(:destroy, url_list) %>
+          <%= link_to(url_path(url_list), title: 'Delete', method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this?" }) do %>
+            <%= image_tag('delete.svg') %>
+          <% end %>
+        <% end %>
+
+        <%= link_to(qr_url_path(url_list), target: '_blank', title: 'Show QR code for this url') do %>
+          <%= image_tag('qr.svg') %>
+        <% end %>
+    </div>
   </td>
   <td class="arrow">→</td>
   <td class="to">
     <%= link_to(url_list.to, url_list.to) %>
   </td>
-  <td class="table-qr">
-    <%= link_to(qr_url_path(url_list), target: '_blank') do %>
-      <%= image_tag('qr.svg') %>
-    <% end %>
-  </td>
   <td class="clicks">
     <%= url_list.clicks %>
-  </td>
-  <td class="actions">
-    <% if can?(:update, url_list) %>
-      <%= link_to(edit_url_path(url_list)) do %>
-        <%= image_tag('edit.svg') %>
-        <span>edit</span>
-      <% end %>
-    <% end %>
-    <% if can?(:destroy, url_list) %>
-      <%= link_to(url_path(url_list), method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this?" }) do %>
-        <%= image_tag('delete.svg') %>
-        <span>delete</span>
-      <% end %>
-    <% end %>
   </td>
 </tr>

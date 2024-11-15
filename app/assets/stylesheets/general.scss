@@ -371,6 +371,37 @@ table {
       }
     }
 
+    td.shortened {
+      .shortened-title {
+        margin-right: 0.5rem;
+      }
+
+      > div,
+      .shortened-actions {
+        display: flex;
+        flex-wrap: nowrap;
+      }
+
+      .shortened-actions {
+        background-color: #ffffff;
+        padding: 1px;
+        @include rounded-corners(0.5rem);
+
+        a:hover {
+          img {
+            transform: scale(1.1);
+          }
+        }
+      }
+      img {
+        width: 1.5rem;
+        height: 1.5rem;
+        min-height: 1.5rem;
+        min-width: 1.5rem;
+        padding: 2px;
+      }
+    }
+
     .urls-table-clipboard {
       img {
         max-height: 3rem;
