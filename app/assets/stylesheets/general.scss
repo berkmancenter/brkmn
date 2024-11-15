@@ -364,6 +364,10 @@ table {
     .to {
       a {
         overflow-wrap: anywhere;
+
+        @media (max-width: 700px) {
+          overflow-wrap: break-word;
+        }
       }
     }
 
