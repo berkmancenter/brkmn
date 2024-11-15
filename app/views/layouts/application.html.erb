@@ -19,7 +19,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body class="<%= viewing_mode == 'classic' ? 'viewing-mode-classic' : 'viewing-mode-light' %>">
     <div class="wrapper">
       <div class="header-items">
         <div class="header-items-item">

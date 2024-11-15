@@ -376,20 +376,30 @@ table {
         margin-right: 0.5rem;
       }
 
-      > div,
-      .shortened-actions {
+      > div {
         display: flex;
         flex-wrap: nowrap;
       }
 
       .shortened-actions {
-        background-color: #ffffff;
-        padding: 1px;
-        @include rounded-corners(0.5rem);
+        display: flex;
+        flex-wrap: nowrap;
 
-        a:hover {
-          img {
-            transform: scale(1.1);
+        > div {
+          &:first-child {
+            margin-right: 0.25rem;
+          }
+
+          display: flex;
+          flex-wrap: nowrap;
+          background-color: #ffffff;
+          padding: 1px;
+          @include rounded-corners(0.5rem);
+  
+          a:hover {
+            img {
+              transform: scale(1.1);
+            }
           }
         }
       }
@@ -493,6 +503,7 @@ footer {
       white-space: nowrap;
       background-color: #ffffff;
       color: $primary-color;
+      margin-top: 0.25rem;
 
       &.current {
         background-color: $primary-color;
