@@ -12,7 +12,9 @@
             data-url="<%= shortened_url(url_list.shortened) %>">
             <%= image_tag('clipboard.svg', title: 'Copy url to clipboard') %>
           </a>
+        </div>
 
+        <div>
           <%= link_to(qr_url_path(url_list), target: '_blank', title: 'Show QR code for this url') do %>
             <%= image_tag('qr.svg') %>
           <% end %>

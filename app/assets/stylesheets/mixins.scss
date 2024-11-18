@@ -1,0 +1,44 @@
+@mixin transition($property, $duration) {
+  transition: $property $duration ease;
+}
+
+@mixin rounded-corners($radius: 1rem) {
+  border-radius: $radius;
+}
+
+@mixin box-shadow {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+@mixin button {
+  display: inline-block;
+  background-color: map-get($colors, primary);
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid map-get($colors, primary);
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  @include transition(background-color, 0.3s);
+  @include rounded-corners(0.5rem);
+
+  &:hover {
+    background-color: map-get($colors, secondary);
+  }
+}
+
+@mixin header {
+  h4 {
+    margin: 0;
+    background-color: #fff;
+    padding: 1rem;
+    border-radius: 1rem 1rem 0 0;
+  }
+}
+
+@mixin box {
+  padding: 1rem;
+  background-color: map-get($colors, light-blue);
+  border: 1px solid map-get($colors, light-border);
+  @include rounded-corners;
+  @include box-shadow;
+}

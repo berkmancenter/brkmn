@@ -1,0 +1,32 @@
+html {
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: map-get($fonts, body);
+  font-size: 16px;
+  color: map-get($colors, text);
+  line-height: 1.6;
+  background-color: map-get($colors, light-bg);
+  padding: 1rem 0;
+
+  > .wrapper {
+    margin: 0 auto;
+  }
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a {
+  color: map-get($colors, primary);
+  text-decoration: none;
+
+  &:hover {
+    color: #000;
+  }
+}

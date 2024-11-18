@@ -1,0 +1,21 @@
+#notice,
+#warning,
+#error {
+  margin: 1rem 0;
+  padding: 4px;
+  color: white;
+  text-align: center;
+  @include rounded-corners(0.5rem);
+}
+
+#notice {
+  background-color: map-get($colors, secondary);
+}
+
+#warning {
+  background-color: #f90;
+}
+
+#error {
+  background-color: map-get($colors, error);
+}

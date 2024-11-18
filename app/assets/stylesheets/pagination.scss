@@ -1,0 +1,54 @@
+.top_pagination,
+.bottom_pagination {
+  background-color: #fff;
+
+  td {
+    padding: 0;
+  }
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    list-style: none;
+    padding: 0.5rem;
+    margin: 20px 0;
+
+    > * {
+      @include button;
+      margin-right: 0.5rem;
+      white-space: nowrap;
+      background-color: #fff;
+      color: map-get($colors, primary);
+      margin-top: 0.25rem;
+
+      &.current {
+        background-color: map-get($colors, primary);
+        color: #fff;
+        cursor: default;
+      }
+
+      &.gap {
+        cursor: default;
+
+        &:hover {
+          background-color: #fff;
+          color: map-get($colors, primary);
+        }
+      }
+
+      &:hover {
+        color: #fff;
+      }
+    }
+
+    .previous_page.disabled,
+    .next_page.disabled {
+      display: none;
+    }
+  }
+}

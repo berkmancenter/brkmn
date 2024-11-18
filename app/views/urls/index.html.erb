@@ -1,26 +1,45 @@
 <%= render partial: 'shared/add_url' %>
-<%= render partial: 'shared/search' %>
 
-<% if @my_urls.present? %>
-  <turbo-frame id="my_urls_frame" data-turbo-action="advance">
-    <div id="my_urls" data-controller="urls-table">
-      <h4 class="is-size-4">My URLs</h4>
+<hr>
 
-      <div class="urls-table-wrapper">
+<turbo-frame id="my_urls_frame" data-turbo-action="advance">
+  <div id="my_urls" data-controller="urls-table">
+    <h4 class="is-size-4">
+      <div>My URLs</div>
+
+      <%= render partial: 'shared/search', locals: { name: 'my_urls' } %>
+    </h4>
+
+    <div class="urls-table-wrapper">
+      <% if @my_urls.present? %>
         <%= render 'shared/url_list', urls: @my_urls, page_param: :my_page %>
-      </div>
+      <% else %>
+        <div class="notification">
+          There are no URLs to display.
+        </div>
+      <% end %>
     </div>
-  </turbo-frame>
-<% end %>
+  </div>
+</turbo-frame>
 
-<% if @not_my_urls.present? %>
-  <turbo-frame id="not_my_urls_frame" data-turbo-action="advance">
-    <div id="not_my_urls" data-controller="urls-table">
-      <h4 class="is-size-4">All URLs</h4>
+<hr>
 
-      <div class="urls-table-wrapper">
+<turbo-frame id="not_my_urls_frame" data-turbo-action="advance">
+  <div id="not_my_urls" data-controller="urls-table">
+    <h4 class="is-size-4">
+      <div>All URLs</div>
+
+      <%= render partial: 'shared/search', locals: { name: 'not_my_urls' } %>
+    </h4>
+
+    <div class="urls-table-wrapper">
+      <% if @not_my_urls.present? %>
         <%= render 'shared/url_list', urls: @not_my_urls, page_param: :others_page %>
-      </div>
+      <% else %>
+        <div class="notification">
+          There are no URLs to display.
+        </div>
+      <% end %>
     </div>
-  </turbo-frame>
-<% end %>
+  </div>
+</turbo-frame>

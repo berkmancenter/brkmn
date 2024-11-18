@@ -1,13 +1,10 @@
-<hr>
-
 <div class="search">
-  <%= form_tag search_urls_path, method: 'get', class: 'search-form' do %>
+  <%= form_tag search_urls_path, method: 'get', class: 'search-form', data: { turbo: false } do %>
     <div>
-      <%= text_field_tag :search, params[:search] %>
+      <%= text_field_tag :search, params[:search], id: "#{name}_search" %>
     </div>
     <div>
-      <%= submit_tag "Search", class: "search_button" %>
-      <%= link_to "Clear", root_url, search: nil %>
+      <%= submit_tag "Search", class: "search_button", id: "#{name}_search_button" %>
     </div>
   <% end %>
 </div>

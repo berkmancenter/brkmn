@@ -1,0 +1,106 @@
+.wrapper {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  @include rounded-corners;
+  @include box-shadow;
+
+  legend {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+}
+
+.header-items {
+  display: flex;
+  flex-wrap: wrap;
+
+  &-item {
+    display: flex;
+    align-items: center;
+
+    @media (max-width: 700px) {
+      flex: 1 1 100%;
+      justify-content: center;
+    }
+
+    > *,
+    turbo-frame > * {
+      display: flex;
+      align-items: center;
+      margin-right: 0.5rem;
+
+      span {
+        display: flex;
+      }
+    }
+
+    &:first-child > * {
+      margin-right: 0;
+    }
+
+    &:last-child {
+      margin-left: auto;
+    }
+
+    img {
+      max-height: 2rem;
+      margin-right: 0.2rem;
+      height: 2rem;
+    }
+
+    &-user {
+      font-weight: bold;
+    }
+  }
+}
+
+h1.site-title {
+  font-size: 2rem;
+  color: map-get($colors, primary);
+  margin-top: 0;
+  max-height: 4rem;
+  display: flex;
+  justify-content: center;
+
+  a.header-logo-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+  }
+
+  .header-logo-image {
+    margin-right: 1rem;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+  }
+
+  img {
+    max-height: 4rem;
+  }
+}
+
+footer {
+  margin: 1rem 0;
+  text-align: center;
+  font-size: 0.9em;
+
+  a.bookmarklet {
+    text-decoration: none;
+
+    &:hover {
+      color: map-get($colors, secondary);
+      text-decoration: underline;
+    }
+  }
+
+  .footer-username {
+    font-weight: bold;
+  }
+}

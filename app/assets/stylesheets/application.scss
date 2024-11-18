@@ -37,7 +37,15 @@
 // @import "bulma/sass/layout/section.sass";
 
 @import 'bulma/bulma';
-@import 'general';
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'forms';
+@import 'layout';
+@import 'search';
+@import 'urls';
+@import 'messages';
+@import 'pagination';
 @import 'classic_design';
 @import 'users';
 @import 'sessions';
