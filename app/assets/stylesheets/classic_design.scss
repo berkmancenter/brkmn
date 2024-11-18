@@ -38,4 +38,8 @@ body.viewing-mode-classic {
   #not_my_urls {
     @include header;
   }
+
+  hr {
+   background-color: #666666;
+  }
 }

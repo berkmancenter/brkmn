@@ -128,8 +128,6 @@ table {
           display: flex;
           flex-wrap: nowrap;
           margin-right: 0.5rem;
-          background-color: #fff;
-          padding: 1px;
           @include rounded-corners(0.5rem);
 
           a:hover img {
