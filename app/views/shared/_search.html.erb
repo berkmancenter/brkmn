@@ -1,10 +1,13 @@
-<div class="search">
+<div class="search <% if params[:search].present? %>header-items-item-search-active<% end %>" data-search-target="searchForm">
   <%= form_tag search_urls_path, method: 'get', class: 'search-form', data: { turbo: false } do %>
     <div>
-      <%= text_field_tag :search, params[:search], id: "#{name}_search" %>
+      <%= text_field_tag :search, params[:search] %>
     </div>
     <div>
-      <%= submit_tag "Search", class: "search_button", id: "#{name}_search_button" %>
+      <%= submit_tag 'Search', class: 'search_button', id: 'search_button' %>
+    </div>
+    <div>
+      <%= link_to 'Clear', root_url, search: nil %>
     </div>
   <% end %>
 </div>

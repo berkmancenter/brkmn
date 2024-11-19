@@ -166,8 +166,9 @@ RSpec.describe 'Urls', type: :feature do
       Url.create(to: 'https://totallydifferent.domain.com')
 
       visit urls_path
-      fill_in 'my_urls_search', with: 'scratch'
-      click_on 'my_urls_search_button'
+      click_on 'Search'
+      fill_in 'search', with: 'scratch'
+      click_on 'search_button'
 
       expect(page).to have_content('https://scratch.mit.edu/')
       expect(page).not_to have_content('https://totallydifferent.domain.com')

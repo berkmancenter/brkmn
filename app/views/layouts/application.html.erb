@@ -35,13 +35,25 @@
           </a>
         </div>
         <div class="header-items-item">
+          <div class="header-items-item-search" data-controller="search">
+            <a data-controller="search" data-action="click->search#toggle">
+              <%= image_tag('search.svg') %>
+              <span>
+                Search
+              </span>
+            </a>
+
+            <%= render partial: 'shared/search' %>
+          </div>
+
           <turbo-frame id="viewing-mode-toggle">
             <%= render 'theme/toggle_link' %>
           </turbo-frame>
+
           <% if @current_user %>
             <span>
               <%= image_tag('user.svg') %>
-              <span class='header-items-item-user'>
+              <span class="header-items-item-user">
                 <%= @current_user.username %>
               </span>
             </span>

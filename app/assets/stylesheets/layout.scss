@@ -16,6 +16,7 @@
 .header-items {
   display: flex;
   flex-wrap: wrap;
+  user-select: none;
 
   &-item {
     display: flex;
@@ -27,13 +28,20 @@
     }
 
     > *,
-    turbo-frame > * {
+    > turbo-frame > * {
       display: flex;
       align-items: center;
-      margin-right: 0.5rem;
 
       span {
         display: flex;
+      }
+    }
+
+    > *  {
+      margin-right: 0.75rem;
+
+      &:last-child {
+        margin-right: 0;
       }
     }
 
@@ -53,6 +61,49 @@
 
     &-user {
       font-weight: bold;
+    }
+
+    @keyframes slideAndFadeIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    &-search {
+      position: relative;
+
+      > a {
+        display: flex;
+        align-items: center;
+      }
+
+      .search {
+        display: none;
+        position: absolute;
+        top: 2.5rem;
+        left: 0;
+        z-index: 100;
+        background-color: #fff;
+        padding: 1rem;
+        @include rounded-corners;
+        @include box-shadow;
+
+        a {
+          color: #000000;
+        }
+      }
+    }
+
+    &-search-active {
+      &.search {
+        display: block;
+        animation: slideAndFadeIn 0.3s ease forwards;
+      }
     }
   }
 }
