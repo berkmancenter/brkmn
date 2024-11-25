@@ -27,8 +27,18 @@ body.viewing-mode-classic {
     }
   }
 
+  h1.site-title {
+    max-height: unset;
+  
+    img {
+      max-height: unset;
+    }
+  }
+
   .header-logo-image {
-    display: none;
+    padding: 0.5rem;
+    height: 4rem;
+    display: block;
   }
 
   .add-form,

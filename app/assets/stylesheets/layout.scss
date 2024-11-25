@@ -17,6 +17,7 @@
   display: flex;
   flex-wrap: wrap;
   user-select: none;
+  margin-bottom: 1.5rem;
 
   &-item {
     display: flex;
@@ -62,49 +63,6 @@
     &-user {
       font-weight: bold;
     }
-
-    @keyframes slideAndFadeIn {
-      from {
-        transform: translateY(-10px);
-        opacity: 0;
-      }
-      to {
-        transform: translateY(0);
-        opacity: 1;
-      }
-    }
-
-    &-search {
-      position: relative;
-
-      > a {
-        display: flex;
-        align-items: center;
-      }
-
-      .search {
-        display: none;
-        position: absolute;
-        top: 2.5rem;
-        left: 0;
-        z-index: 100;
-        background-color: #fff;
-        padding: 1rem;
-        @include rounded-corners;
-        @include box-shadow;
-
-        a {
-          color: #000000;
-        }
-      }
-    }
-
-    &-search-active {
-      &.search {
-        display: block;
-        animation: slideAndFadeIn 0.3s ease forwards;
-      }
-    }
   }
 }
 
@@ -115,6 +73,14 @@ h1.site-title {
   max-height: 4rem;
   display: flex;
   justify-content: center;
+
+  @media (max-width: 700px) {
+    top: 120%;
+    left: -50%;
+    right: 0;
+    margin: 0 auto;
+    margin-top: 4rem;
+  }
 
   a.header-logo-link {
     display: flex;
@@ -133,7 +99,7 @@ h1.site-title {
   }
 
   img {
-    max-height: 4rem;
+    max-height: 3rem;
   }
 }
 
