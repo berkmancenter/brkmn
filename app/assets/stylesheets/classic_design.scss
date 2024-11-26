@@ -27,18 +27,12 @@ body.viewing-mode-classic {
     }
   }
 
-  h1.site-title {
-    max-height: unset;
-  
-    img {
-      max-height: unset;
-    }
-  }
+  .header-logo-link {
+    color: #a51c30;
 
-  .header-logo-image {
-    padding: 0.5rem;
-    height: 4rem;
-    display: block;
+    img {
+      background-color: unset;
+    }
   }
 
   .add-form,
