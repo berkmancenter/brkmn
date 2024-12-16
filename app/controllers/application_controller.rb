@@ -50,6 +50,6 @@ class ApplicationController < ActionController::Base
     sign_in(user)
 
     authenticate_user!
-    Rack::MiniProfiler.authorize_request if current_user&.superadmin
+    Rack::MiniProfiler.authorize_request if !Rails.env.production? && current_user&.superadmin
   end
 end
