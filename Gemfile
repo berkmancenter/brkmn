@@ -6,6 +6,7 @@ gem 'bootsnap', require: false
 gem 'cancancan'
 gem 'cssbundling-rails'
 gem 'devise'
+gem 'dotenv', '>= 3.0'
 gem 'good_migrations'
 gem 'importmap-rails'
 gem 'jbuilder'
@@ -23,7 +24,6 @@ gem 'will_paginate'
 group :development, :test do
   gem 'brakeman', require: false
   gem 'debug', platforms: %i[mri windows], require: 'debug/prelude'
-  gem 'dotenv', '>= 3.0'
   gem 'factory_bot_rails'
   gem 'sassc'
   gem 'rspec-rails'
