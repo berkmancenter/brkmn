@@ -41,6 +41,9 @@
   <td class="to">
     <%= link_to(url_list.to, url_list.to) %>
   </td>
+  <td class="created">
+    <%= url_list.created_at.strftime("%Y-%m-%d %H:%M") %>
+  </td>
   <td class="clicks">
     <%= url_list.clicks %>
   </td>

@@ -122,7 +122,7 @@ class UrlsController < ApplicationController
 
     session[:sort] = sort if url_params[:sort] != session[:sort]
 
-    %w[shortened "to" clicks].include?(sort) ? sort : 'shortened'
+    %w[shortened "to" clicks created_at].include?(sort) ? sort : 'shortened'
   end
 
   def sort_direction
@@ -148,14 +148,22 @@ class UrlsController < ApplicationController
       @to_header = 'to hilite'
       @clicks_header = 'clicks'
       @shortened_header = 'shortened'
+      @created_header = 'created_at'
     when 'clicks'
       @clicks_header = 'clicks hilite'
       @to_header = 'to'
       @shortened_header = 'shortened'
+      @created_header = 'created_at'
+    when 'created_at'
+      @clicks_header = 'clicks'
+      @to_header = 'to'
+      @shortened_header = 'shortened'
+      @created_header = 'created_at hilite'
     else
       @shortened_header = 'shortened hilite'
       @clicks_header = 'clicks'
       @to_header = 'to'
+      @created_header = 'created_at'
     end
   end
   # rubocop:enable Metrics/MethodLength
