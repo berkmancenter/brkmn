@@ -36,7 +36,7 @@ table {
 
   th,
   td {
-    padding: 0.2rem;
+    padding: 0.2rem 0.5rem;
     border: 1px solid map-get($colors, light-border);
     text-align: left;
     vertical-align: middle;
@@ -133,6 +133,10 @@ table {
           a:hover img {
             transform: scale(1.1);
           }
+
+          &:last-child {
+            margin-right: 0;
+          }
         }
       }
 
@@ -156,6 +160,10 @@ table {
   td.arrow {
     font-size: 16px;
     text-align: center;
+  }
+
+  td.created {
+    white-space: nowrap;
   }
 
   .actions {
