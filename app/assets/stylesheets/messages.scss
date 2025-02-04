@@ -1,6 +1,8 @@
 #notice,
 #warning,
-#error {
+#error,
+#alert,
+#error_explanation {
   margin: 1rem 0;
   padding: 4px;
   color: white;
@@ -16,6 +18,8 @@
   background-color: #f90;
 }
 
-#error {
+#alert,
+#error,
+#error_explanation {
   background-color: map-get($colors, error);
 }

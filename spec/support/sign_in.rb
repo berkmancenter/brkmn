@@ -3,6 +3,7 @@ RSpec.configure do |config|
   include Warden::Test::Helpers
 
   def sign_in(user)
+    user.confirm if !user.confirmed?
     login_as(user, scope: :user)
   end
 

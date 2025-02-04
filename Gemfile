@@ -6,6 +6,7 @@ gem 'bootsnap', require: false
 gem 'cancancan'
 gem 'cssbundling-rails'
 gem 'devise'
+gem 'devise_cas_authenticatable', require: false
 gem 'dotenv', '>= 3.0'
 gem 'good_migrations'
 gem 'importmap-rails'

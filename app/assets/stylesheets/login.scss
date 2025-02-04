@@ -1,0 +1,68 @@
+body.sessions,
+body.registrations,
+body.passwords,
+body.confirmations {
+  width: 100vw;
+  height: 100vh;
+  background-color: #F7F9FB;
+
+  > .wrapper {
+    display: flex;
+    justify-content: center;
+    width: auto;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 4px;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+
+    > .main-inner {
+      width: 100%;
+    }
+
+    input[type="email"], input[type="password"] {
+      width: 100%;
+    }
+
+    form {
+      margin-bottom: 1rem;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+    }
+
+    a {
+      color: #000;
+      border-top: 1px solid #e5e5e5;
+      display: block;
+      padding: 0.2rem 0;
+
+      &:first-of-type {
+        border-top: none;
+      }
+    }
+
+    .session-logo {
+      img {
+        border-radius: 4px;
+      }
+    }
+
+    br {
+      display: none;
+    }
+  }
+
+  a.header-logo-link {
+    margin-right: 0;
+  }
+
+  .site-title {
+    display: none;
+  }
+
+  .devise-site-title {
+    overflow-wrap: anywhere;
+  }
+}

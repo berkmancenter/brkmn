@@ -2,7 +2,7 @@
 
 Rails.application.routes.draw do
   mount Sidekiq::Web => "/sidekiq" if defined?(Sidekiq)
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'registrations' }
 
   resources :urls do
     collection do
@@ -12,6 +12,12 @@ Rails.application.routes.draw do
     end
     member do
       get :qr
+    end
+  end
+
+  resources :users do
+    collection do
+      get :cas_logout
     end
   end
 

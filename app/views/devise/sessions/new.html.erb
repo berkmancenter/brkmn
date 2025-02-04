@@ -1,26 +1,35 @@
-<h4 class="is-size-4">Log in</h4>
+<%= render 'devise/shared/site_title' %>
+
+<h4 class="is-size-4 mb-2">Log in</h4>
 
 <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
   <div class="field">
-    <%= f.label :username %><br />
-    <%= f.text_field :username, autofocus: true, autocomplete: "username" %>
+    <%= f.label :email, class: 'label' %>
+    <div class="control">
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: 'input', required: true %>
+    </div>
   </div>
 
   <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-    <div>Please use your HLS AD account to log in.</div>
+    <%= f.label :password, class: 'label' %>
+    <div class="control">
+      <%= f.password_field :password, autocomplete: "current-password", class: 'input', required: true %>
+    </div>
   </div>
 
   <% if devise_mapping.rememberable? %>
     <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+      <div class="control">
+        <label class="checkbox">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me %>
+        </label>
+      </div>
     </div>
   <% end %>
 
   <div class="actions">
-    <%= f.submit "Log in" %>
+    <button class="button is-rounded" type="submit">Log in</button>
   </div>
 <% end %>
 
