@@ -45,3 +45,5 @@ node_modules/
 !/.env.sample
 
 /coverage
+
+/app/assets/images/logo.png
