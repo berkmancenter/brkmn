@@ -10,9 +10,6 @@ load_env_file() {
   fi
 }
 
-# Set default environment if not provided
-APP_ENV=${APP_ENV:-production}
-
 # Define main env file
 MAIN_ENV_FILE=".env.${APP_ENV}"
 
