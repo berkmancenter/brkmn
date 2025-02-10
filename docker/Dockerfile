@@ -57,7 +57,7 @@ RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
 
 WORKDIR /app
-RUN git clone https://github.com/berkmancenter/brkmn.git . && git checkout regular-authentication-in-addition-to-cas
+RUN git clone https://github.com/berkmancenter/brkmn.git .
 
 # Create a user
 RUN groupadd --gid $USER_GID $USERNAME \
