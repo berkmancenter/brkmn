@@ -7,8 +7,8 @@
 #  clicks     :integer          default(0)
 #  shortened  :string(255)
 #  to         :string(10240)    not null
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  user_id    :integer
 #
 # Indexes

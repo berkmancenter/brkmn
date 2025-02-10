@@ -1,8 +1,8 @@
 services:
-  postgres:
+  db:
     image: 'postgres:14'
     volumes:
-      - 'postgres:/var/lib/postgresql/data'
+      - 'db:/var/lib/postgresql/data'
       - '.:/app'
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
@@ -11,14 +11,15 @@ services:
 
   app:
     depends_on:
-      - 'postgres'
+      - 'db'
     build: .
     ports:
-      - '5656:3000'
+      - '8507:3000'
+      - '8517:1080' # Mailcatcher
     volumes:
       - '.:/app'
     env_file:
       - '.env.development'
 
 volumes:
-  postgres:
+  db:

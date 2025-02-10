@@ -1,0 +1,25 @@
+services:
+  db:
+    image: 'postgres:14'
+    volumes:
+      - 'db:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: brkmn_production
+      POSTGRES_PASSWORD: so_wow_much_secure
+    restart: always
+
+  app:
+    depends_on:
+      - 'db'
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - '8507:3000'
+      - '8517:1080' # Mailcatcher
+    volumes:
+      - '.:/app'
+    restart: always
+
+volumes:
+  db:

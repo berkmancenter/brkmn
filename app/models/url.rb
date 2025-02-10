@@ -9,8 +9,8 @@
 #  clicks     :integer          default(0)
 #  shortened  :string(255)
 #  to         :string(10240)    not null
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  user_id    :integer
 #
 # Indexes
@@ -31,7 +31,7 @@ class Url < ApplicationRecord
   validates :to, length: { maximum: 10.kilobytes }, allow_blank: false
   validates :to, presence: true
   validate :to do
-    errors.add(:to, "cannot be 'localhost' or 'brk.mn'.") if
+    errors.add(:to, "cannot be 'localhost' or '#{REDIRECT_DOMAIN}'.") if
       to&.match(PROTECTED_REDIRECT_REGEX)
     errors.add(:to, 'must be a valid url') unless valid_url?(to)
   end

@@ -1,0 +1,8 @@
+<h3 class="is-size-3 has-text-centered devise-site-title">
+  <a href="<%= new_session_path('user') %>">
+    <% if File.exist?(Rails.root.join('app', 'assets', 'images', 'logo.png')) %>
+      <%= image_tag('logo.png', class: 'header-logo-image') %>
+    <% end %>
+    <%= REDIRECT_DOMAIN %>
+  </a>
+</h3>

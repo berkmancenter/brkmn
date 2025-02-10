@@ -35,5 +35,19 @@ module Brkmn
 
     config.hosts ||= []
     config.hosts += ENV['ALLOWED_HOSTS'].split(',') if ENV['ALLOWED_HOSTS'].present?
+
+    # Mailer settings
+    config.default_sender = ENV['DEFAULT_SENDER'] || 'no-reply@example.com'
+    config.return_path = ENV['RETURN_PATH'] || 'user@example.com'
+
+    # Devise authentication type
+    config.devise_auth_type = ENV['DEVISE_AUTH_TYPE'] || 'db'
+
+    # devise_cas_authenticatable configuration
+    if config.devise_auth_type == 'cas'
+      require 'devise_cas_authenticatable'
+      config.rack_cas.server_url = ENV['DEVISE_CAS_AUTH_URL'] || 'https://cas.example.com'
+      config.rack_cas.service = ENV['DEVISE_CAS_AUTH_SERVICE_PATH'] || '/users/service'
+    end
   end
 end

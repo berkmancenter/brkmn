@@ -19,64 +19,76 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="<%= viewing_mode == 'classic' ? 'viewing-mode-classic' : 'viewing-mode-light' %>">
+  <body class="<%= viewing_mode == 'classic' ? 'viewing-mode-classic' : 'viewing-mode-light' %> <%= controller.controller_name %>">
     <div class="wrapper">
-      <div class="header-items">
-        <div class="header-items-item">
-          <a class="header-items-item-bookmarklet"
-             title="Drag this link to your bookmarks toolbar to shorten any page via <%= REDIRECT_DOMAIN %>"
-             href="javascript:(function(){f='<%= bookmarklet_urls_url %>?url%5bto%5d='+encodeURIComponent(window.location.href)+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','brkmn','location=1,links=0,scrollbars=0,toolbar=0,width=1000,height=400'))location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()">
-            <span>
-              <%= image_tag('bookmark.svg') %>
-            </span>
-            <span>
-              Shorten on <%= REDIRECT_DOMAIN %>
-            </span>
-          </a>
-        </div>
-        <div class="header-items-item">
-          <div class="header-items-item-search" data-controller="search">
-            <a data-controller="search" data-action="click->search#toggle">
-              <%= image_tag('search.svg') %>
+      <div class="main-inner">
+        <% if @current_user %>
+          <div class="header-items">
+            <div class="header-items-item">
+              <a
+                class="header-items-item-bookmarklet"
+                title="Drag this link to your bookmarks toolbar to shorten any page via <%= REDIRECT_DOMAIN %>"
+                href="javascript:(function(){f='<%= bookmarklet_urls_url %>?url%5bto%5d='+encodeURIComponent(window.location.href)+'&';a=function(){if(!window.open(f+'noui=1&jump=doclose','brkmn','location=1,links=0,scrollbars=0,toolbar=0,width=1000,height=400'))location.href=f+'jump=yes'};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})()"
+              >
+                <span>
+                  <%= image_tag('bookmark.svg') %>
+                </span>
+                <span>
+                  Shorten on <%= REDIRECT_DOMAIN %>
+                </span>
+              </a>
+            </div>
+            <div class="header-items-item">
+              <div class="header-items-item-search" data-controller="search">
+                <a data-controller="search" data-action="click->search#toggle">
+                  <%= image_tag('search.svg') %>
+                  <span>
+                    Search
+                  </span>
+                </a>
+
+                <%= render partial: 'shared/search' %>
+              </div>
+
+              <turbo-frame id="viewing-mode-toggle">
+                <%= render 'theme/toggle_link' %>
+              </turbo-frame>
+
               <span>
-                Search
+                <%= image_tag('user.svg') %>
+                <span class="header-items-item-user">
+                  <%= @current_user.email %>
+                </span>
               </span>
-            </a>
 
-            <%= render partial: 'shared/search' %>
+              <span>
+                <% if Rails.application.config.devise_auth_type == 'cas' %>
+                  <%= link_to 'Sign out', cas_logout_users_path, method: :get, data: { turbo: false } %>
+                <% else %>
+                  <%= link_to 'Sign out', destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
+                <% end %>
+              </span>
+            </div>
           </div>
+        <% end %>
 
-          <turbo-frame id="viewing-mode-toggle">
-            <%= render 'theme/toggle_link' %>
-          </turbo-frame>
+        <h1 class="site-title is-size-2">
+          <a href="<%= root_path %>" class="header-logo-link">
+            <% if File.exist?(Rails.root.join('app', 'assets', 'images', 'logo.png')) %>
+              <%= image_tag('logo.png', class: 'header-logo-image') %>
+            <% end %>
+            <%= REDIRECT_DOMAIN %>
+          </a>
+        </h1>
 
-          <% if @current_user %>
-            <span>
-              <%= image_tag('user.svg') %>
-              <span class="header-items-item-user">
-                <%= @current_user.username %>
-              </span>
-            </span>
-          <% end %>
-        </div>
+        <% flash.each do |name, msg| %>
+          <div class="message" id="<%= name %>">
+            <%= msg %>
+          </div>
+        <% end %>
+
+        <%= yield %>
       </div>
-
-      <h1 class="site-title is-size-2">
-        <a href="<%= root_path %>" class="header-logo-link">
-          <% if File.exist?(Rails.root.join('app', 'assets', 'images', 'logo.png')) %>
-            <%= image_tag('logo.png', class: 'header-logo-image') %>
-          <% end %>
-          brk.mn
-        </a>
-      </h1>
-
-      <% flash.each do |name, msg| %>
-        <div class="message" id="<%= name %>">
-          <%= msg %>
-        </div>
-      <% end %>
-
-      <%= yield %>
     </div>
 
     <footer>
