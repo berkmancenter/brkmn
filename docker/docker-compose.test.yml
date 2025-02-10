@@ -1,35 +1,24 @@
 services:
   db:
-    image: 'postgres:14.6'
-    tmpfs:
-      - '/var/lib/postgresql/data'
+    image: 'postgres:14'
     environment:
-      POSTGRES_USER: ${DATABASE_USERNAME}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${DATABASE_DB_NAME}
+      POSTGRES_USER: brkmn_test
+      POSTGRES_PASSWORD: so_wow_much_secure
+      POSTGRES_DB: brkmn_test
+    restart: always
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME}"]
+      test: ["CMD-SHELL", "pg_isready -U brkmn_test"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  website:
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile
-      args:
-        RUBY_VERSION: 3.3.3
-        NODE_VERSION: 22.9.0
-        APP_ENV: test
+  app:
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - '5656:3000'
-    volumes:
-      - '..:/app'
-      - '/app/tmp'
-    env_file:
-      - ../.env.test
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
     environment:
-      DATABASE_HOST: db
+      - APP_ENV=test
+    restart: always

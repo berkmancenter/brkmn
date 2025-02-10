@@ -4,32 +4,11 @@ ARG RUBY_VERSION=3.3.3
 
 FROM ruby:${RUBY_VERSION}
 
-# Set environment variables
-ENV APP_ENV=${APP_ENV:-production}
-
-# Container user and group
+ARG APP_VERSION=3.1.0
+ARG BUILD_IMAGE
 ARG USERNAME=brkmn
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
-
-# DB credentials (these can be overridden at runtime)
-ENV DATABASE_USERNAME=brkmn_${APP_ENV}
-ENV DATABASE_PASSWORD=so_wow_much_secure
-ENV DATABASE_DB_NAME=brkmn_${APP_ENV}
-ENV DATABASE_HOST=db
-ENV DATABASE_PORT=5432
-
-# Rails specific
-ENV RAILS_ENV=${APP_ENV}
-ENV RAILS_DISABLE_SSL=true
-ENV RAILS_LOG_LEVEL=error
-
-# SMTP settings
-ENV SMTP_ADDRESS=
-ENV SMTP_PORT=
-ENV SMTP_DOMAIN=
-ENV SMTP_USERNAME=
-ENV SMTP_PASSWORD=
 
 WORKDIR /root
 
@@ -51,11 +30,21 @@ RUN apt-get update && apt-get install -y \
     sudo vim nano tmux wget
 
 # Install Chrome
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
+RUN if [ "$APP_ENV" = "test" ]; then \
+      wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+      && apt-get install -y ./google-chrome-stable_current_amd64.deb; \
+    fi
 
 WORKDIR /app
-RUN git clone https://github.com/berkmancenter/brkmn.git .
+
+# Retrieve application code
+COPY . .
+RUN if [ "$BUILD_IMAGE" = "true" ]; then \
+      rm -rf ./{*,.*} \
+      && wget https://github.com/berkmancenter/brkmn/archive/refs/tags/${APP_VERSION}.tar.gz \
+      && tar -xzf ${APP_VERSION}.tar.gz --strip-components=1 \
+      && rm ${APP_VERSION}.tar.gz; \
+    fi
 
 # Create a user
 RUN groupadd --gid $USER_GID $USERNAME \
@@ -66,8 +55,6 @@ RUN groupadd --gid $USER_GID $USERNAME \
 USER $USERNAME
 
 RUN sudo chown -R $USERNAME:$USERNAME /app
-RUN cp /app/.env.sample /app/.env.${APP_ENV}
-RUN sed -i "s/development/${APP_ENV}/g" /app/.env.${APP_ENV}
 
 # Install node modules
 RUN npm install --global yarn
@@ -81,11 +68,6 @@ RUN sudo gem install mailcatcher
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
-
-# Precompiling assets
-RUN if [ "$APP_ENV" = "production" ]; then \
-  SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile; \
-fi
 
 # To be able to create a .bash_history
 WORKDIR /home/brkmn/hist
