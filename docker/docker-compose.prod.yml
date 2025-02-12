@@ -27,6 +27,8 @@ services:
     volumes:
       - '.:/app'
     restart: always
+    environment:
+      - APP_ENV=production
 
 volumes:
   db:
