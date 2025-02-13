@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'activerecord-session_store'
 gem 'bootsnap', require: false
 gem 'cancancan'
 gem 'cssbundling-rails'

@@ -12,8 +12,8 @@
 #  superadmin           :boolean          default(FALSE)
 #  unconfirmed_email    :string
 #  username             :string(100)      not null
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
+#  created_at           :datetime
+#  updated_at           :datetime
 #
 # Indexes
 #

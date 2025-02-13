@@ -20,13 +20,13 @@ services:
       db:
         condition: service_healthy
     build:
-      context: .
+      context: ..
       dockerfile: docker/Dockerfile
     ports:
       - '8507:3000'
       - '8517:1080' # Mailcatcher
     volumes:
-      - '.:/app'
+      - '..:/app'
     restart: always
     environment:
       - APP_ENV=development

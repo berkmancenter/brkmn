@@ -1,1 +1,1 @@
-Brkmn::Application.config.session_store :cookie_store, key: '_brkmn_rails6_session'
+Brkmn::Application.config.session_store :active_record_store, key: '_brkmn_rails_session'
