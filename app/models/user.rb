@@ -62,6 +62,6 @@ class User < ApplicationRecord
       @new_record = false
     end
 
-    self.password = SecureRandom.base64(15) unless self.password.present?
+    self.encrypted_password = SecureRandom.base64(15) unless self.encrypted_password.present?
   end
 end
