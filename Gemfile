@@ -41,7 +41,6 @@ group :development do
   gem 'rubocop-factory_bot', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', '>= 2.22.0', require: false
-  gem 'tomo', '~> 1.18', require: false
   gem 'web-console'
 end
 
