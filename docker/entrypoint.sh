@@ -40,6 +40,9 @@ if [ -z "$SMTP_ADDRESS" ]; then
   echo "Mailcatcher started on port 1025 (SMTP) and 1080 (Web UI)"
 fi
 
+# Remove server pid if it exists.
+rm -f tmp/pids/server.pid
+
 # Precompiling assets.
 if [ "$APP_ENV" = "production" ]; then
   SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
