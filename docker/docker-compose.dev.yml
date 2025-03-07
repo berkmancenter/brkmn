@@ -30,6 +30,8 @@ services:
     restart: always
     environment:
       - APP_ENV=development
+    command: >
+      bash -c "./bin/dev"
 
 volumes:
   db:
