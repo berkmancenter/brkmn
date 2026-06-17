@@ -4,14 +4,12 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user.superadmin == true
-      can :manage, :all
-    end
+    return if user.blank?
 
-    if user.present?
-      can :update, Url, user_id: user.id
-      can :destroy, Url, user_id: user.id
-      can :qr, Url, user_id: user.id
-    end
+    can :manage, :all if user.superadmin?
+
+    can :update, Url, user_id: user.id
+    can :destroy, Url, user_id: user.id
+    can :qr, Url, user_id: user.id
   end
 end

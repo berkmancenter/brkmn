@@ -20,5 +20,11 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     environment:
-      - APP_ENV=test
+      APP_ENV: test
+      RAILS_ENV: test
+      DATABASE_USERNAME: brkmn_test
+      DATABASE_PASSWORD: so_wow_much_secure
+      DATABASE_DB_NAME: brkmn_test
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
     restart: always
