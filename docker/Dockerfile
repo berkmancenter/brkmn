@@ -14,7 +14,7 @@ ARG USER_GID=$USER_UID
 WORKDIR /root
 
 # Install NVM and Node.js
-ARG NODE_VERSION=22.9.0
+ARG NODE_VERSION=22.20.0
 ENV NVM_DIR=/usr/local/nvm
 ENV NODE_PATH=$NVM_DIR/v$NODE_VERSION/lib/node_modules
 ENV PATH=$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
