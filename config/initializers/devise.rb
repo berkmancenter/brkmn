@@ -315,5 +315,69 @@ Devise.setup do |config|
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
-  config.cas_create_user = true if Rails.application.config.devise_auth_type == 'cas'
+  config.cas_create_user = true if Rails.application.config.devise_auth_type == "cas"
+
+  if Rails.application.config.devise_auth_type == "saml"
+    saml_base_url = (
+      ENV["DEVISE_SAML_BASE_URL"].presence ||
+      ENV["FRONT_URL"].presence ||
+      "http://localhost:3000"
+    ).chomp("/")
+
+    config.saml_attribute_map_resolver = "Brkmn::SamlAttributeMapResolver"
+    config.saml_create_user = true
+    config.saml_update_user = true
+    config.saml_default_user_key = ENV.fetch("DEVISE_SAML_DEFAULT_USER_KEY", "email").to_sym
+    config.saml_use_subject = ENV["DEVISE_SAML_USE_SUBJECT"] == "true"
+    config.saml_validate_in_response_to = ENV["DEVISE_SAML_VALIDATE_IN_RESPONSE_TO"] == "true"
+    config.saml_sign_out_success_url = ENV.fetch("DEVISE_SAML_SIGN_OUT_SUCCESS_URL", saml_base_url)
+    config.allowed_clock_drift_in_seconds = ENV.fetch("DEVISE_SAML_ALLOWED_CLOCK_DRIFT", 0).to_i
+
+    config.saml_update_resource_hook = lambda do |user, saml_response, auth_value|
+      user.apply_saml_response(saml_response, auth_value)
+      user.save!
+    end
+
+    if ENV["DEVISE_SAML_REQUIRED_MEMBER_OF"].present?
+      config.saml_resource_validator_hook = lambda do |_user, saml_response, _auth_value|
+        Brkmn::SamlMemberOfValidator.new(saml_response).valid?
+      end
+    end
+
+    config.saml_configure do |settings|
+      settings.assertion_consumer_service_url = ENV.fetch(
+        "DEVISE_SAML_ASSERTION_CONSUMER_SERVICE_URL",
+        "#{saml_base_url}/users/saml/auth"
+      )
+      settings.assertion_consumer_service_binding = ENV.fetch(
+        "DEVISE_SAML_ASSERTION_CONSUMER_SERVICE_BINDING",
+        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+      )
+      settings.sp_entity_id = ENV.fetch("DEVISE_SAML_SP_ENTITY_ID", "#{saml_base_url}/users/saml/metadata")
+      settings.name_identifier_format = ENV.fetch(
+        "DEVISE_SAML_NAME_IDENTIFIER_FORMAT",
+        "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
+      )
+      settings.authn_context = ENV["DEVISE_SAML_AUTHN_CONTEXT"] if ENV["DEVISE_SAML_AUTHN_CONTEXT"].present?
+      settings.idp_entity_id = ENV["DEVISE_SAML_IDP_ENTITY_ID"] if ENV["DEVISE_SAML_IDP_ENTITY_ID"].present?
+
+      if ENV["DEVISE_SAML_IDP_SSO_SERVICE_URL"].present?
+        settings.idp_sso_service_url = ENV["DEVISE_SAML_IDP_SSO_SERVICE_URL"]
+      end
+
+      if ENV["DEVISE_SAML_IDP_SLO_SERVICE_URL"].present?
+        settings.idp_slo_service_url = ENV["DEVISE_SAML_IDP_SLO_SERVICE_URL"]
+      end
+
+      settings.idp_cert = ENV["DEVISE_SAML_IDP_CERT"].gsub("\\n", "\n") if ENV["DEVISE_SAML_IDP_CERT"].present?
+
+      if ENV["DEVISE_SAML_IDP_CERT_FINGERPRINT"].present?
+        settings.idp_cert_fingerprint = ENV["DEVISE_SAML_IDP_CERT_FINGERPRINT"]
+        settings.idp_cert_fingerprint_algorithm = ENV.fetch(
+          "DEVISE_SAML_IDP_CERT_FINGERPRINT_ALGORITHM",
+          "http://www.w3.org/2001/04/xmlenc#sha256"
+        )
+      end
+    end
+  end
 end

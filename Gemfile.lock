@@ -151,6 +151,9 @@ GEM
     devise_cas_authenticatable (2.0.2)
       devise (>= 4.0.0)
       rack-cas
+    devise_saml_authenticatable (2.0.0)
+      devise (> 2.0.0)
+      ruby-saml (~> 1.18)
     diff-lcs (1.6.2)
     dotenv (3.2.0)
     drb (2.2.3)
@@ -353,6 +356,9 @@ GEM
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.44.0, < 2.0)
     ruby-progressbar (1.13.0)
+    ruby-saml (1.18.1)
+      nokogiri (>= 1.13.10)
+      rexml
     rubyzip (3.4.0)
     sassc (2.4.0)
       ffi (~> 1.9)
@@ -439,6 +445,7 @@ DEPENDENCIES
   debug
   devise
   devise_cas_authenticatable
+  devise_saml_authenticatable
   dotenv (>= 3.0)
   erb_lint
   factory_bot_rails
