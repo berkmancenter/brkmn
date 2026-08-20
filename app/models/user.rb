@@ -39,6 +39,10 @@ class User < ApplicationRecord
     before_validation :set_username
   end
 
+  if Rails.application.config.devise_auth_type == "headers"
+    devise :rememberable
+  end
+
   if Rails.application.config.devise_auth_type == "db"
     devise_modules = [:database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable]
     devise(*devise_modules)
@@ -75,6 +79,25 @@ class User < ApplicationRecord
     self.username = email if username.blank?
   end
 
+  def self.from_auth_headers(email:, name:)
+    normalized_email = email.strip.downcase
+    user = where("LOWER(email) = ?", normalized_email).first_or_initialize
+    user.email = normalized_email
+    user.username = name.strip
+    user.set_random_password
+    user.skip_confirmation! if user.respond_to?(:skip_confirmation!)
+    user.save!
+    user
+  end
+
+  def set_random_password
+    return if encrypted_password.present?
+
+    random_password = SecureRandom.base64(15)
+    self.password = random_password if respond_to?(:password=)
+    self.encrypted_password = random_password if encrypted_password.blank?
+  end
+
   private
 
   def assign_external_attributes(email: nil, username: nil)
@@ -109,6 +132,6 @@ class User < ApplicationRecord
       @new_record = false
     end
 
-    self.encrypted_password = SecureRandom.base64(15) if encrypted_password.blank?
+    set_random_password
   end
 end

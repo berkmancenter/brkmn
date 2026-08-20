@@ -40,7 +40,7 @@ module Brkmn
     config.default_sender = ENV['DEFAULT_SENDER'] || 'no-reply@example.com'
     config.return_path = ENV['RETURN_PATH'] || 'user@example.com'
 
-    # Devise authentication type
+    # Devise authentication type (db, cas, saml, or headers)
     config.devise_auth_type = ENV["DEVISE_AUTH_TYPE"] || "db"
 
     # devise_cas_authenticatable configuration

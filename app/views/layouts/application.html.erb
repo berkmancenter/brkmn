@@ -62,7 +62,7 @@
               <span>
                 <% if Rails.application.config.devise_auth_type == 'cas' %>
                   <%= link_to 'Sign out', cas_logout_users_path, method: :get, data: { turbo: false } %>
-                <% else %>
+                <% elsif Rails.application.config.devise_auth_type != 'headers' %>
                   <%= link_to 'Sign out', destroy_user_session_path, method: :delete, data: { turbo_method: :delete } %>
                 <% end %>
               </span>
