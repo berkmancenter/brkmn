@@ -41,6 +41,7 @@
 
 /node_modules
 node_modules/
+/rspec_examples.txt
 /spec/examples.txt
 !/.env.sample
 
