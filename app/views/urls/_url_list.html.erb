@@ -4,7 +4,11 @@
       <div class="shortened-title">
         <%= link_to(url_list.shortened, shortened_url(url_list.shortened)) %>
       </div>
-      <div class="shortened-actions">
+      <div
+        class="shortened-actions"
+        data-controller="url-details"
+        data-url-details-details-url-value="<%= details_url_path(url_list) %>"
+        data-url-details-auto-open-value="<%= modal_error_for(url_list).present? %>">
         <div>
           <a class="urls-table-clipboard"
             title="Click to copy to clipboard"
@@ -32,6 +36,18 @@
               <%= image_tag('delete.svg') %>
             <% end %>
           <% end %>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="link_details_button"
+            title="Sharing and link details"
+            aria-label="View sharing and link details for <%= url_list.shortened %>"
+            data-action="url-details#open">
+            <%= can?(:share, url_list) ? "Share" : "Details" %>
+          </button>
+          <%= render "urls/details_dialog", url: url_list %>
         </div>
       </div>
 

@@ -5,12 +5,15 @@ Rails.application.routes.draw do
   devise_for :users, controllers: { registrations: 'registrations' }
 
   resources :urls do
+    resources :collaborators, only: %i[create destroy], controller: "url_collaborators"
+    resources :access_requests, only: %i[create update], controller: "url_access_requests"
     collection do
       get 'url_list'
       get 'bookmarklet'
       get 'search'
     end
     member do
+      get :details
       get :qr
     end
   end

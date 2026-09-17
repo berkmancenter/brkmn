@@ -60,15 +60,22 @@ class UrlsController < ApplicationController
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def edit
-    @url = Url.find(params[:id])
+    @url = Url.includes(:url_collaborators).find(params[:id])
     authorize! :update, @url
   end
 
+  def details
+    @url = Url.with_sharing_details.find(params[:id])
+    authorize! :read, @url
+
+    render partial: "urls/details_dialog", locals: {url: @url}
+  end
+
   def update
-    @url = Url.find(params[:id])
+    @url = Url.includes(:url_collaborators).find(params[:id])
     authorize! :update, @url
 
-    if @url.update(update_url_params)
+    if @url.update_with_editor(update_url_params, editor: current_user)
       redirect_to urls_path
     else
       render 'edit'
@@ -134,11 +141,12 @@ class UrlsController < ApplicationController
   end
 
   def organized(relation, page_indicator)
-    relation.order(sort_column + ' ' + sort_direction)
-            .paginate(
-              page: url_params[page_indicator],
-              per_page: url_params[:per_page]
-            )
+    relation.with_sharing_details
+      .order(sort_column + ' ' + sort_direction)
+      .paginate(
+        page: url_params[page_indicator],
+        per_page: url_params[:per_page]
+      )
   end
 
   # rubocop:disable Metrics/MethodLength

@@ -1,0 +1,28 @@
+<div id="<%= dom_id(url, :access_requests) %>">
+  <% pending_requests = url.url_access_requests.select(&:pending?) %>
+  <% if can?(:share, url) && pending_requests.any? %>
+    <section class="link_details__section link_details__requests">
+      <h3>Access requests</h3>
+      <% pending_requests.each do |access_request| %>
+        <div class="link_details__person">
+          <div class="link_details__avatar" aria-hidden="true">
+            <%= user_email_initial(access_request.user) %>
+          </div>
+          <div class="link_details__identity">
+            <strong><%= user_email_address(access_request.user) %></strong>
+          </div>
+          <div class="link_details__request_actions">
+            <%= form_with url: url_access_request_path(url, access_request), method: :patch do |form| %>
+              <%= form.hidden_field :decision, value: "approve", id: nil %>
+              <%= form.button "Approve", class: "link_details__button link_details__button--primary" %>
+            <% end %>
+            <%= form_with url: url_access_request_path(url, access_request), method: :patch do |form| %>
+              <%= form.hidden_field :decision, value: "deny", id: nil %>
+              <%= form.button "Deny", class: "link_details__button" %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </section>
+  <% end %>
+</div>

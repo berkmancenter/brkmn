@@ -1,0 +1,9 @@
+<div id="<%= dom_id(url, :sharing_feedback) %>" class="link_details__feedback" data-url-details-target="feedback">
+  <% if message.present? %>
+    <% if type == :error %>
+      <div class="link_details__message link_details__message--error" role="alert"><%= message %></div>
+    <% else %>
+      <div class="link_details__message link_details__message--notice" role="status"><%= message %></div>
+    <% end %>
+  <% end %>
+</div>

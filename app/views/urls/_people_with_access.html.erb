@@ -1,0 +1,36 @@
+<section id="<%= dom_id(url, :people_with_access) %>" class="link_details__section">
+  <h3>People with access</h3>
+  <div class="link_details__person">
+    <div class="link_details__avatar" aria-hidden="true">
+      <%= user_email_initial(url.user) %>
+    </div>
+    <div class="link_details__identity">
+      <% if url.user.present? %>
+        <strong><%= user_email_address(url.user) %></strong>
+      <% else %>
+        <strong>Unowned link</strong>
+        <span>Administrators can manage access</span>
+      <% end %>
+    </div>
+    <span class="link_details__role">Owner</span>
+  </div>
+
+  <% ordered_url_collaborators(url).each do |collaboration| %>
+    <div class="link_details__person">
+      <div class="link_details__avatar" aria-hidden="true">
+        <%= user_email_initial(collaboration.user) %>
+      </div>
+      <div class="link_details__identity">
+        <strong><%= user_email_address(collaboration.user) %></strong>
+      </div>
+      <% if can?(:share, url) %>
+        <% remove_data = {turbo_confirm: "Remove this user's edit access?"} %>
+        <%= form_with url: url_collaborator_path(url, collaboration), method: :delete, data: remove_data do |form| %>
+          <%= form.button "Remove", class: "link_details__remove" %>
+        <% end %>
+      <% else %>
+        <span class="link_details__role">Editor</span>
+      <% end %>
+    </div>
+  <% end %>
+</section>

@@ -1,0 +1,14 @@
+<div id="<%= dom_id(url, :access_request_footer) %>">
+  <% unless can?(:update, url) %>
+    <% current_request = current_url_access_request(url) %>
+    <div class="link_details__footer">
+      <% if current_request&.pending? %>
+        <span class="link_details__pending">Edit access requested</span>
+      <% else %>
+        <%= form_with url: url_access_requests_path(url), method: :post do |form| %>
+          <%= form.button "Request edit access", class: "link_details__button link_details__button--primary" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -126,20 +126,24 @@ RSpec.describe Url, type: :model do
   end
 
   describe 'scopes' do
-    it 'returns only my urls with .mine' do
+    it "returns owned and shared urls with .mine" do
       Url.destroy_all
       user_normal = create(:user)
-      create(:url, to: 'https://indigodragonfly.ca/', user: user_normal)
+      owned_url = create(:url, to: "https://indigodragonfly.ca/", user: user_normal)
+      shared_url = create(:url, to: "https://shared.example.com/", user: create(:user))
+      UrlCollaborator.create!(url: shared_url, user: user_normal, granted_by: shared_url.user)
       create(:url, to: 'https://fiberopticyarns.com/')
       create(:url, to: 'https://shop.thebluebrick.ca/', user: create(:user))
 
-      expect(Url.mine(user_normal)).to match_array([Url.first])
+      expect(Url.mine(user_normal)).to match_array([owned_url, shared_url])
     end
 
-    it "returns only others' urls with .not_mine" do
+    it "excludes owned and shared urls from .not_mine" do
       Url.destroy_all
       user_normal = create(:user)
       create(:url, to: 'https://indigodragonfly.ca/', user: user_normal)
+      shared_url = create(:url, to: "https://shared.example.com/", user: create(:user))
+      UrlCollaborator.create!(url: shared_url, user: user_normal, granted_by: shared_url.user)
       unowned_urls = [
         create(:url, to: 'https://fiberopticyarns.com/'),
         create(:url, to: 'https://shop.thebluebrick.ca/', user: create(:user))
@@ -168,6 +172,48 @@ RSpec.describe Url, type: :model do
 
     it 'handles a nil argument' do
       expect(Url.search(nil)).to eq(Url.all)
+    end
+  end
+
+  describe 'shared editing' do
+    let(:owner) { create(:user) }
+    let(:editor) { create(:user) }
+    let(:url) { create(:url, user: owner) }
+
+    it 'recognizes the owner and collaborators as editors' do
+      UrlCollaborator.create!(url: url, user: editor, granted_by: owner)
+
+      expect(url.editable_by?(owner)).to be(true)
+      expect(url.editable_by?(editor)).to be(true)
+      expect(url.editable_by?(create(:user))).to be(false)
+    end
+
+    it 'records the user and time when the destination changes' do
+      initial_edit_time = 1.hour.ago
+      url.update_columns(last_edited_at: initial_edit_time)
+
+      expect(url.update_with_editor({to: 'https://example.org/changed'}, editor: editor)).to be(true)
+      expect(url.last_edited_by).to eq(editor)
+      expect(url.last_edited_at).to be > initial_edit_time
+    end
+
+    it 'does not change edit attribution when the destination is unchanged' do
+      initial_editor = url.last_edited_by
+      initial_edit_time = url.last_edited_at
+
+      url.update_with_editor({to: url.to}, editor: editor)
+
+      expect(url.last_edited_by).to eq(initial_editor)
+      expect(url.last_edited_at).to eq(initial_edit_time)
+    end
+
+    it 'does not attribute an invalid edit' do
+      initial_editor = url.last_edited_by
+      initial_edit_time = url.last_edited_at
+
+      expect(url.update_with_editor({to: 'https://ex ample.org'}, editor: editor)).to be(false)
+      expect(url.last_edited_by).to eq(initial_editor)
+      expect(url.last_edited_at).to eq(initial_edit_time)
     end
   end
 end

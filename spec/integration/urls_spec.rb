@@ -189,17 +189,22 @@ RSpec.describe 'Urls', type: :feature do
         to: my_link,
         user: user
       )
+      shared_owner = create(:user)
+      shared_link = create(:url, to: "https://example.org/shared-with-me", user: shared_owner)
+      UrlCollaborator.create!(url: shared_link, user: user, granted_by: shared_owner)
 
       visit urls_path
 
       within '#my_urls' do
         find_link my_link
-        expect(find_all('td.to').count).to eq(1)
+        find_link shared_link.to
+        expect(find_all('td.to').count).to eq(2)
       end
 
       within '#not_my_urls' do
         find_link redirect_url
-        expect(find_all('td.to').count).to eq(Url.count - 1)
+        expect(page).to have_no_link(shared_link.to)
+        expect(find_all('td.to').count).to eq(Url.count - 2)
       end
     end
   end

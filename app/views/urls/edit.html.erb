@@ -25,6 +25,16 @@
     <br>
     <br>
 
+    <%= f.label :last_edited_at, "Last edit" %>
+    <% if @url.last_edited_at.present? %>
+      <%= user_display_name(@url.last_edited_by) %>,
+      <%= @url.last_edited_at.strftime("%Y-%m-%d %H:%M") %>
+    <% else %>
+      No edits recorded
+    <% end %>
+    <br>
+    <br>
+
     <%= f.submit 'Update' %>
   <% end %>
 </div>

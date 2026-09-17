@@ -34,6 +34,14 @@ RSpec.describe Ability, type: :model do
       expect(ability.can?(:destroy, other_url)).to be(false)
       expect(ability.can?(:qr, other_url)).to be(false)
     end
+
+    it "can update a shared URL without receiving owner-only permissions" do
+      UrlCollaborator.create!(url: other_url, user: user, granted_by: other_url.user)
+
+      expect(ability.can?(:update, other_url)).to be(true)
+      expect(ability.can?(:destroy, other_url)).to be(false)
+      expect(ability.can?(:share, other_url)).to be(false)
+    end
   end
 
   context "without a signed-in user" do

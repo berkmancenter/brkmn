@@ -79,7 +79,7 @@
           </a>
         </h1>
 
-        <% flash.each do |name, msg| %>
+        <% visible_flash_messages.each do |name, msg| %>
           <div class="message" id="<%= name %>">
             <%= msg %>
           </div>

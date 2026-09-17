@@ -1,0 +1,10 @@
+<h1>Edit access requested</h1>
+
+<p>
+  <strong><%= @requester.email %></strong> requested edit access to
+  <strong><%= @url.shortened %></strong>.
+</p>
+
+<p>Destination: <%= @url.to %></p>
+
+<p><a href="<%= @review_url %>">Review the access request</a></p>

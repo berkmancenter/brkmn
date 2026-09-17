@@ -1,0 +1,61 @@
+<% modal_error = modal_error_for(url) %>
+<dialog
+  class="link_details"
+  aria-labelledby="link-details-title-<%= url.id %>"
+  data-url-details-target="dialog"
+  data-action="click->url-details#close_on_backdrop close->url-details#clearFeedback">
+  <div class="link_details__header">
+    <div>
+      <h2 id="link-details-title-<%= url.id %>">Share "<%= url.shortened %>"</h2>
+      <p><%= link_to shortened_url(url.shortened), shortened_url(url.shortened) %></p>
+    </div>
+    <button
+      type="button"
+      class="link_details__close"
+      aria-label="Close link details"
+      data-action="url-details#close">×</button>
+  </div>
+
+  <%= render "urls/sharing_feedback", url: url, message: modal_error, type: :error %>
+
+  <% if can?(:share, url) %>
+    <div class="link_details__share">
+      <h3>Share edit access</h3>
+      <% email_id = "collaborator_email_#{url.id}" %>
+      <% email_label = "Email address" %>
+      <% label_options = {for: email_id, class: "link_details__visually_hidden"} %>
+      <% field_options = {id: email_id, placeholder: email_label} %>
+      <% field_options.merge!(required: true, autocomplete: "email") %>
+      <% share_form_data = {action: "turbo:submit-end->url-details#clearShareForm"} %>
+      <%= form_with url: url_collaborators_path(url),
+            method: :post,
+            class: "link_details__share_form",
+            data: share_form_data do |form| %>
+        <%= form.label :email, email_label, label_options %>
+        <%= form.email_field :email, field_options %>
+        <%= form.submit "Share" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <%= render "urls/access_requests", url: url %>
+
+  <% if url.editable_by?(current_user) %>
+    <%= render "urls/people_with_access", url: url %>
+
+    <section class="link_details__section link_details__activity">
+      <h3>Last edit</h3>
+      <% if url.last_edited_at.present? %>
+        <p>
+          <strong><%= user_email_address(url.last_edited_by, fallback: "Unknown user") %></strong>
+          edited this link
+          <time datetime="<%= url.last_edited_at.iso8601 %>"><%= time_ago_in_words(url.last_edited_at) %> ago</time>.
+        </p>
+      <% else %>
+        <p>No edits have been recorded yet.</p>
+      <% end %>
+    </section>
+  <% end %>
+
+  <%= render "urls/access_request_footer", url: url %>
+</dialog>

@@ -27,6 +27,26 @@ require "securerandom"
 #
 
 class User < ApplicationRecord
+  has_many :urls, dependent: :nullify
+  has_many :url_collaborators, dependent: :destroy
+  has_many :granted_url_collaborations,
+    class_name: "UrlCollaborator",
+    foreign_key: :granted_by_id,
+    dependent: :nullify,
+    inverse_of: :granted_by
+  has_many :shared_urls, through: :url_collaborators, source: :url
+  has_many :url_access_requests, dependent: :destroy
+  has_many :resolved_url_access_requests,
+    class_name: "UrlAccessRequest",
+    foreign_key: :resolved_by_id,
+    dependent: :nullify,
+    inverse_of: :resolved_by
+  has_many :edited_urls,
+    class_name: "Url",
+    foreign_key: :last_edited_by_id,
+    dependent: :nullify,
+    inverse_of: :last_edited_by
+
   if Rails.application.config.devise_auth_type == "cas"
     devise :cas_authenticatable, :rememberable
     before_validation :match_existing_user
