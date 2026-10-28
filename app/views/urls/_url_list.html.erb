@@ -24,19 +24,21 @@
           <% end %>
         </div>
 
-        <div>
-          <% if can?(:update, url_list) %>
+        <% if can?(:update, url_list) %>
+          <div>
             <%= link_to(edit_url_path(url_list), title: 'Edit', data: { turbo: false }) do %>
               <%= image_tag('edit.svg') %>
             <% end %>
-          <% end %>
+          </div>
+        <% end %>
 
-          <% if can?(:destroy, url_list) %>
+        <% if can?(:destroy, url_list) %>
+          <div>
             <%= link_to(url_path(url_list), title: 'Delete', method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this?" }) do %>
               <%= image_tag('delete.svg') %>
             <% end %>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
 
         <div>
           <button
@@ -45,7 +47,7 @@
             title="Sharing and link details"
             aria-label="View sharing and link details for <%= url_list.shortened %>"
             data-action="url-details#open">
-            <%= can?(:share, url_list) ? "Share" : "Details" %>
+            <%= image_tag("share.svg", alt: "") %>
           </button>
           <%= render "urls/details_dialog", url: url_list %>
         </div>

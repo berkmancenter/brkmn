@@ -1,36 +1,37 @@
-<section id="<%= dom_id(url, :people_with_access) %>" class="link_details__section">
-  <h3>People with access</h3>
-  <div class="link_details__person">
-    <div class="link_details__avatar" aria-hidden="true">
-      <%= user_email_initial(url.user) %>
-    </div>
-    <div class="link_details__identity">
+<div id="<%= dom_id(url, :people_with_access) %>">
+  <% collaborations = ordered_url_collaborators(url) %>
+  <% if url.user.present? || collaborations.any? %>
+    <section class="link_details__section">
+      <h3>People with access</h3>
       <% if url.user.present? %>
-        <strong><%= user_email_address(url.user) %></strong>
-      <% else %>
-        <strong>Unowned link</strong>
-        <span>Administrators can manage access</span>
+        <div class="link_details__person">
+          <div class="link_details__avatar" aria-hidden="true">
+            <%= user_email_initial(url.user) %>
+          </div>
+          <span class="link_details__email"><%= user_email_address(url.user) %></span>
+          <span class="link_details__role">Owner</span>
+        </div>
       <% end %>
-    </div>
-    <span class="link_details__role">Owner</span>
-  </div>
 
-  <% ordered_url_collaborators(url).each do |collaboration| %>
-    <div class="link_details__person">
-      <div class="link_details__avatar" aria-hidden="true">
-        <%= user_email_initial(collaboration.user) %>
-      </div>
-      <div class="link_details__identity">
-        <strong><%= user_email_address(collaboration.user) %></strong>
-      </div>
-      <% if can?(:share, url) %>
-        <% remove_data = {turbo_confirm: "Remove this user's edit access?"} %>
-        <%= form_with url: url_collaborator_path(url, collaboration), method: :delete, data: remove_data do |form| %>
-          <%= form.button "Remove", class: "link_details__remove" %>
-        <% end %>
-      <% else %>
-        <span class="link_details__role">Editor</span>
+      <% collaborations.each do |collaboration| %>
+        <div class="link_details__person">
+          <div class="link_details__avatar" aria-hidden="true">
+            <%= user_email_initial(collaboration.user) %>
+          </div>
+          <span class="link_details__email"><%= user_email_address(collaboration.user) %></span>
+          <% if can?(:share, url) %>
+            <% remove_label = "Remove edit access for #{user_email_address(collaboration.user)}" %>
+            <% remove_data = {turbo_confirm: "Remove this user's edit access?"} %>
+            <%= form_with url: url_collaborator_path(url, collaboration), method: :delete, data: remove_data do |form| %>
+              <%= form.button class: "link_details__remove", title: "Remove access", aria: {label: remove_label} do %>
+                <%= image_tag("delete.svg", alt: "") %>
+              <% end %>
+            <% end %>
+          <% else %>
+            <span class="link_details__role">Editor</span>
+          <% end %>
+        </div>
       <% end %>
-    </div>
+    </section>
   <% end %>
-</section>
+</div>

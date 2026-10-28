@@ -8,9 +8,7 @@
           <div class="link_details__avatar" aria-hidden="true">
             <%= user_email_initial(access_request.user) %>
           </div>
-          <div class="link_details__identity">
-            <strong><%= user_email_address(access_request.user) %></strong>
-          </div>
+          <span class="link_details__email"><%= user_email_address(access_request.user) %></span>
           <div class="link_details__request_actions">
             <%= form_with url: url_access_request_path(url, access_request), method: :patch do |form| %>
               <%= form.hidden_field :decision, value: "approve", id: nil %>

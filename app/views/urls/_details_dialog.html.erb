@@ -4,23 +4,23 @@
   aria-labelledby="link-details-title-<%= url.id %>"
   data-url-details-target="dialog"
   data-action="click->url-details#close_on_backdrop close->url-details#clearFeedback">
+  <button
+    type="button"
+    class="link_details__close"
+    aria-label="Close link details"
+    data-action="url-details#close">×</button>
+
   <div class="link_details__header">
-    <div>
-      <h2 id="link-details-title-<%= url.id %>">Share "<%= url.shortened %>"</h2>
-      <p><%= link_to shortened_url(url.shortened), shortened_url(url.shortened) %></p>
-    </div>
-    <button
-      type="button"
-      class="link_details__close"
-      aria-label="Close link details"
-      data-action="url-details#close">×</button>
+    <h2 id="link-details-title-<%= url.id %>">
+      <%= can?(:share, url) ? "Share edit access to" : "Details for" %> "<%= url.shortened %>"
+    </h2>
+    <p><%= link_to shortened_url(url.shortened), shortened_url(url.shortened) %></p>
   </div>
 
   <%= render "urls/sharing_feedback", url: url, message: modal_error, type: :error %>
 
   <% if can?(:share, url) %>
     <div class="link_details__share">
-      <h3>Share edit access</h3>
       <% email_id = "collaborator_email_#{url.id}" %>
       <% email_label = "Email address" %>
       <% label_options = {for: email_id, class: "link_details__visually_hidden"} %>
@@ -43,18 +43,16 @@
   <% if url.editable_by?(current_user) %>
     <%= render "urls/people_with_access", url: url %>
 
-    <section class="link_details__section link_details__activity">
-      <h3>Last edit</h3>
-      <% if url.last_edited_at.present? %>
+    <% if url.last_edited_at.present? %>
+      <section class="link_details__section link_details__activity">
+        <h3>Last edit</h3>
         <p>
-          <strong><%= user_email_address(url.last_edited_by, fallback: "Unknown user") %></strong>
-          edited this link
+          <%= user_email_address(url.last_edited_by, fallback: "Unknown user") %>
+          edited
           <time datetime="<%= url.last_edited_at.iso8601 %>"><%= time_ago_in_words(url.last_edited_at) %> ago</time>.
         </p>
-      <% else %>
-        <p>No edits have been recorded yet.</p>
-      <% end %>
-    </section>
+      </section>
+    <% end %>
   <% end %>
 
   <%= render "urls/access_request_footer", url: url %>

@@ -262,18 +262,38 @@ RSpec.describe "Urls", type: :request do
 
   describe "GET /urls" do
     it "renders owner, collaborator, and last-edit details in the sharing dialog" do
-      url = create(:url, user: user)
       collaborator = create(:user)
+      url = create(:url, user: user, last_edited_by: collaborator, last_edited_at: 5.minutes.ago)
       UrlCollaborator.create!(url: url, user: collaborator, granted_by: user)
 
       get urls_path
 
-      expect(response.body).to include(%(Share "#{url.shortened}"))
+      expect(response.body).to include(%(Share edit access to "#{url.shortened}"))
       expect(response.body).to include(user.email)
       expect(response.body).to include(collaborator.email)
       expect(response.body).not_to include(collaborator.username)
       expect(response.body).to include("Last edit")
+      expect(response.body).to include("5 minutes ago")
       expect(response.body).to include(%(data-url-details-details-url-value="#{details_url_path(url)}"))
+    end
+
+    it "omits the last-edit section when no edits have been recorded" do
+      create(:url, user: user)
+
+      get urls_path
+
+      expect(response.body).to include("People with access")
+      expect(response.body).not_to include("Last edit")
+    end
+
+    it "omits people with access for an unowned link without collaborators" do
+      sign_in(create(:user, :superadmin))
+      create(:url, user: nil)
+
+      get urls_path
+
+      expect(response.body).not_to include("People with access")
+      expect(response.body).not_to include(">Owner<")
     end
   end
 
