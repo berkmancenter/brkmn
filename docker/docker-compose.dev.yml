@@ -31,7 +31,7 @@ services:
     environment:
       - APP_ENV=development
     command: >
-      bash -c "./bin/dev"
+      bash -c "bundle install && yarn install && ./bin/rails db:prepare && ./bin/dev"
 
 volumes:
   db:
