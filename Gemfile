@@ -13,6 +13,8 @@ gem 'dotenv', '>= 3.0'
 gem 'good_migrations'
 gem 'importmap-rails'
 gem 'jbuilder'
+# json 3.x rejects the quirks_mode option ActiveSupport 7.2 passes to JSON.generate
+gem 'json', '~> 2.19'
 gem 'pg', '~> 1.1'
 gem 'puma', '>= 5.0'
 gem 'rack-canonical-host'

@@ -195,7 +195,7 @@ GEM
     jbuilder (2.15.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (3.1.0)
+    json (2.19.9)
     language_server-protocol (3.17.0.6)
     lint_roller (1.1.0)
     logger (1.7.0)
@@ -453,6 +453,7 @@ DEPENDENCIES
   good_migrations
   importmap-rails
   jbuilder
+  json (~> 2.19)
   pg (~> 1.1)
   puma (>= 5.0)
   rack-canonical-host
