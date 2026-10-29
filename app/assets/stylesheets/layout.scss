@@ -1,3 +1,7 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
 .wrapper {
   width: 90%;
   max-width: 1400px;
@@ -68,7 +72,7 @@
 
 h1.site-title {
   font-size: 2rem;
-  color: map-get($colors, primary);
+  color: map.get($colors, primary);
   margin-top: 0;
   max-height: 4rem;
   display: flex;
@@ -112,7 +116,7 @@ footer {
     text-decoration: none;
 
     &:hover {
-      color: map-get($colors, secondary);
+      color: map.get($colors, secondary);
       text-decoration: underline;
     }
   }

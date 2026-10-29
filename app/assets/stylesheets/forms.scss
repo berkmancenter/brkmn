@@ -1,13 +1,17 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
 input[type="text"] {
   padding: 10px;
-  border: 1px solid map-get($colors, light-border);
+  border: 1px solid map.get($colors, light-border);
   max-width: 100%;
   @include rounded-corners(0.5rem);
 
   &:focus,
   &:active,
   &:focus-visible {
-    border-color: map-get($colors, primary-light);
+    border-color: map.get($colors, primary-light);
   }
 }
 
@@ -22,7 +26,7 @@ form {
 
   label {
     font-weight: bold;
-    color: map-get($colors, primary);
+    color: map.get($colors, primary);
   }
 }
 

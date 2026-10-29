@@ -1,3 +1,7 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
 .top_pagination,
 .bottom_pagination {
   background-color: #fff;
@@ -23,11 +27,11 @@
       margin-right: 0.5rem;
       white-space: nowrap;
       background-color: #fff;
-      color: map-get($colors, primary);
+      color: map.get($colors, primary);
       margin-top: 0.25rem;
 
       &.current {
-        background-color: map-get($colors, primary);
+        background-color: map.get($colors, primary);
         color: #fff;
         cursor: default;
       }
@@ -37,7 +41,7 @@
 
         &:hover {
           background-color: #fff;
-          color: map-get($colors, primary);
+          color: map.get($colors, primary);
         }
       }
 

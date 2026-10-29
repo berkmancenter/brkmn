@@ -1,3 +1,7 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
 #notice,
 #warning,
 #error,
@@ -11,7 +15,7 @@
 }
 
 #notice {
-  background-color: map-get($colors, secondary);
+  background-color: map.get($colors, secondary);
 }
 
 #warning {
@@ -21,5 +25,5 @@
 #alert,
 #error,
 #error_explanation {
-  background-color: map-get($colors, error);
+  background-color: map.get($colors, error);
 }

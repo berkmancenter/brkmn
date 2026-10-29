@@ -1,3 +1,7 @@
+@use 'sass:map';
+@use 'variables' as *;
+@use 'mixins' as *;
+
 #my_urls_frame + #not_my_urls_frame {
   margin-top: 1rem;
 
@@ -24,7 +28,7 @@
 
 .urls-table-wrapper {
   overflow-x: auto;
-  border: 1px solid map-get($colors, light-border);
+  border: 1px solid map.get($colors, light-border);
   @include box-shadow;
   @include rounded-corners;
 }
@@ -32,12 +36,12 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  background-color: map-get($colors, light-blue);
+  background-color: map.get($colors, light-blue);
 
   th,
   td {
     padding: 0.2rem 0.5rem;
-    border: 1px solid map-get($colors, light-border);
+    border: 1px solid map.get($colors, light-border);
     text-align: left;
     vertical-align: middle;
 
@@ -51,7 +55,7 @@ table {
     background-color: #fafafa;
 
     &.hilite {
-      background-color: map-get($colors, primary-light);
+      background-color: map.get($colors, primary-light);
     }
 
     .current {
@@ -71,7 +75,7 @@ table {
 
   tr {
     &:hover {
-      background-color: map-get($colors, primary-light);
+      background-color: map.get($colors, primary-light);
       @include transition(background-color, 0.3s);
 
       &:first-child {
@@ -193,7 +197,7 @@ table {
   overflow-y: auto;
   border: 0;
   border-radius: 0.75rem;
-  color: map-get($colors, text);
+  color: map.get($colors, text);
   background: #fff;
   box-shadow: 0 1rem 3rem #0006;
 
@@ -229,7 +233,7 @@ table {
 
 .link_details__header {
   padding-right: 3rem;
-  border-bottom: 1px solid map-get($colors, light-border);
+  border-bottom: 1px solid map.get($colors, light-border);
 }
 
 .link_details__close {
@@ -247,7 +251,7 @@ table {
   cursor: pointer;
 
   &:hover {
-    background: map-get($colors, light-blue);
+    background: map.get($colors, light-blue);
   }
 }
 
@@ -258,7 +262,7 @@ table {
   input[type="email"] {
     flex: 1;
     padding: 10px;
-    border: 1px solid map-get($colors, light-border);
+    border: 1px solid map.get($colors, light-border);
     @include rounded-corners(0.5rem);
   }
 }
@@ -284,7 +288,7 @@ table {
 
 .link_details__section,
 .link_details__footer {
-  border-top: 1px solid map-get($colors, light-border);
+  border-top: 1px solid map.get($colors, light-border);
 }
 
 .link_details__person {
@@ -302,7 +306,7 @@ table {
   place-items: center;
   border-radius: 50%;
   color: #fff;
-  background: map-get($colors, secondary);
+  background: map.get($colors, secondary);
   font-weight: bold;
 }
 
@@ -334,7 +338,7 @@ table {
   }
 
   &:hover {
-    background: map-get($colors, light-blue);
+    background: map.get($colors, light-blue);
   }
 }
 
@@ -349,17 +353,17 @@ table {
 
 .link_details__button {
   padding: 0.45rem 0.75rem;
-  border: 1px solid map-get($colors, light-border);
+  border: 1px solid map.get($colors, light-border);
   border-radius: 1rem;
-  color: map-get($colors, text);
+  color: map.get($colors, text);
   background: #fff;
   cursor: pointer;
 }
 
 .link_details__button--primary {
-  border-color: map-get($colors, primary);
+  border-color: map.get($colors, primary);
   color: #fff;
-  background: map-get($colors, primary);
+  background: map.get($colors, primary);
 }
 
 .link_details__footer {
