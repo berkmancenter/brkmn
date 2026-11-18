@@ -87,6 +87,17 @@ module Api
       end
 
       def serialize(url)
+        owned_by_you = url.owned_by?(current_user)
+        can_view_user_details = can?(:update, url)
+        user_details = if can_view_user_details
+          {
+            owner: user_summary(url.user),
+            last_edited_by: user_summary(url.last_edited_by)
+          }
+        else
+          {}
+        end
+
         {
           id: url.id,
           shortened: url.shortened,
@@ -95,13 +106,12 @@ module Api
           auto_generated: url.auto,
           clicks: url.clicks,
           qr_code_url: qr_api_v1_url_url(url),
-          owner: user_summary(url.user),
-          owned_by_you: url.owned_by?(current_user),
+          **user_details,
+          owned_by_you: owned_by_you,
           permissions: {
-            update: writable? && can?(:update, url),
+            update: writable? && can_view_user_details,
             destroy: writable? && can?(:destroy, url)
           },
-          last_edited_by: user_summary(url.last_edited_by),
           last_edited_at: url.last_edited_at,
           created_at: url.created_at,
           updated_at: url.updated_at

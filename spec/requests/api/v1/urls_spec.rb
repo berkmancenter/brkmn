@@ -80,6 +80,35 @@ RSpec.describe "API v1 URLs", type: :request do
       expect(by_id[other.id]["permissions"]).to eq("update" => false, "destroy" => false)
     end
 
+    it "includes user fields for owners, editors, and superadmins but not unrelated accounts" do
+      editor = create(:user)
+      own.update!(last_edited_by: editor, last_edited_at: Time.current)
+      shared.update!(last_edited_by: editor, last_edited_at: Time.current)
+      other.update!(last_edited_by: editor, last_edited_at: Time.current)
+
+      get api_v1_urls_path(scope: "all"), headers: headers
+      by_id = json["urls"].index_by { |url| url["id"] }
+
+      expect(by_id[own.id]["owner"]).to eq("id" => user.id, "email" => user.email)
+      expect(by_id[own.id]["last_edited_by"]).to eq("id" => editor.id, "email" => editor.email)
+      expect(by_id[shared.id]["owner"]).to eq("id" => shared.user.id, "email" => shared.user.email)
+      expect(by_id[shared.id]["last_edited_by"]).to eq("id" => editor.id, "email" => editor.email)
+      expect(by_id[other.id]).not_to have_key("owner")
+      expect(by_id[other.id]).not_to have_key("last_edited_by")
+
+      token.update!(access_level: :read_only)
+      get api_v1_url_path(shared), headers: headers
+
+      expect(json["url"]["owner"]).to eq("id" => shared.user.id, "email" => shared.user.email)
+      expect(json["url"]["last_edited_by"]).to eq("id" => editor.id, "email" => editor.email)
+
+      user.update!(superadmin: true)
+      get api_v1_url_path(other), headers: headers
+
+      expect(json["url"]["owner"]).to eq("id" => other.user.id, "email" => other.user.email)
+      expect(json["url"]["last_edited_by"]).to eq("id" => editor.id, "email" => editor.email)
+    end
+
     context "with a read-only token" do
       let(:access_level) { :read_only }
 

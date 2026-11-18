@@ -251,7 +251,10 @@ components:
       required: [id, email]
       properties:
         id: { type: integer, example: 42 }
-        email: { type: string, format: email, example: you@example.org }
+        email:
+          type: string
+          format: email
+          example: you@example.org
 
     Url:
       type: object
@@ -263,10 +266,8 @@ components:
         - auto_generated
         - clicks
         - qr_code_url
-        - owner
         - owned_by_you
         - permissions
-        - last_edited_by
         - last_edited_at
         - created_at
         - updated_at
@@ -298,6 +299,7 @@ components:
           description: API address of the QR code image. Needs the Authorization header.
           example: https://brkmn.example.org/api/v1/urls/123/qr
         owner:
+          description: Included only when the authenticated user is the URL owner, an editor, or a superadmin.
           allOf: [{ $ref: "#/components/schemas/UserSummary" }]
           nullable: true
         owned_by_you: { type: boolean }
@@ -309,6 +311,7 @@ components:
             update: { type: boolean }
             destroy: { type: boolean }
         last_edited_by:
+          description: Included only when the authenticated user is the URL owner, an editor, or a superadmin.
           allOf: [{ $ref: "#/components/schemas/UserSummary" }]
           nullable: true
         last_edited_at: { type: string, format: date-time, nullable: true }

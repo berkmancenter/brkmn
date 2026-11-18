@@ -23,6 +23,8 @@ Every endpoint that returns URLs uses this shape:
 }
 ```
 
+The `owner` and `last_edited_by` fields are included when your account is the owner, an editor, or a superadmin. Both fields are omitted for URLs you can read but not edit.
+
 | Field | Type | Description |
 | --- | --- | --- |
 | `id` | integer | Use this in `/api/v1/urls/{id}` paths. |
@@ -32,11 +34,11 @@ Every endpoint that returns URLs uses this shape:
 | `auto_generated` | boolean | `true` if brkmn picked the short code, `false` if it was chosen. |
 | `clicks` | integer | How many times the short link has been followed. |
 | `qr_code_url` | string | API address of the QR code image. See [Get a QR code](#get-a-qr-code). |
-| `owner` | object or `null` | The account that created the URL. `null` for old URLs with no owner. |
+| `owner` | object or `null` | The account that created the URL. Included only for owners, editors, and superadmins. `null` for old URLs with no owner. |
 | `owned_by_you` | boolean | Whether the token's account owns the URL. |
 | `permissions.update` | boolean | Whether this token can change the destination. |
 | `permissions.destroy` | boolean | Whether this token can delete the URL. |
-| `last_edited_by` | object or `null` | Who last changed the destination. |
+| `last_edited_by` | object or `null` | Who last changed the destination. Included only for owners, editors, and superadmins. |
 | `last_edited_at` | string or `null` | When the destination was last changed. |
 | `created_at`, `updated_at` | string | Timestamps. |
 
