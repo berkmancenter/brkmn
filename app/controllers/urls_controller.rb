@@ -93,22 +93,9 @@ class UrlsController < ApplicationController
 
   def qr
     url = Url.find(params[:id])
-    qrcode = RQRCode::QRCode.new(shortened_url(url.shortened))
+    png = ShortUrlQrCode.png(shortened_url(url.shortened))
 
-    png = qrcode.as_png(
-      bit_depth: 1,
-      border_modules: 1,
-      color_mode: ChunkyPNG::COLOR_GRAYSCALE,
-      color: 'black',
-      file: nil,
-      fill: 'white',
-      module_px_size: 6,
-      resize_exactly_to: false,
-      resize_gte_to: false,
-      size: 400,
-    )
-
-    send_data png, type: 'image/png', disposition: 'inline', filename: "brkmn-qr-#{url.shortened}.png"
+    send_data png, type: 'image/png', disposition: 'inline', filename: ShortUrlQrCode.filename(url)
   end
 
   private

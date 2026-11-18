@@ -24,6 +24,41 @@ Rails.application.routes.draw do
     end
   end
 
+  # JSON API. Must stay above the catch-all redirector route at the bottom.
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      get "me" => "me#show"
+      resources :urls, only: %i[index show create update destroy] do
+        get :qr, on: :member
+      end
+    end
+    match "/" => "v1/base#route_not_found", via: :all
+    match "*path" => "v1/base#route_not_found", via: :all
+  end
+
+  # The single-use link external users get by email (?token=... so the value is
+  # filtered out of the request logs).
+  resource :api_token_claim, only: %i[show create], path: "api_tokens/claim"
+
+  get "settings" => redirect("/settings/api_tokens"), as: :settings
+  scope path: "settings" do
+    resources :api_tokens, only: %i[index create] do
+      member do
+        post :regenerate
+        patch :revoke
+      end
+    end
+
+    namespace :admin do
+      resources :api_tokens, only: %i[index new create] do
+        member do
+          patch :revoke
+          post :reissue
+        end
+      end
+    end
+  end
+
   root to: redirect('/urls')
 
   # So anything that doesn't match the resource controllers or the root path

@@ -1,0 +1,23 @@
+<header class="api-tokens__settings-header">
+  <h4 class="is-size-4">Settings</h4>
+
+  <nav class="tabs is-boxed api-tokens__settings-tabs" aria-label="Settings sections">
+    <ul>
+      <% api_token_options = active_tab == :api_tokens ? {aria: {current: "page"}} : {} %>
+      <li class="<%= "is-active" if active_tab == :api_tokens %>">
+        <%= link_to "API tokens", api_tokens_path, **api_token_options %>
+      </li>
+
+      <% if current_user.superadmin? %>
+        <% all_token_options = active_tab == :all_tokens ? {aria: {current: "page"}} : {} %>
+        <% external_user_options = active_tab == :external_users ? {aria: {current: "page"}} : {} %>
+        <li class="<%= "is-active" if active_tab == :all_tokens %>">
+          <%= link_to "All tokens", admin_api_tokens_path, **all_token_options %>
+        </li>
+        <li class="<%= "is-active" if active_tab == :external_users %>">
+          <%= link_to "External users", new_admin_api_token_path, **external_user_options %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</header>

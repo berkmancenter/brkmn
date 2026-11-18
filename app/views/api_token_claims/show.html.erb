@@ -1,0 +1,40 @@
+<% content_for :head do %>
+  <meta name="turbo-cache-control" content="no-cache">
+  <meta name="referrer" content="no-referrer">
+<% end %>
+
+<div id="api_token_claim" class="api-tokens">
+  <h4 class="is-size-4">Collect your API token</h4>
+
+  <div class="api-tokens__box">
+    <% case @state %>
+    <% when :ready %>
+      <p>
+        A <%= REDIRECT_DOMAIN %> API token is ready for <strong><%= @api_token.user.email %></strong>.
+      </p>
+      <ul>
+        <li>Token: <%= @api_token.name %></li>
+        <li>Access: <%= api_token_access_label(@api_token) %></li>
+        <li>Valid for: <%= api_token_lifetime_label(@api_token.lifetime_days) %> from now</li>
+      </ul>
+      <p>The token is shown only once, and this link stops working after you use it.</p>
+
+      <%= form_with url: api_token_claim_path, method: :post do |f| %>
+        <%= f.hidden_field :token, value: @claim_token %>
+        <div>
+          <%= f.submit "Show my token" %>
+        </div>
+      <% end %>
+    <% when :expired %>
+      <p>
+        This link expired on <%= api_token_time(@api_token.claim_expires_at) %>.
+        Ask the person who set up your access to send you a new one.
+      </p>
+    <% else %>
+      <p>
+        This link is invalid or has already been used. If you didn't save your token,
+        ask the person who set up your access to send you a new link.
+      </p>
+    <% end %>
+  </div>
+</div>

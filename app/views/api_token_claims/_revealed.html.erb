@@ -1,0 +1,12 @@
+<div id="api_token_claim" class="api-tokens">
+  <h4 class="is-size-4">Your API token</h4>
+
+  <%= render "api_tokens/secret", secret: @secret %>
+
+  <div class="api-tokens__box">
+    <p>
+      Send the token in the <code>Authorization</code> header of each request, as in the example above.
+      The API's URL endpoints are at <%= api_v1_urls_url %>.
+    </p>
+  </div>
+</div>

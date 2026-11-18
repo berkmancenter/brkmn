@@ -1,0 +1,57 @@
+<div class="api-tokens">
+  <%= render "shared/settings_tabs", active_tab: :external_users %>
+
+  <h5 class="is-size-5">External users</h5>
+
+  <div class="api-tokens__box">
+    <p>
+      This creates an API-only account for the email address. The account can't sign in to the
+      <%= REDIRECT_DOMAIN %> website. If the person later signs in through your organization's
+      single sign-on, the account becomes a regular one.
+    </p>
+    <p>
+      They get an email with a single-use link to collect the token. The link expires after
+      <%= pluralize(ApiToken::CLAIM_LINK_LIFETIME.in_hours.to_i, "hour") %>, and the token's lifetime starts
+      when they collect it. You never see the token yourself.
+    </p>
+  </div>
+
+  <div class="api-tokens__box">
+    <h5>Create a token for an external user</h5>
+    <%= form_with model: @invitation, url: admin_api_tokens_path, class: "api-tokens__form" do |f| %>
+      <%= render "api_tokens/errors", record: @invitation %>
+
+      <div class="api-tokens__field">
+        <%= f.label :email, "Email address" %>
+        <%= f.email_field :email, required: true, maxlength: 100, autocomplete: "off" %>
+      </div>
+
+      <div class="api-tokens__field">
+        <%= f.label :name, "Token name" %>
+        <%= f.text_field :name, required: true, maxlength: 100, placeholder: "e.g. Partner newsletter integration" %>
+      </div>
+
+      <div class="api-tokens__field">
+        <%= f.label :note, "Note / purpose (included in the email)" %>
+        <%= f.text_area :note, rows: 3, maxlength: 1000 %>
+      </div>
+
+      <div class="api-tokens__fields">
+        <div class="api-tokens__field">
+          <%= f.label :access_level, "Access" %>
+          <%= f.select :access_level, api_token_access_options %>
+        </div>
+        <div class="api-tokens__field">
+          <%= f.label :lifetime_days, "Expires after" %>
+          <% lifetime_options = api_token_lifetime_options(allow_never: false) %>
+          <%= f.select :lifetime_days, lifetime_options, selected: @invitation.lifetime_days %>
+        </div>
+      </div>
+
+      <div class="api-tokens__filter-actions">
+        <%= f.submit "Create and send email" %>
+        <%= link_to "Cancel", admin_api_tokens_path %>
+      </div>
+    <% end %>
+  </div>
+</div>

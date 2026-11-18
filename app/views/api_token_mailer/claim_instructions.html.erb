@@ -1,0 +1,30 @@
+<h1>Your <%= REDIRECT_DOMAIN %> API access token</h1>
+
+<p>
+  <%= @inviter %> set up API access to
+  <%= REDIRECT_DOMAIN %> for <strong><%= @user.email %></strong>.
+</p>
+
+<ul>
+  <li>Token: <%= @api_token.name %></li>
+  <li>Access: <%= api_token_access_label(@api_token) %></li>
+  <li>Valid for: <%= api_token_lifetime_label(@api_token.lifetime_days) %> after you collect it</li>
+  <% if @api_token.note.present? %>
+    <li>Note: <%= @api_token.note %></li>
+  <% end %>
+</ul>
+
+<p><a href="<%= @claim_url %>">Get your API token</a></p>
+
+<p>
+  This link works once and expires on <%= api_token_time(@api_token.claim_expires_at) %>.
+  The token is shown only once, so store it somewhere safe, such as a password manager.
+</p>
+
+<p>
+  Send the token in the <code>Authorization</code> header of each request:<br>
+  <code>Authorization: Bearer &lt;your token&gt;</code><br>
+  API base URL: <%= @api_base_url %>
+</p>
+
+<p>If you weren't expecting this email, you can ignore it.</p>

@@ -10,9 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_09_17_000000) do
+ActiveRecord::Schema[7.2].define(version: 2026_11_18_132918) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "api_tokens", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", limit: 100, null: false
+    t.text "note"
+    t.integer "access_level", default: 0, null: false
+    t.string "token_digest"
+    t.string "token_prefix", limit: 20
+    t.integer "lifetime_days"
+    t.datetime "expires_at"
+    t.datetime "last_used_at"
+    t.string "claim_digest"
+    t.datetime "claim_expires_at"
+    t.datetime "claimed_at"
+    t.bigint "created_by_id"
+    t.datetime "revoked_at"
+    t.bigint "revoked_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["claim_digest"], name: "index_api_tokens_on_claim_digest", unique: true
+    t.index ["created_by_id"], name: "index_api_tokens_on_created_by_id"
+    t.index ["expires_at"], name: "index_api_tokens_on_expires_at"
+    t.index ["revoked_at"], name: "index_api_tokens_on_revoked_at"
+    t.index ["revoked_by_id"], name: "index_api_tokens_on_revoked_by_id"
+    t.index ["token_digest"], name: "index_api_tokens_on_token_digest", unique: true
+    t.index ["user_id"], name: "index_api_tokens_on_user_id"
+    t.check_constraint "access_level = ANY (ARRAY[0, 1])", name: "api_tokens_access_level"
+    t.check_constraint "lifetime_days IS NULL OR lifetime_days > 0", name: "api_tokens_lifetime_days_positive"
+  end
 
   create_table "sessions", force: :cascade do |t|
     t.string "session_id", null: false
@@ -80,11 +109,15 @@ ActiveRecord::Schema[7.2].define(version: 2026_09_17_000000) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.boolean "api_only", default: false, null: false
     t.index ["email"], name: "index_users_on_email"
     t.index ["superadmin"], name: "index_users_on_superadmin"
     t.index ["username"], name: "index_users_on_username"
   end
 
+  add_foreign_key "api_tokens", "users"
+  add_foreign_key "api_tokens", "users", column: "created_by_id"
+  add_foreign_key "api_tokens", "users", column: "revoked_by_id"
   add_foreign_key "url_access_requests", "urls"
   add_foreign_key "url_access_requests", "users"
   add_foreign_key "url_access_requests", "users", column: "resolved_by_id"

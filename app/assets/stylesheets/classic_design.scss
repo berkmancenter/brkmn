@@ -37,9 +37,18 @@ body.viewing-mode-classic {
 
   .add-form,
   .edit-form,
+  .api-tokens,
   #my_urls,
   #not_my_urls {
     @include header;
+  }
+
+  .api-tokens__settings-tabs li:not(.is-active) a {
+    color: #fff;
+
+    &:hover {
+      color: #000;
+    }
   }
 
   hr {

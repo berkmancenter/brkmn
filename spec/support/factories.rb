@@ -46,4 +46,32 @@ FactoryBot.define do
       user { nil }
     end
   end
+
+  ## API token factory. Pass `secret:` to know the plaintext in a spec.
+  factory :api_token do
+    association :user
+    sequence(:name) { |n| "Token #{n}" }
+    access_level { :read_write }
+    lifetime_days { 90 }
+
+    transient do
+      secret { ApiToken.generate_secret }
+    end
+
+    token_digest { ApiToken.digest(secret) }
+    token_prefix { secret.first(ApiToken::VISIBLE_PREFIX_LENGTH) }
+    expires_at { lifetime_days&.days&.from_now }
+
+    trait :read_only do
+      access_level { :read_only }
+    end
+
+    trait :revoked do
+      revoked_at { 1.hour.ago }
+    end
+
+    trait :expired do
+      expires_at { 1.minute.ago }
+    end
+  end
 end

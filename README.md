@@ -6,7 +6,7 @@
 
 ## Documentation
 
-https://berkman-klein-center.gitbook.io/brkmn
+[API documentation](docs/api/README.md)
 
 ## Contributors
 
