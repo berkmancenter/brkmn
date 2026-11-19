@@ -1,6 +1,6 @@
 # This Dockerfile supports multiple environments
 
-ARG RUBY_VERSION=3.3.3
+ARG RUBY_VERSION=3.3.14-bookworm
 
 FROM ruby:${RUBY_VERSION}
 
