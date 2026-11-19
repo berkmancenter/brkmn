@@ -21,9 +21,12 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+      args:
+        APP_ENV: test
     environment:
       APP_ENV: test
       RAILS_ENV: test
+      SE_CHROMEDRIVER: /usr/bin/chromedriver
       DATABASE_USERNAME: brkmn_test
       DATABASE_PASSWORD: so_wow_much_secure
       DATABASE_DB_NAME: brkmn_test

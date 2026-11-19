@@ -76,6 +76,18 @@ RSpec.describe "Urls", type: :request do
       end.not_to have_enqueued_mail(UrlCollaboratorMailer, :grant_notification)
     end
 
+    it "approves a pending request when the owner shares directly by email" do
+      access_request = UrlAccessRequest.create!(url: url, user: collaborator)
+
+      post url_collaborators_path(url), params: {email: collaborator.email}
+
+      expect(response).to redirect_to(urls_path)
+      expect(url.reload.collaborators).to include(collaborator)
+      expect(access_request.reload).to be_approved
+      expect(access_request.resolved_by).to eq(user)
+      expect(access_request.resolved_at).to be_present
+    end
+
     it "renders sharing errors inside the affected link's modal" do
       post url_collaborators_path(url), params: {email: "missing@example.org"}
       follow_redirect!
@@ -114,14 +126,16 @@ RSpec.describe "Urls", type: :request do
       expect(url.reload.collaborators).to include(collaborator)
     end
 
-    it "lets a collaborator edit and attributes the edit to them" do
+    it "lets a collaborator change the destination while preserving the shortcode" do
       UrlCollaborator.create!(url: url, user: collaborator, granted_by: user)
+      original_shortcode = url.shortened
       sign_in(collaborator)
 
-      patch url_path(url), params: {url: {to: "https://example.org/shared-edit"}}
+      patch url_path(url), params: {url: {to: "https://example.org/shared-edit", shortened: "different-code"}}
 
       expect(response).to redirect_to(urls_path)
       expect(url.reload.to).to eq("https://example.org/shared-edit")
+      expect(url.shortened).to eq(original_shortcode)
       expect(url.last_edited_by).to eq(collaborator)
     end
 
@@ -134,8 +148,9 @@ RSpec.describe "Urls", type: :request do
       end.to raise_error(CanCan::AccessDenied)
     end
 
-    it "lets an owner remove edit access" do
+    it "lets an owner revoke a collaborator's ability to edit" do
       collaboration = UrlCollaborator.create!(url: url, user: collaborator, granted_by: user)
+      original_destination = url.to
 
       expect do
         delete url_collaborator_path(url, collaboration)
@@ -143,6 +158,12 @@ RSpec.describe "Urls", type: :request do
 
       expect(response).to redirect_to(urls_path)
       expect(url.reload.collaborators).not_to include(collaborator)
+
+      sign_in(collaborator)
+      expect do
+        patch url_path(url), params: {url: {to: "https://example.org/revoked-edit"}}
+      end.to raise_error(CanCan::AccessDenied)
+      expect(url.reload.to).to eq(original_destination)
     end
 
     it "keeps the modal open and updates it after removing access with a Turbo request" do
@@ -194,6 +215,21 @@ RSpec.describe "Urls", type: :request do
       end.not_to have_enqueued_mail(UrlAccessRequestMailer, :owner_notification)
     end
 
+    it "reopens a denied request and notifies the owner again" do
+      access_request = UrlAccessRequest.create!(
+        url: url, user: requester, status: :denied, resolved_by: user, resolved_at: 1.day.ago
+      )
+      sign_in(requester)
+
+      expect do
+        post url_access_requests_path(url)
+      end.to have_enqueued_mail(UrlAccessRequestMailer, :owner_notification)
+
+      expect(response).to redirect_to(urls_path)
+      expect(access_request.reload).to be_pending
+      expect(access_request).to have_attributes(resolved_by: nil, resolved_at: nil)
+    end
+
     it "keeps the modal open and updates it after requesting access with Turbo" do
       sign_in(requester)
 
@@ -227,6 +263,35 @@ RSpec.describe "Urls", type: :request do
       end.to have_enqueued_mail(UrlAccessRequestMailer, :denial_notification)
 
       expect(response).to redirect_to(urls_path)
+      expect(access_request.reload).to be_denied
+      expect(url.reload.collaborators).not_to include(requester)
+    end
+
+    it "prevents the requester from approving their own request" do
+      access_request = UrlAccessRequest.create!(url: url, user: requester)
+      sign_in(requester)
+
+      expect do
+        patch url_access_request_path(url, access_request), params: {decision: "approve"}
+      end.to raise_error(CanCan::AccessDenied)
+
+      expect(access_request.reload).to be_pending
+      expect(url.reload.collaborators).not_to include(requester)
+    end
+
+    it "rejects a second decision on an already resolved request" do
+      access_request = UrlAccessRequest.create!(
+        url: url, user: requester, status: :denied, resolved_by: user, resolved_at: 1.day.ago
+      )
+
+      expect do
+        patch url_access_request_path(url, access_request),
+          params: {decision: "approve"},
+          headers: {"Accept" => "text/vnd.turbo-stream.html"}
+      end.not_to have_enqueued_mail(UrlAccessRequestMailer, :approval_notification)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.body).to include("This request has already been resolved.")
       expect(access_request.reload).to be_denied
       expect(url.reload.collaborators).not_to include(requester)
     end

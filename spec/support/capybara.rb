@@ -1,4 +1,5 @@
 require 'capybara/rspec'
+require 'selenium-webdriver'
 
 # https://docs.travis-ci.com/user/common-build-problems/#capybara-im-getting-errors-about-elements-not-being-found
 Capybara.default_max_wait_time = 15
@@ -40,5 +41,6 @@ Capybara.javascript_driver = :headless
 Capybara.server = :puma
 
 Capybara.configure do |config|
+  config.enable_aria_label = true
   config.server_port = 9887
 end

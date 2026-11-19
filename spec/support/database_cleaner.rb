@@ -19,6 +19,10 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :deletion, { except: tables_to_skip_clean }
   end
 
+  config.before(:each, type: :system) do
+    DatabaseCleaner.strategy = :deletion, { except: tables_to_skip_clean }
+  end
+
   config.before(:each) do
     DatabaseCleaner.start
   end

@@ -30,10 +30,9 @@ RUN apt-get update && apt-get install -y \
     tzdata git build-essential patch ruby-dev zlib1g-dev liblzma-dev default-jre \
     sudo vim nano tmux wget
 
-# Install Chrome
+# Install the browser and its matching driver for system specs.
 RUN if [ "$APP_ENV" = "test" ]; then \
-      wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-      && apt-get install -y ./google-chrome-stable_current_amd64.deb; \
+      apt-get install -y --no-install-recommends chromium chromium-driver; \
     fi
 
 WORKDIR /app
