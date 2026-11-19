@@ -1,0 +1,3 @@
+exclude_tests: true
+hide_default_column_types: json,jsonb,hstore
+hide_limit_column_types: integer,bigint,boolean
