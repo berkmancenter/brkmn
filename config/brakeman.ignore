@@ -1,0 +1,28 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "790d862c01e31014f913314579fa820e1e2cb5f29bc3914f0d414e6da42531b4",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/redirector_controller.rb",
+      "line": 10,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(Url.find_by(:shortened => params[:id]).to, :allow_other_host => true)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "RedirectorController",
+        "method": "index"
+      },
+      "user_input": "Url.find_by(:shortened => params[:id]).to",
+      "confidence": "Weak",
+      "cwe_id": [
+        601
+      ],
+      "note": "Intended: redirecting to the saved destination is what a URL shortener does. The destination is validated as an http(s) URL with a host when the link is saved."
+    }
+  ],
+  "brakeman_version": "8.1.0"
+}

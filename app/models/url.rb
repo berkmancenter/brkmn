@@ -29,8 +29,6 @@
 #  fk_rails_...  (last_edited_by_id => users.id)
 #
 class Url < ApplicationRecord
-  include ActiveModel::Validations
-
   SHARING_ASSOCIATIONS = [
     :user,
     {url_collaborators: :user, url_access_requests: :user}
@@ -165,13 +163,6 @@ class Url < ApplicationRecord
     end
 
     shortened
-  end
-
-  def suffix
-    # These will never be used by Base32 encoding, so it's pretty unlikely
-    # they'll occur giving us a high probability of matching with only one
-    # character.
-    %w[i l o u].sample
   end
 
   def random_shortcode
