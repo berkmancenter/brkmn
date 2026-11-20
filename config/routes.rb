@@ -24,6 +24,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # The single-use link external users get by email (?token=... so the value is
+  # filtered out of the request logs). Keep it below /api so the public API
+  # exception in an authenticating proxy also lets external users reach it.
+  # This must stay above the API catch-all routes.
+  resource :api_token_claim, only: %i[show create], path: "api/token_claim"
+
+  # Links sent before the public path changed still work when they reach Rails.
+  resource :legacy_api_token_claim,
+    only: %i[show create],
+    path: "api_tokens/claim",
+    controller: "api_token_claims"
+
   # JSON API. Must stay above the catch-all redirector route at the bottom.
   namespace :api, defaults: {format: :json} do
     namespace :v1 do
@@ -35,10 +47,6 @@ Rails.application.routes.draw do
     match "/" => "v1/base#route_not_found", via: :all
     match "*path" => "v1/base#route_not_found", via: :all
   end
-
-  # The single-use link external users get by email (?token=... so the value is
-  # filtered out of the request logs).
-  resource :api_token_claim, only: %i[show create], path: "api_tokens/claim"
 
   get "settings" => redirect("/settings/api_tokens"), as: :settings
   scope path: "settings" do

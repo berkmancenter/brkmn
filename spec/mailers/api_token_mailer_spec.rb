@@ -23,6 +23,7 @@ RSpec.describe ApiTokenMailer, type: :mailer do
     it "emails a single-use link with the token details" do
       claim_url = api_token_claim_url(token: claim_token)
 
+      expect(URI(claim_url).path).to eq("/api/token_claim")
       expect(mail.to).to eq(["partner@example.org"])
       expect(mail.from).to eq([Rails.application.config.default_sender])
       expect(mail.subject).to eq("Your #{REDIRECT_DOMAIN} API access token")

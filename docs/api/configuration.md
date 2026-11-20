@@ -45,8 +45,7 @@ Email links use `https://` unless `RAILS_DISABLE_SSL` is set.
 
 If brkmn runs behind an authenticating proxy (`DEVISE_AUTH_TYPE=headers`), the proxy must let these paths through **without** its own sign-in:
 
-* `/api/*`: API clients authenticate with tokens, not through the proxy.
-* `/api_tokens/claim`: external users collect their tokens here and have no proxy account.
+* `/api/*`: API clients authenticate with tokens, not through the proxy, and external users collect their tokens under `/api/token_claim` because they have no proxy account.
 
 ## Security notes
 

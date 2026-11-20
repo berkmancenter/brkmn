@@ -8,7 +8,7 @@ RSpec.describe "Collecting an external API token", type: :request do
   let(:api_token) { ApiToken.new(user: external_user, name: "Newsletter", lifetime_days: 30) }
   let!(:claim_token) { api_token.issue_claim }
 
-  describe "GET /api_tokens/claim" do
+  describe "GET /api/token_claim" do
     it "shows a button without using up the link" do
       get api_token_claim_path(token: claim_token)
 
@@ -35,9 +35,16 @@ RSpec.describe "Collecting an external API token", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(response.body).to include("invalid or has already been used")
     end
+
+    it "keeps links sent with the old path working" do
+      get legacy_api_token_claim_path(token: claim_token)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Show my token")
+    end
   end
 
-  describe "POST /api_tokens/claim" do
+  describe "POST /api/token_claim" do
     it "shows the token once and then the link stops working" do
       post api_token_claim_path, params: {token: claim_token}
 

@@ -14,7 +14,7 @@ module Brkmn
     Plan = Struct.new(:data, :secret, :claim_token, keyword_init: true) do
       def name = data[:name]
       def email = DemoData.email_for(data[:user])
-      def claim_path = "/api_tokens/claim?token=#{claim_token}"
+      def claim_path = "/api/token_claim?token=#{claim_token}"
 
       def token
         secret ? ApiToken.find_for_secret(secret) : ApiToken.find_for_claim(claim_token)
