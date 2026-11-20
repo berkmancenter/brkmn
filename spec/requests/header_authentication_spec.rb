@@ -109,6 +109,12 @@ RSpec.describe "Header authentication", type: :request do
     ActionController::Base.allow_forgery_protection = false
   end
 
+  it "shows no sign out link, the proxy signs people out" do
+    get urls_path, headers: headers
+
+    expect(response.body).not_to include("Sign out")
+  end
+
   it "does not reuse the header-authenticated user without headers" do
     get urls_path, headers: headers
     expect(response).to have_http_status(:ok)

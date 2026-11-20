@@ -21,6 +21,20 @@ module ApplicationHelper
     destination.is_a?(String) && destination.present? ? destination : 'https://'
   end
 
+  # The header's sign out link with its icon. None with header auth, the
+  # auth proxy signs people in and out.
+  def sign_out_link
+    path, data = case Rails.application.config.devise_auth_type
+                 when "headers" then return
+                 when "cas" then [cas_logout_users_path, {turbo: false}]
+                 else [destroy_user_session_path, {turbo_method: :delete}]
+                 end
+
+    link_to path, data: data, class: "header-items-item-sign-out" do
+      tag.span(image_tag("sign_out.svg", alt: "")) + tag.span("Sign out")
+    end
+  end
+
   def viewing_mode
     cookies[:viewing_mode] || 'modern'
   end

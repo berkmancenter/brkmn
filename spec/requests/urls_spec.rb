@@ -450,6 +450,13 @@ RSpec.describe "Urls", type: :request do
       expect(response.body.scan(%(class="link_details_button")).size).to eq(2)
     end
 
+    it "shows the sign out link with its icon" do
+      get urls_path
+
+      link = response.body[%r{<a [^>]*class="header-items-item-sign-out".*?</a>}m]
+      expect(link).to include('data-turbo-method="delete"', "sign_out", "Sign out")
+    end
+
     it "keeps the other list's page in page links and jumps back to the list" do
       create_list(:url, 2, user: user)
       create_list(:url, 2, user: create(:user))
