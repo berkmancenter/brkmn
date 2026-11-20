@@ -103,10 +103,8 @@ class Url < ApplicationRecord
 
   def self.search(search)
     if search
-      where(
-        'lower(shortened) like lower(?) OR lower("to") like lower(?)',
-        "%#{search}%", "%#{search}%"
-      )
+      pattern = "%#{sanitize_sql_like(search.to_s)}%"
+      where('lower(shortened) like lower(?) OR lower("to") like lower(?)', pattern, pattern)
     else
       all
     end

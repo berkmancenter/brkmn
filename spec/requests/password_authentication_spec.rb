@@ -63,6 +63,14 @@ RSpec.describe "Password authentication", type: :request do
     expect(response).to redirect_to(new_user_session_path)
   end
 
+  it "signs out on the CAS logout path when CAS is not used" do
+    sign_in(user)
+
+    get cas_logout_users_path
+
+    expect(response).to redirect_to(new_user_session_path)
+  end
+
   it "sends a content security policy with a script nonce" do
     get new_user_session_path
 

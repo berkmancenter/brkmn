@@ -5,9 +5,18 @@ module ApplicationHelper
     title ||= column.titleize
     css_class = column == sort_column ? "current #{sort_direction}" : nil
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
+    # Keep the search and page size, start again on the first page.
     link_to title,
-            params.permit.merge(sort: column, direction: direction, page: nil),
+            params.permit(:search, :per_page).merge(sort: column, direction: direction),
             class: css_class
+  end
+
+  # Destination to pre-fill in the add form (the bookmarklet passes url[to]).
+  # Anything that isn't a plain string, like ?url=foo, is ignored.
+  def new_url_destination
+    url_params = params[:url]
+    destination = url_params[:to] if url_params.respond_to?(:key?)
+    destination.is_a?(String) && destination.present? ? destination : 'https://'
   end
 
   def viewing_mode

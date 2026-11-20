@@ -4,6 +4,12 @@ class UrlAccessRequestsController < ApplicationController
   include UrlSharing
 
   def create
+    previous_request = @url.url_access_requests.find { |access_request| access_request.user_id == current_user.id }
+    if previous_request&.recently_denied?
+      wait = helpers.distance_of_time_in_words_to_now(previous_request.rerequest_allowed_at)
+      return render_modal_error("Your last request was denied. You can ask again in #{wait}.")
+    end
+
     message = if @url.editable_by?(current_user)
                 "You already have edit access to this link."
               else

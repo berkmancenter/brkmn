@@ -223,6 +223,11 @@ RSpec.describe Url, type: :model do
       expect(Url.search('GOOG')).to be_present
     end
 
+    it 'treats % and _ as plain characters' do
+      expect(Url.search('%')).to be_empty
+      expect(Url.search('forty_two')).to be_empty
+    end
+
     it 'handles a nil argument' do
       expect(Url.search(nil)).to eq(Url.all)
     end

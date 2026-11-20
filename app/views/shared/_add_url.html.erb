@@ -1,7 +1,7 @@
 <div class="add-form">
   <h4 class="is-size-4">Shorten a URL</h4>
 
-  <%= form_for(Url.new(to: (params[:url].blank?) ? 'https://' : params[:url][:to])) do |f| %>
+  <%= form_for(Url.new(to: new_url_destination)) do |f| %>
     <div class="messages" style="display: none;"></div>
     <div>
       <%= f.text_field(:to, placeholder: "URL to shorten", tabindex: 1) %>

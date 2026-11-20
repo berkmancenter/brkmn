@@ -23,6 +23,14 @@ RSpec.describe "Urls", type: :request do
       expect(response).to redirect_to(urls_path)
     end
 
+    it "rejects a request without url params instead of failing" do
+      expect do
+        post urls_path, params: {to: "https://example.org"}
+      end.not_to change(Url, :count)
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
     it "does not accept a destination without a host" do
       expect do
         post urls_path, params: {url: {to: "https://", shortened: ""}}
@@ -60,6 +68,13 @@ RSpec.describe "Urls", type: :request do
       expect(url.reload.to).to eq("https://example.org/updated")
       expect(url.last_edited_by).to eq(user)
       expect(url.last_edited_at).to be_present
+    end
+
+    it "rejects an update without url params instead of failing" do
+      patch url_path(url), params: {to: "https://example.org/updated"}
+
+      expect(response).to have_http_status(:bad_request)
+      expect(url.reload.to).to eq("https://example.org/original")
     end
 
     it "renders the edit form and preserves the URL when the update is invalid" do
@@ -234,7 +249,7 @@ RSpec.describe "Urls", type: :request do
 
     it "reopens a denied request and notifies the owner again" do
       access_request = UrlAccessRequest.create!(
-        url: url, user: requester, status: :denied, resolved_by: user, resolved_at: 1.day.ago
+        url: url, user: requester, status: :denied, resolved_by: user, resolved_at: 2.days.ago
       )
       sign_in(requester)
 
@@ -245,6 +260,20 @@ RSpec.describe "Urls", type: :request do
       expect(response).to redirect_to(urls_path)
       expect(access_request.reload).to be_pending
       expect(access_request).to have_attributes(resolved_by: nil, resolved_at: nil)
+    end
+
+    it "does not let a recently denied user ask again and email the owner" do
+      access_request = UrlAccessRequest.create!(
+        url: url, user: requester, status: :denied, resolved_by: user, resolved_at: 1.hour.ago
+      )
+      sign_in(requester)
+
+      expect do
+        post url_access_requests_path(url)
+      end.not_to have_enqueued_mail(UrlAccessRequestMailer, :owner_notification)
+
+      expect(flash[:modal_error]["message"]).to include("Your last request was denied. You can ask again in")
+      expect(access_request.reload).to be_denied
     end
 
     it "keeps the modal open and updates it after requesting access with Turbo" do
@@ -357,6 +386,35 @@ RSpec.describe "Urls", type: :request do
       expect(response.body).to include("Last edit")
       expect(response.body).to include("5 minutes ago")
       expect(response.body).to include(%(data-url-details-details-url-value="#{details_url_path(url)}"))
+    end
+
+    it "ignores a url param that is not a hash" do
+      get urls_path, params: {url: "foo"}
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "pre-fills the destination passed by the bookmarklet" do
+      get bookmarklet_urls_path, params: {url: {to: "https://example.org/page"}}
+
+      expect(response.body).to include(%(value="https://example.org/page"))
+    end
+
+    it "caps the page size" do
+      create_list(:url, 3, user: user)
+      stub_const("UrlsController::PER_PAGE_LIMIT", 2)
+
+      get urls_path, params: {per_page: 1_000_000}
+
+      expect(response.body.scan(%(class="link_details_button")).size).to eq(2)
+    end
+
+    it "keeps the search in the sort links" do
+      create(:url, user: user, shortened: "findme")
+
+      get search_urls_path, params: {search: "findme"}
+
+      expect(response.body).to include("search=findme&amp;sort=clicks")
     end
 
     it "omits the last-edit section when no edits have been recorded" do

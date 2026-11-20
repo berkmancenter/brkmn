@@ -34,6 +34,10 @@ class UrlAccessRequest < ApplicationRecord
     optional: true,
     inverse_of: :resolved_url_access_requests
 
+  # After a denial the requester has to wait this long before asking again,
+  # every request emails the owner.
+  REREQUEST_COOLDOWN = 1.day
+
   enum :status, {pending: 0, approved: 1, denied: 2}
 
   validates :user_id, uniqueness: {scope: :url_id}
@@ -41,6 +45,14 @@ class UrlAccessRequest < ApplicationRecord
 
   def resolve!(decision, by:)
     update!(status: decision, resolved_by: by, resolved_at: Time.current)
+  end
+
+  def rerequest_allowed_at
+    resolved_at + REREQUEST_COOLDOWN if denied? && resolved_at.present?
+  end
+
+  def recently_denied?
+    rerequest_allowed_at.present? && rerequest_allowed_at.future?
   end
 
   private

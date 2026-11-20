@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UrlsController < ApplicationController
+  PER_PAGE_LIMIT = 100
+
   helper_method :sort_column, :sort_direction
 
   before_action :authenticate_user!
@@ -17,7 +19,7 @@ class UrlsController < ApplicationController
     @page_title = "Shorten a URL - #{REDIRECT_DOMAIN}"
 
     search = url_params[:search]&.strip&.tr(' ', '-')
-    redirect_to search_urls_path(search: search) if search.present?
+    return redirect_to search_urls_path(search: search) if search.present?
 
     hilite
 
@@ -36,13 +38,8 @@ class UrlsController < ApplicationController
     render 'index'
   end
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def create
-    @url = Url.new(
-      shortened: url_params[:url][:shortened],
-      to: url_params[:url][:to],
-      user: current_user
-    )
+    @url = Url.new(create_url_params.merge(user: current_user))
 
     respond_to do |f|
       f.html do
@@ -50,14 +47,13 @@ class UrlsController < ApplicationController
           flash[:notice] = "Shortened URL (#{root_url}#{@url.shortened}) was successfully created."
         else
           logger.warn(@url.errors.inspect)
-          flash[:error] = "ERROR: #{@url.errors.full_messages}"
+          flash[:error] = "ERROR: #{@url.errors.full_messages.to_sentence}"
         end
       end
     end
 
     redirect_to urls_path
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def edit
     @url = Url.includes(:url_collaborators).find(params[:id])
@@ -114,14 +110,16 @@ class UrlsController < ApplicationController
   private
 
   def url_params
-    params.permit(
-      :id, :search, :my_page, :others_page, :per_page, :sort, :direction,
-      url: %i[shortened to]
-    )
+    params.permit(:id, :search, :my_page, :others_page, :per_page, :sort, :direction)
+  end
+
+  # A missing or malformed url param is a 400 Bad Request, not a crash.
+  def create_url_params
+    params.expect(url: %i[shortened to])
   end
 
   def update_url_params
-    params.permit(url: :to)[:url]
+    params.expect(url: [:to])
   end
 
   # The unique index catches two people taking the same code at the same time.
@@ -130,6 +128,13 @@ class UrlsController < ApplicationController
   rescue ActiveRecord::RecordNotUnique
     @url.errors.add(:shortened, "(#{@url.shortened}) is already in use. Please choose another.")
     false
+  end
+
+  # Nil means the will_paginate default. Capped so one request can't render
+  # every link at once.
+  def per_page
+    value = url_params[:per_page].to_i
+    [value, PER_PAGE_LIMIT].min if value.positive?
   end
 
   def sort_column
@@ -153,7 +158,7 @@ class UrlsController < ApplicationController
       .order(sort_column + ' ' + sort_direction)
       .paginate(
         page: url_params[page_indicator],
-        per_page: url_params[:per_page]
+        per_page: per_page
       )
   end
 
