@@ -2,6 +2,7 @@
 
 require_relative "boot"
 
+require "ipaddr"
 require "rails"
 # Pick the frameworks you want:
 require "active_model/railtie"
@@ -42,6 +43,15 @@ module Brkmn
 
     # Devise authentication type (db, cas, saml, or headers)
     config.devise_auth_type = ENV["DEVISE_AUTH_TYPE"] || "db"
+
+    # Header authentication: addresses allowed to send the X-Auth-* headers,
+    # comma separated IPs or CIDR ranges (the auth proxy). Loopback only by default.
+    config.auth_headers_trusted_proxies =
+      (ENV["AUTH_HEADERS_TRUSTED_PROXIES"].presence || "127.0.0.1,::1")
+        .split(",")
+        .map(&:strip)
+        .compact_blank
+        .map { |proxy| IPAddr.new(proxy) }
 
     # devise_cas_authenticatable configuration
     if config.devise_auth_type == "cas"

@@ -58,6 +58,57 @@ RSpec.describe "Header authentication", type: :request do
     expect(response).to have_http_status(:unauthorized)
   end
 
+  it "ignores the headers when the request does not come from a trusted proxy" do
+    expect do
+      get urls_path, headers: headers, env: {"REMOTE_ADDR" => "203.0.113.9"}
+    end.not_to change(User, :count)
+
+    expect(response).to have_http_status(:unauthorized)
+  end
+
+  it "accepts the headers from a configured proxy range" do
+    original_proxies = Rails.application.config.auth_headers_trusted_proxies
+    Rails.application.config.auth_headers_trusted_proxies = [IPAddr.new("10.0.0.0/8")]
+
+    get urls_path, headers: headers, env: {"REMOTE_ADDR" => "10.1.2.3"}
+    expect(response).to have_http_status(:ok)
+
+    get urls_path, headers: headers, env: {"REMOTE_ADDR" => "127.0.0.1"}
+    expect(response).to have_http_status(:unauthorized)
+  ensure
+    Rails.application.config.auth_headers_trusted_proxies = original_proxies
+  end
+
+  it "lets two people with the same display name log in" do
+    create(:user, email: "first@example.com", username: "Pat Smith")
+
+    get urls_path, headers: {"X-Auth-Email" => "second@example.com", "X-Auth-Name" => "Pat Smith"}
+
+    expect(response).to have_http_status(:ok)
+    expect(User.find_by!(email: "second@example.com").username).to eq("second@example.com")
+  end
+
+  it "does not write the user again when nothing changed" do
+    get urls_path, headers: headers
+    user = User.find_by!(email: "person@example.com")
+
+    expect do
+      get urls_path, headers: headers
+    end.not_to(change { user.reload.updated_at })
+  end
+
+  it "rejects a forged form post even though the proxy sends the headers" do
+    ActionController::Base.allow_forgery_protection = true
+
+    expect do
+      post urls_path, params: {url: {to: "https://evil.example.org"}}, headers: headers
+    end.not_to change(Url, :count)
+
+    expect(response).to have_http_status(:unprocessable_content)
+  ensure
+    ActionController::Base.allow_forgery_protection = false
+  end
+
   it "does not reuse the header-authenticated user without headers" do
     get urls_path, headers: headers
     expect(response).to have_http_status(:ok)

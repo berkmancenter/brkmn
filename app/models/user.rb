@@ -103,11 +103,21 @@ class User < ApplicationRecord
     normalized_email = email.strip.downcase
     user = where("LOWER(email) = ?", normalized_email).first_or_initialize
     user.email = normalized_email
-    user.username = name.strip
+    user.username = header_username(name.strip, user: user)
     user.set_random_password
-    user.skip_confirmation! if user.respond_to?(:skip_confirmation!)
-    user.save!
+    user.skip_confirmation! if user.respond_to?(:skip_confirmation!) && !user.confirmed?
+    # This runs on every request, so only write when something changed.
+    user.save! if user.changed?
     user
+  end
+
+  # Display names are not unique, usernames are. When another user already has
+  # this name, fall back to the email address.
+  def self.header_username(name, user:)
+    return user.email if name.blank?
+
+    name_taken = where(username: name).where.not(id: user.id).exists?
+    name_taken ? user.email : name
   end
 
   def set_random_password
