@@ -1,0 +1,459 @@
+openapi: 3.0.3
+info:
+  title: brkmn API
+  version: "1.0"
+  description: |
+    Create, list, update, and delete short URLs.
+
+    Every request needs an API token in the `Authorization: Bearer <token>` header.
+    Tokens are created on the brkmn website under **Settings → API tokens**.
+servers:
+  - url: https://{host}/api/v1
+    variables:
+      host:
+        default: brkmn.example.org
+        description: The address of your brkmn site
+security:
+  - bearerAuth: []
+tags:
+  - name: Account
+    description: Check which account and token you are using.
+  - name: URLs
+    description: Short URLs.
+
+paths:
+  /me:
+    get:
+      tags: [Account]
+      operationId: getMe
+      summary: Get the current account and token
+      description: Returns the account the token belongs to and the token's details. Useful for checking a token.
+      responses:
+        "200":
+          description: The account and token.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/X-RateLimit-Limit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/X-RateLimit-Remaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/X-RateLimit-Reset" }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Me" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /urls:
+    get:
+      tags: [URLs]
+      operationId: listUrls
+      summary: List URLs
+      description: Returns URLs, newest first.
+      parameters:
+        - name: scope
+          in: query
+          description: "`mine`: URLs you own plus URLs shared with you as an editor. `all`: every URL on the site."
+          schema: { type: string, enum: [mine, all], default: mine }
+        - name: search
+          in: query
+          description: Only URLs whose short code or destination contains this text (not case-sensitive).
+          schema: { type: string }
+        - name: shortened
+          in: query
+          description: Only the URL with exactly this short code.
+          schema: { type: string }
+        - name: page
+          in: query
+          description: Page number, starting at 1.
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: per_page
+          in: query
+          description: URLs per page. Values above 100 are reduced to 100.
+          schema: { type: integer, minimum: 1, maximum: 100, default: 25 }
+      responses:
+        "200":
+          description: A page of URLs.
+          headers:
+            X-RateLimit-Limit: { $ref: "#/components/headers/X-RateLimit-Limit" }
+            X-RateLimit-Remaining: { $ref: "#/components/headers/X-RateLimit-Remaining" }
+            X-RateLimit-Reset: { $ref: "#/components/headers/X-RateLimit-Reset" }
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [urls, meta]
+                properties:
+                  urls:
+                    type: array
+                    items: { $ref: "#/components/schemas/Url" }
+                  meta: { $ref: "#/components/schemas/Pagination" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+    post:
+      tags: [URLs]
+      operationId: createUrl
+      summary: Create a URL
+      description: Creates a short URL owned by the token's account. Needs a read & write token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: object
+                  required: [to]
+                  properties:
+                    to:
+                      type: string
+                      maxLength: 10240
+                      description: The destination. If it has no `http://` or `https://`, `https://` is added.
+                      example: https://example.org/a/very/long/page
+                    shortened:
+                      type: string
+                      description: >-
+                        Your own short code (letters, digits, `-`, `_`, `.`, `*`; case-sensitive).
+                        Leave it out to get a random six-letter code.
+                      example: spring-report
+      responses:
+        "201":
+          description: The new URL.
+          headers:
+            Location:
+              description: API address of the new URL.
+              schema: { type: string, format: uri }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UrlEnvelope" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /urls/{id}:
+    parameters:
+      - $ref: "#/components/parameters/UrlId"
+    get:
+      tags: [URLs]
+      operationId: getUrl
+      summary: Get a URL
+      description: Any token can read any URL.
+      responses:
+        "200":
+          description: The URL.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UrlEnvelope" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+    patch:
+      tags: [URLs]
+      operationId: updateUrl
+      summary: Change a URL's destination
+      description: >-
+        Needs a read & write token, and the account must own the URL, be an editor of it, or be a superadmin.
+        Short codes can't be changed.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [url]
+              properties:
+                url:
+                  type: object
+                  required: [to]
+                  properties:
+                    to:
+                      type: string
+                      maxLength: 10240
+                      example: https://example.org/the/new/page
+      responses:
+        "200":
+          description: The updated URL.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UrlEnvelope" }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "422": { $ref: "#/components/responses/ValidationFailed" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+    delete:
+      tags: [URLs]
+      operationId: deleteUrl
+      summary: Delete a URL
+      description: Needs a read & write token. Only the owner or a superadmin can delete; editors can't.
+      responses:
+        "204":
+          description: Deleted.
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+  /urls/{id}/qr:
+    parameters:
+      - $ref: "#/components/parameters/UrlId"
+    get:
+      tags: [URLs]
+      operationId: getUrlQrCode
+      summary: Get a URL's QR code
+      description: >-
+        A PNG image (about 400 × 400 pixels) of a QR code for the URL's `short_url`.
+        Needs the `Authorization` header like every other endpoint.
+      responses:
+        "200":
+          description: The QR code.
+          content:
+            image/png:
+              schema: { type: string, format: binary }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/RateLimited" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        A brkmn API token: `brkmn_` followed by 40 letters and digits.
+        Create one on the brkmn website under **Settings → API tokens**.
+
+  parameters:
+    UrlId:
+      name: id
+      in: path
+      required: true
+      description: The URL's `id`.
+      schema: { type: integer }
+
+  headers:
+    X-RateLimit-Limit:
+      description: Requests allowed per window for this token.
+      schema: { type: integer }
+    X-RateLimit-Remaining:
+      description: Requests left in the current window.
+      schema: { type: integer }
+    X-RateLimit-Reset:
+      description: When the window resets, as a Unix timestamp in seconds.
+      schema: { type: integer }
+
+  schemas:
+    UserSummary:
+      type: object
+      required: [id, email]
+      properties:
+        id: { type: integer, example: 42 }
+        email:
+          type: string
+          format: email
+          example: you@example.org
+
+    Url:
+      type: object
+      required:
+        - id
+        - shortened
+        - short_url
+        - to
+        - auto_generated
+        - clicks
+        - qr_code_url
+        - owned_by_you
+        - permissions
+        - last_edited_at
+        - created_at
+        - updated_at
+      properties:
+        id: { type: integer, example: 123 }
+        shortened:
+          type: string
+          description: The short code.
+          example: spring-report
+        short_url:
+          type: string
+          format: uri
+          description: The full short link to share.
+          example: https://brkmn.example.org/spring-report
+        to:
+          type: string
+          description: The destination.
+          example: https://example.org/a/very/long/page
+        auto_generated:
+          type: boolean
+          description: "`true` if brkmn picked the short code."
+        clicks:
+          type: integer
+          description: How many times the short link has been followed.
+          example: 57
+        qr_code_url:
+          type: string
+          format: uri
+          description: API address of the QR code image. Needs the Authorization header.
+          example: https://brkmn.example.org/api/v1/urls/123/qr
+        owner:
+          description: Included only when the authenticated user is the URL owner, an editor, or a superadmin.
+          allOf: [{ $ref: "#/components/schemas/UserSummary" }]
+          nullable: true
+        owned_by_you: { type: boolean }
+        permissions:
+          type: object
+          description: What this token can do to the URL, given the account's rights and the token's access level.
+          required: [update, destroy]
+          properties:
+            update: { type: boolean }
+            destroy: { type: boolean }
+        last_edited_by:
+          description: Included only when the authenticated user is the URL owner, an editor, or a superadmin.
+          allOf: [{ $ref: "#/components/schemas/UserSummary" }]
+          nullable: true
+        last_edited_at: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    UrlEnvelope:
+      type: object
+      required: [url]
+      properties:
+        url: { $ref: "#/components/schemas/Url" }
+
+    Pagination:
+      type: object
+      required: [page, per_page, total_pages, total_count]
+      properties:
+        page: { type: integer, example: 1 }
+        per_page: { type: integer, example: 25 }
+        total_pages: { type: integer, example: 3 }
+        total_count: { type: integer, example: 61 }
+
+    Me:
+      type: object
+      required: [user, token]
+      properties:
+        user:
+          type: object
+          required: [id, email, username, superadmin]
+          properties:
+            id: { type: integer, example: 42 }
+            email: { type: string, format: email, example: you@example.org }
+            username: { type: string, example: you@example.org }
+            superadmin: { type: boolean, example: false }
+        token:
+          type: object
+          required: [id, name, prefix, access_level, expires_at, last_used_at, created_at]
+          properties:
+            id: { type: integer, example: 7 }
+            name: { type: string, example: Newsletter script }
+            prefix:
+              type: string
+              description: The first 12 characters of the token.
+              example: brkmn_a1B2c3
+            access_level: { type: string, enum: [read_only, read_write] }
+            expires_at: { type: string, format: date-time, nullable: true }
+            last_used_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: Updated at most every 5 minutes.
+            created_at: { type: string, format: date-time }
+
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              description: Stable error code for programs to check.
+              enum:
+                - bad_request
+                - missing_token
+                - invalid_token
+                - insufficient_scope
+                - forbidden
+                - not_found
+                - validation_failed
+                - rate_limited
+            message:
+              type: string
+              description: Explanation for people. The wording may change.
+            details:
+              type: object
+              description: Only on `validation_failed`. Messages for each field.
+              additionalProperties:
+                type: array
+                items: { type: string }
+
+  responses:
+    BadRequest:
+      description: A parameter is missing or invalid, or the body isn't valid JSON.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: bad_request, message: "Missing parameter: url." }
+    Unauthorized:
+      description: The token is missing, unknown, revoked, or expired.
+      headers:
+        WWW-Authenticate:
+          schema: { type: string }
+          example: Bearer realm="brkmn", error="invalid_token", error_description="Invalid or revoked access token."
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: invalid_token, message: Invalid or revoked access token. }
+    Forbidden:
+      description: >-
+        The token is read-only (`insufficient_scope`), or the account isn't allowed to do this (`forbidden`).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error:
+              code: insufficient_scope
+              message: This token is read-only. Use a read & write token to make changes.
+    NotFound:
+      description: The URL or endpoint doesn't exist.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error: { code: not_found, message: Not found. }
+    ValidationFailed:
+      description: The data broke a rule. `details` lists the problems by field.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error:
+              code: validation_failed
+              message: Shortened (spring-report) is already in use. Please choose another.
+              details:
+                shortened: ["(spring-report) is already in use. Please choose another."]
+    RateLimited:
+      description: The token made too many requests in the current window.
+      headers:
+        Retry-After:
+          description: Seconds to wait before retrying.
+          schema: { type: integer }
+        X-RateLimit-Limit: { $ref: "#/components/headers/X-RateLimit-Limit" }
+        X-RateLimit-Remaining: { $ref: "#/components/headers/X-RateLimit-Remaining" }
+        X-RateLimit-Reset: { $ref: "#/components/headers/X-RateLimit-Reset" }
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+          example:
+            error:
+              code: rate_limited
+              message: Rate limit of 300 requests per 300 seconds exceeded. Retry in 42 seconds.
