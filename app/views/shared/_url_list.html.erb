@@ -1,20 +1,22 @@
+<%# Page links keep the whole address (so the other list's page too) and jump
+    back to this list. %>
 <table>
   <tr class="top_pagination">
     <td colspan="6">
-      <%= will_paginate urls, param_name: page_param %>
+      <%= will_paginate urls, param_name: page_param, params: {anchor: list_id} %>
     </td>
   </tr>
   <tr>
-    <th class="<%= @shortened_header %>"><%= sortable 'shortened', 'Shortened URL' %></th>
+    <th class="<%= @shortened_header %>"><%= sortable 'shortened', 'Shortened URL', list: list_id %></th>
     <th class="arrow"></th>
-    <th class="<%= @to_header %>"><%= sortable '"to"', 'Full URL' %></th>
-    <th class="<%= @created_header %>"><%= sortable 'created_at', 'Created' %></th>
-    <th class="<%= @clicks_header %>"><%= sortable 'clicks', 'Clicks' %></th>
+    <th class="<%= @to_header %>"><%= sortable '"to"', 'Full URL', list: list_id %></th>
+    <th class="<%= @created_header %>"><%= sortable 'created_at', 'Created', list: list_id %></th>
+    <th class="<%= @clicks_header %>"><%= sortable 'clicks', 'Clicks', list: list_id %></th>
   </tr>
   <%= render partial: 'urls/url_list', collection: urls %>
   <tr class="bottom_pagination">
     <td colspan="6">
-      <%= will_paginate urls, param_name: page_param %>
+      <%= will_paginate urls, param_name: page_param, params: {anchor: list_id} %>
     </td>
   </tr>
 </table>

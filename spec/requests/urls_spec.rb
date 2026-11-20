@@ -409,6 +409,17 @@ RSpec.describe "Urls", type: :request do
       expect(response.body.scan(%(class="link_details_button")).size).to eq(2)
     end
 
+    it "keeps the other list's page in page links and jumps back to the list" do
+      create_list(:url, 2, user: user)
+      create_list(:url, 2, user: create(:user))
+
+      get urls_path(per_page: 1, others_page: 2)
+
+      my_page_links = response.body.scan(%r{href="(/urls\?[^"]*#my_urls)"}).flatten
+        .map { |href| CGI.unescapeHTML(href) }
+      expect(my_page_links).to include(a_string_matching(/my_page=2/).and(a_string_matching(/others_page=2/)))
+    end
+
     it "keeps the search in the sort links" do
       create(:url, user: user, shortened: "findme")
 

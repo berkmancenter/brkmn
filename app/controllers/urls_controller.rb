@@ -83,7 +83,8 @@ class UrlsController < ApplicationController
     authorize! :destroy, @url
     @url.destroy
     respond_to do |format|
-      format.html { redirect_to root_path }
+      # Back to the same pages of both lists, not to the first ones.
+      format.html { redirect_back_or_to urls_path }
     end
   end
 

@@ -77,7 +77,7 @@ RSpec.describe "Managing short links", type: :system do
     many_clicks = create(:url, user: user, shortened: "beta", clicks: 8)
 
     visit urls_path
-    within "#my_urls_frame" do
+    within "#my_urls" do
       click_link "Clicks"
       expect(page).to have_css("a.current.asc", text: "Clicks")
       expect(all(".shortened-title").map(&:text)).to eq([few_clicks.shortened, many_clicks.shortened])
@@ -93,7 +93,7 @@ RSpec.describe "Managing short links", type: :system do
     second_url = create(:url, user: user, shortened: "beta")
 
     visit urls_path(per_page: 1)
-    within "#my_urls_frame" do
+    within "#my_urls" do
       expect(page).to have_link(first_url.shortened)
       expect(page).to have_no_link(second_url.shortened)
       within ".top_pagination" do

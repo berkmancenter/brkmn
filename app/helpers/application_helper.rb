@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def sortable(column, title = nil)
+  # The sort is the same for both lists. The link keeps the search and page
+  # size, both lists start on the first page, and it jumps back to the list
+  # (`list` is its id).
+  def sortable(column, title = nil, list: nil)
     title ||= column.titleize
     css_class = column == sort_column ? "current #{sort_direction}" : nil
     direction = column == sort_column && sort_direction == 'asc' ? 'desc' : 'asc'
-    # Keep the search and page size, start again on the first page.
     link_to title,
-            params.permit(:search, :per_page).merge(sort: column, direction: direction),
-            class: css_class
+      params.permit(:search, :per_page).merge(sort: column, direction: direction, anchor: list),
+      class: css_class
   end
 
   # Destination to pre-fill in the add form (the bookmarklet passes url[to]).
