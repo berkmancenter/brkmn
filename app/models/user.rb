@@ -6,24 +6,31 @@ require "securerandom"
 #
 # Table name: users
 #
-#  id                   :integer          not null, primary key
-#  confirmation_sent_at :datetime
-#  confirmation_token   :string
-#  confirmed_at         :datetime
-#  email                :string(100)
-#  encrypted_password   :string           default(""), not null
-#  remember_created_at  :datetime
-#  superadmin           :boolean          default(FALSE)
-#  unconfirmed_email    :string
-#  username             :string(100)      not null
-#  created_at           :datetime
-#  updated_at           :datetime
+#  id                     :integer          not null, primary key
+#  confirmation_sent_at   :datetime
+#  confirmation_token     :string
+#  confirmed_at           :datetime
+#  email                  :string(100)
+#  encrypted_password     :string           default(""), not null
+#  failed_attempts        :integer          default(0), not null
+#  locked_at              :datetime
+#  remember_created_at    :datetime
+#  reset_password_sent_at :datetime
+#  reset_password_token   :string
+#  superadmin             :boolean          default(FALSE)
+#  unconfirmed_email      :string
+#  unlock_token           :string
+#  username               :string(100)      not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #
 # Indexes
 #
-#  index_users_on_email       (email)
-#  index_users_on_superadmin  (superadmin)
-#  index_users_on_username    (username)
+#  index_users_on_email                 (email)
+#  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_users_on_superadmin            (superadmin)
+#  index_users_on_unlock_token          (unlock_token) UNIQUE
+#  index_users_on_username              (username)
 #
 
 class User < ApplicationRecord
@@ -64,7 +71,9 @@ class User < ApplicationRecord
   end
 
   if Rails.application.config.devise_auth_type == "db"
-    devise_modules = [:database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable]
+    devise_modules = [
+      :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable, :confirmable, :lockable
+    ]
     devise(*devise_modules)
 
     before_create :set_username

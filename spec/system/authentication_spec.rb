@@ -27,8 +27,8 @@ RSpec.describe "Account access", type: :system do
     visit new_user_session_path
     click_link "Sign up"
     fill_in "Email", with: email
-    fill_in "Password", with: "password123", exact: true
-    fill_in "Password confirmation", with: "password123"
+    fill_in "Password", with: "correct-horse-battery", exact: true
+    fill_in "Password confirmation", with: "correct-horse-battery"
     click_button "Sign up"
 
     expect(page).to have_current_path(new_user_session_path)
