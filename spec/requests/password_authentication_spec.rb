@@ -62,5 +62,15 @@ RSpec.describe "Password authentication", type: :request do
     get urls_path
     expect(response).to redirect_to(new_user_session_path)
   end
+
+  it "sends a content security policy with a script nonce" do
+    get new_user_session_path
+
+    policy = response.headers["Content-Security-Policy"]
+    nonce = policy[/'nonce-([^']+)'/, 1]
+    expect(policy).to include("script-src 'self' 'nonce-")
+    expect(policy).to include("object-src 'none'")
+    expect(response.body).to match(/<script type="importmap"[^>]*nonce="#{Regexp.escape(nonce)}"/)
+  end
 end
 # rubocop:enable Metrics/BlockLength
