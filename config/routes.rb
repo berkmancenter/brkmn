@@ -24,6 +24,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # JSON API. Must stay above the catch-all redirector route at the bottom.
+  namespace :api, defaults: {format: :json} do
+    namespace :v1 do
+      get "me" => "me#show"
+      resources :urls, only: %i[index show create update destroy] do
+        get :qr, on: :member
+      end
+    end
+    match "/" => "v1/base#route_not_found", via: :all
+    match "*path" => "v1/base#route_not_found", via: :all
+  end
+
   root to: redirect('/urls')
 
   get '/redirector/invalid' => 'redirector#invalid'
