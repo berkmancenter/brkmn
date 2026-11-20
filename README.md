@@ -6,7 +6,9 @@
 
 ## Documentation
 
-[API documentation](docs/api/README.md)
+- [Application functionality](docs/app-functionality.md)
+- [API documentation](docs/api/README.md)
+- [Documentation index](docs/README.md)
 
 ## Development
 
