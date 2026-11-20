@@ -221,6 +221,9 @@ Start with the [API quick start](api/README.md#quick-start), or use the
 
 - Users can switch between the modern and classic themes. The choice is kept
   in a browser cookie for one year.
+- On screens narrower than 1152 pixels the header shows only **Search** and a
+  **Menu** button. The menu holds the signed-in email, the bookmarklet, the
+  theme switch, **Settings** and **Sign out**.
 - The application publishes a web app manifest and icon metadata for browsers.
 - `GET /up` is a health endpoint for load balancers and uptime checks. It
   returns success when Rails boots normally.

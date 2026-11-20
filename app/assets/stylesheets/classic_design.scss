@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 body.viewing-mode-classic {
   background-image: linear-gradient(to top, #000 0%, #8c0002 100%);
 
@@ -24,6 +26,22 @@ body.viewing-mode-classic {
     img {
       background-color: #fff;
       border-radius: 1rem;
+    }
+  }
+
+  .header-items-menu-toggle,
+  .header-items-menu-toggle:hover {
+    color: #fff;
+  }
+
+  @media (max-width: $header-menu-breakpoint - 1px) {
+    .header-items-menu {
+      background-color: #1a1a1a;
+      border-color: #333;
+
+      > * {
+        border-color: #333;
+      }
     }
   }
 

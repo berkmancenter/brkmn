@@ -25,13 +25,6 @@
     @include rounded-corners;
     @include box-shadow;
 
-    @media (max-width: 700px) {
-      top: 120%;
-      left: -20%;
-      right: 0;
-      margin: 0 auto;
-    }
-
     a {
       color: #000000 !important;
     }
@@ -60,5 +53,42 @@
     transform: translateX(0);
     opacity: 1;
     visibility: visible;
+  }
+}
+
+// Small screens: the search form opens as a full width row below the header
+@media (max-width: $header-menu-breakpoint - 1px) {
+  .header-items-item-search .search {
+    display: none;
+    position: static;
+    flex: 1 1 100%;
+    width: auto;
+    transform: none;
+    transition: none;
+    opacity: 1;
+    visibility: visible;
+
+    &.header-items-item-search-active {
+      display: block;
+    }
+
+    .search-form {
+      gap: 0.5rem;
+
+      > div:first-child {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      #search {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (max-width: $header-menu-breakpoint - 1px) and (prefers-reduced-motion: no-preference) {
+  .header-items-item-search .search.header-items-item-search-active {
+    animation: header-panel-in 0.2s ease-out;
   }
 }

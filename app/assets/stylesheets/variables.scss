@@ -14,3 +14,7 @@ $colors: (
 $fonts: (
   body: ('Verdana', sans-serif),
 );
+
+// Below this width the header shows only Search and a Menu button,
+// the full row of header items needs about 1000px with a long email
+$header-menu-breakpoint: 1152px;

@@ -20,53 +20,157 @@
 .header-items {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem 0.75rem;
   user-select: none;
   margin-bottom: 1.5rem;
 
-  &-item {
+  // Every entry is an icon with a label in one line
+  .header-items-item-search > a,
+  .header-items-menu > * {
     display: flex;
     align-items: center;
+    white-space: nowrap;
+    cursor: pointer;
 
-    @media (max-width: 700px) {
-      flex: 1 1 100%;
-      justify-content: center;
-    }
-
-    > *,
-    > turbo-frame > * {
+    > span:not(.header-items-item-user) {
       display: flex;
-      align-items: center;
+    }
+  }
 
-      span {
-        display: flex;
-      }
+  img {
+    flex-shrink: 0;
+    max-height: 2rem;
+    margin-right: 0.2rem;
+    height: 2rem;
+  }
+
+  .header-items-item-account {
+    min-width: 0;
+    cursor: default;
+  }
+
+  .header-items-item-user {
+    display: block;
+    max-width: 18rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+  }
+}
+
+.header-items-menu-toggle {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: map.get($colors, primary);
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: #000;
+  }
+
+  &[aria-expanded="true"] .header-items-menu-toggle-open,
+  &[aria-expanded="false"] .header-items-menu-toggle-close {
+    display: none;
+  }
+}
+
+// Wide screens: everything in one row, the bookmarklet on the left
+@media (min-width: $header-menu-breakpoint) {
+  .header-items-menu-toggle {
+    display: none;
+  }
+
+  .header-items-menu {
+    display: contents;
+  }
+
+  .header-items .header-items-item-bookmarklet {
+    order: -1;
+    margin-right: auto;
+  }
+}
+
+// Small screens: Search and Menu in one row, the menu opens below them
+@media (max-width: $header-menu-breakpoint - 1px) {
+  .header-items {
+    .header-items-item-search {
+      display: contents;
     }
 
-    > *  {
-      margin-right: 0.75rem;
-
-      &:last-child {
-        margin-right: 0;
-      }
+    .header-items-item-search > a {
+      order: 1;
     }
 
-    &:first-child > * {
-      margin-right: 0;
-    }
-
-    &:last-child {
+    .header-items-menu-toggle {
+      order: 2;
       margin-left: auto;
     }
 
-    img {
-      max-height: 2rem;
-      margin-right: 0.2rem;
-      height: 2rem;
+    .search {
+      order: 3;
     }
 
-    &-user {
-      font-weight: bold;
+    .header-items-menu {
+      order: 4;
     }
+  }
+
+  .header-items-menu {
+    display: none;
+    flex: 1 1 100%;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0.25rem 0.75rem;
+    background-color: map.get($colors, light-blue);
+    border: 1px solid map.get($colors, light-border);
+    @include rounded-corners;
+    @include box-shadow;
+
+    .header-items--menu-open & {
+      display: flex;
+    }
+
+    > * {
+      padding: 0.4rem 0;
+      border-bottom: 1px solid map.get($colors, light-border);
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    // Who is signed in comes first
+    .header-items-item-account {
+      order: -1;
+    }
+
+    .header-items-item-user {
+      max-width: none;
+    }
+  }
+}
+
+@media (max-width: $header-menu-breakpoint - 1px) and (prefers-reduced-motion: no-preference) {
+  .header-items--menu-open .header-items-menu {
+    animation: header-panel-in 0.2s ease-out;
+  }
+}
+
+@keyframes header-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -77,14 +181,6 @@ h1.site-title {
   max-height: 4rem;
   display: flex;
   justify-content: center;
-
-  @media (max-width: 700px) {
-    top: 120%;
-    left: -50%;
-    right: 0;
-    margin: 0 auto;
-    margin-top: 4rem;
-  }
 
   a.header-logo-link {
     display: flex;
