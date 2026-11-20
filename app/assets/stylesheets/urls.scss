@@ -255,6 +255,37 @@ table {
   }
 }
 
+// A row just changed (edit) or being deleted, so people see which one it was.
+@keyframes url-row-changed {
+  from {
+    background-color: #fff3bf;
+  }
+
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes url-row-removed {
+  30% {
+    background-color: #fdeeee;
+    opacity: 1;
+  }
+
+  to {
+    background-color: #fdeeee;
+    opacity: 0;
+  }
+}
+
+tr.url-row--changed > td {
+  animation: url-row-changed 3s ease-out;
+}
+
+tr.url-row--removing > td {
+  animation: url-row-removed 0.8s ease-in forwards;
+}
+
 .link_edit__fields {
   display: flex;
   flex-direction: column;

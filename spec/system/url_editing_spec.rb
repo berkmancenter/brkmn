@@ -30,6 +30,7 @@ RSpec.describe "Editing a link in a dialog", type: :system do
 
     expect(page).to have_no_css("dialog.link_edit")
     within("#row_url_#{url.id}") { expect(page).to have_link("https://example.org/changed") }
+    expect(page).to have_css("#row_url_#{url.id}.url-row--changed")
     expect(page).to have_current_path(urls_path)
     expect(url.reload.to).to eq("https://example.org/changed")
   end

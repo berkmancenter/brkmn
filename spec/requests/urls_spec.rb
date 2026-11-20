@@ -87,7 +87,7 @@ RSpec.describe "Urls", type: :request do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(%(action="replace" target="row_url_#{url.id}"))
-        expect(response.body).to include("https://example.org/from-dialog")
+        expect(response.body).to include("https://example.org/from-dialog", "url-row--changed")
         expect(response.body).not_to include("link_edit")
         expect(url.reload.to).to eq("https://example.org/from-dialog")
         expect(url.last_edited_by).to eq(user)

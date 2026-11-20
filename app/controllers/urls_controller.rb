@@ -126,11 +126,12 @@ class UrlsController < ApplicationController
     render turbo_stream: edit_dialog_stream, status: :unprocessable_content
   end
 
-  # The saved link's row, drawn again. Replacing it also removes the dialog in
-  # it, so the dialog closes and both lists stay on their pages.
+  # The saved link's row, drawn again and highlighted. Replacing it also
+  # removes the dialog in it, so the dialog closes and both lists stay on
+  # their pages.
   def row_stream
     url = Url.with_sharing_details.find(@url.id)
-    turbo_stream.replace(helpers.dom_id(url, :row), partial: "urls/url_list", locals: {url_list: url})
+    turbo_stream.replace(helpers.dom_id(url, :row), partial: "urls/url_list", locals: {url_list: url, changed: true})
   end
 
   # The unique index catches two people taking the same code at the same time.

@@ -24,6 +24,29 @@ RSpec.describe "Deleting a link", type: :system do
     expect(page).to have_no_link(code)
   end
 
+  it "fades the row out before it goes" do
+    visit urls_path(sort: "shortened", direction: "asc", per_page: 60)
+
+    within("#my_urls tr", text: "link-10") do
+      accept_confirm("Are you sure you want to delete this?") { click_link "Delete" }
+    end
+
+    expect(page).to have_css("tr.url-row--removing", text: "link-10")
+    expect(page).to have_no_link("link-10")
+    expect(page).to have_no_css("tr.url-row--removing")
+  end
+
+  it "leaves the row alone when the delete is cancelled" do
+    visit urls_path(sort: "shortened", direction: "asc", per_page: 60)
+
+    within("#my_urls tr", text: "link-10") do
+      dismiss_confirm("Are you sure you want to delete this?") { click_link "Delete" }
+    end
+
+    expect(page).to have_link("link-10")
+    expect(page).to have_no_css("tr.url-row--removing")
+  end
+
   it "keeps the scroll position" do
     visit urls_path(sort: "shortened", direction: "asc", per_page: 60)
     page.execute_script("window.scrollTo(0, 700)")

@@ -1,4 +1,5 @@
-<tr id="<%= dom_id(url_list, :row) %>">
+<%# changed: drawn again after an edit, CSS highlights it for a moment %>
+<tr id="<%= dom_id(url_list, :row) %>" class="<%= class_names("url-row", "url-row--changed": local_assigns[:changed]) %>">
   <td class="shortened">
     <div>
       <div class="shortened-title">
