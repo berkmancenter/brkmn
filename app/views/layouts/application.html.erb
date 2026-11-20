@@ -52,6 +52,13 @@
 
               <%= render 'theme/toggle_link' %>
 
+              <%= link_to settings_path, title: 'API and account settings', class: 'header-items-item-settings' do %>
+                <span>
+                  <%= image_tag('settings.svg', alt: '') %>
+                </span>
+                <span>Settings</span>
+              <% end %>
+
               <span>
                 <%= image_tag('user.svg') %>
                 <span class="header-items-item-user">

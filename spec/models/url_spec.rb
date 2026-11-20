@@ -116,8 +116,8 @@ RSpec.describe Url, type: :model do
       end
     end
 
-    it 'disallows codes taken by the health check, PWA and API routes' do
-      %w[up manifest service-worker api].each do |shortcode|
+    it 'disallows codes taken by the health check, PWA, API and settings routes' do
+      %w[up manifest service-worker api settings].each do |shortcode|
         expect(Url.new(shortened: shortcode, to: 'https://google.com')).not_to be_valid
       end
     end

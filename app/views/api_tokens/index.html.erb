@@ -1,0 +1,6 @@
+<% content_for :head do %>
+  <%# The page can contain a freshly generated token: keep it out of Turbo's page cache. %>
+  <meta name="turbo-cache-control" content="no-cache">
+<% end %>
+
+<%= render "api_tokens/page" %>

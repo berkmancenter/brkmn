@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class ShortcodeValidator < ActiveModel::EachValidator
-  # Codes a short link could never be reached with: mounted apps are served
-  # before the redirector, browsers remove "." and ".." from paths.
-  RESERVED_SHORTCODES = %w[sidekiq . ..].freeze
+  # Codes a short link could never be reached with: mounted apps and redirect
+  # routes (recognize_path doesn't see either) are served before the
+  # redirector, browsers remove "." and ".." from paths.
+  RESERVED_SHORTCODES = %w[sidekiq settings . ..].freeze
 
   def validate_each(record, attribute, value)
     # We will auto-create if it's blank.

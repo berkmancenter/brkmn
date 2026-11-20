@@ -104,5 +104,10 @@ Rails.application.configure do
   end
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = {exclude: ->(request) { request.path == "/up" }}
-  config.action_mailer.default_url_options = { host: ENV["HOST"] || 'example.com' }
+  # Links in emails (including single-use API token links) must use the same
+  # protocol the site enforces, or they'd travel over plain HTTP first.
+  config.action_mailer.default_url_options = {
+    host: ENV["HOST"] || 'example.com',
+    protocol: ENV["RAILS_DISABLE_SSL"].blank? ? "https" : "http"
+  }
 end

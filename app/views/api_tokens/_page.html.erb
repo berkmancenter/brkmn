@@ -1,0 +1,94 @@
+<div id="api_tokens_page" class="api-tokens">
+  <%= render "shared/settings_tabs", active_tab: :api_tokens %>
+
+  <h5 class="is-size-5">API tokens</h5>
+
+  <div class="api-tokens__box">
+    <p>
+      Tokens let scripts and other apps use the <%= REDIRECT_DOMAIN %> API as you
+      (<%= current_user.email %>). Send a token in the <code>Authorization</code> header of each request:
+    </p>
+    <pre class="api-tokens__code">curl -H "Authorization: Bearer &lt;token&gt;" <%= api_v1_me_url %></pre>
+    <p>
+      <%= link_to "Read the API documentation on GitHub",
+        "https://github.com/berkmancenter/brkmn/blob/main/docs/api/README.md",
+        target: "_blank", rel: "noopener" %>
+    </p>
+  </div>
+
+  <% if @secret %>
+    <%= render "api_tokens/secret", secret: @secret %>
+  <% end %>
+
+  <div class="api-tokens__box">
+    <h5>Create a token</h5>
+    <%= form_with model: @new_api_token, url: api_tokens_path, class: "api-tokens__form" do |f| %>
+      <%= render "api_tokens/errors", record: @new_api_token %>
+
+      <div class="api-tokens__fields">
+        <div class="api-tokens__field api-tokens__field--wide">
+          <%= f.label :name, "Name" %>
+          <%= f.text_field :name, placeholder: "e.g. Zapier, CI script", required: true, maxlength: 100 %>
+        </div>
+        <div class="api-tokens__field">
+          <%= f.label :access_level, "Access" %>
+          <%= f.select :access_level, api_token_access_options %>
+        </div>
+        <div class="api-tokens__field">
+          <%= f.label :lifetime_days, "Expires after" %>
+          <%= f.select :lifetime_days, api_token_lifetime_options, selected: @new_api_token.lifetime_days.to_s %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.submit "Create token" %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @tokens.any? %>
+    <div class="api-tokens__table-wrapper">
+      <table class="api-tokens__table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Token</th>
+            <th>Access</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Last used</th>
+            <th>Expires</th>
+            <th><span class="api-tokens__visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tokens.each do |token| %>
+            <tr id="<%= dom_id(token) %>" class="<%= "api-tokens__row--revoked" if token.revoked? %>">
+              <td><%= token.name %></td>
+              <td><code><%= api_token_display_prefix(token) %></code></td>
+              <td class="api-tokens__nowrap"><%= api_token_access_label(token) %></td>
+              <td>
+                <%= api_token_status(token) %>
+                <div class="api-tokens__detail"><%= api_token_status_details(token) %></div>
+              </td>
+              <td class="api-tokens__nowrap"><%= api_token_time(token.created_at) %></td>
+              <td class="api-tokens__nowrap"><%= api_token_time(token.last_used_at, blank: "Never") %></td>
+              <td class="api-tokens__nowrap"><%= api_token_expiry(token) %></td>
+              <td class="api-tokens__actions">
+                <% unless token.revoked? %>
+                  <% regenerate_confirm = "Regenerate “#{token.name}”? Apps using it will stop working." %>
+                  <% regenerate = {method: :post, confirm: regenerate_confirm} %>
+                  <% revoke = {method: :patch, confirm: "Revoke “#{token.name}”? This can't be undone.", danger: true} %>
+                  <%= api_token_button "Regenerate", regenerate_api_token_path(token), **regenerate %>
+                  <%= api_token_button "Revoke", revoke_api_token_path(token), **revoke %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="api-tokens__box">You don't have any API tokens yet.</div>
+  <% end %>
+</div>

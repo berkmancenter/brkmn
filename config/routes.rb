@@ -36,6 +36,29 @@ Rails.application.routes.draw do
     match "*path" => "v1/base#route_not_found", via: :all
   end
 
+  # The single-use link external users get by email (?token=... so the value is
+  # filtered out of the request logs).
+  resource :api_token_claim, only: %i[show create], path: "api_tokens/claim"
+
+  get "settings" => redirect("/settings/api_tokens"), as: :settings
+  scope path: "settings" do
+    resources :api_tokens, only: %i[index create] do
+      member do
+        post :regenerate
+        patch :revoke
+      end
+    end
+
+    namespace :admin do
+      resources :api_tokens, only: %i[index new create] do
+        member do
+          patch :revoke
+          post :reissue
+        end
+      end
+    end
+  end
+
   root to: redirect('/urls')
 
   get '/redirector/invalid' => 'redirector#invalid'

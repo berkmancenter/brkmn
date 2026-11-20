@@ -1,0 +1,97 @@
+<div class="api-tokens">
+  <%= render "shared/settings_tabs", active_tab: :all_tokens %>
+
+  <h5 class="is-size-5">All API tokens</h5>
+
+  <div class="api-tokens__box">
+    <% filter_form = {url: admin_api_tokens_path, method: :get, class: "api-tokens__filters"} %>
+    <%= form_with(**filter_form, data: {turbo_action: "advance"}) do |f| %>
+      <div class="api-tokens__field">
+        <%= f.label :q, "Search" %>
+        <%= f.text_field :q, value: @filters[:q], placeholder: "Email, name, note, or token prefix" %>
+      </div>
+      <div class="api-tokens__field">
+        <%= f.label :status, "Status" %>
+        <%= f.select :status, ApiTokensHelper::STATUS_FILTER_OPTIONS, selected: @filters[:status] %>
+      </div>
+      <div class="api-tokens__field">
+        <%= f.label :kind, "User type" %>
+        <%= f.select :kind, ApiTokensHelper::KIND_FILTER_OPTIONS, selected: @filters[:kind] %>
+      </div>
+      <div class="api-tokens__filter-actions">
+        <%= f.submit "Filter", name: nil %>
+        <%= link_to "Clear", admin_api_tokens_path %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @api_tokens.any? %>
+    <div class="api-tokens__table-wrapper">
+      <table class="api-tokens__table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Token</th>
+            <th>Access</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Last used</th>
+            <th>Expires</th>
+            <th><span class="api-tokens__visually-hidden">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @api_tokens.each do |token| %>
+            <tr id="<%= dom_id(token) %>" class="<%= "api-tokens__row--revoked" if token.revoked? %>">
+              <td>
+                <%= user_email_address(token.user) %>
+                <% if token.external? %>
+                  <span class="api-tokens__badge">External</span>
+                <% end %>
+              </td>
+              <td>
+                <div><%= token.name %></div>
+                <% if token.token_prefix.present? %>
+                  <code><%= api_token_display_prefix(token) %></code>
+                <% end %>
+                <% if token.note.present? %>
+                  <div class="api-tokens__detail"><%= token.note %></div>
+                <% end %>
+              </td>
+              <td class="api-tokens__nowrap"><%= api_token_access_label(token) %></td>
+              <td>
+                <%= api_token_status(token) %>
+                <div class="api-tokens__detail"><%= api_token_status_details(token) %></div>
+              </td>
+              <td>
+                <%= api_token_time(token.created_at) %>
+                <% if token.created_by && token.created_by != token.user %>
+                  <div class="api-tokens__detail">by <%= user_email_address(token.created_by) %></div>
+                <% end %>
+              </td>
+              <td><%= api_token_time(token.last_used_at, blank: "Never") %></td>
+              <td><%= api_token_expiry(token) %></td>
+              <td class="api-tokens__actions">
+                <% unless token.revoked? %>
+                  <% if token.external? %>
+                    <% reissue_confirm = "Email #{token.user.email} a new single-use link? " \
+                                         "Their current token value will stop working." %>
+                    <% reissue = {method: :post, confirm: reissue_confirm} %>
+                    <%= api_token_button "Send new link", reissue_admin_api_token_path(token), **reissue %>
+                  <% end %>
+                  <% revoke_confirm = "Revoke “#{token.name}” for #{token.user.email}? This can't be undone." %>
+                  <% revoke = {method: :patch, confirm: revoke_confirm, danger: true} %>
+                  <%= api_token_button "Revoke", revoke_admin_api_token_path(token), **revoke %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= will_paginate @api_tokens %>
+  <% else %>
+    <div class="api-tokens__box">No API tokens match these filters.</div>
+  <% end %>
+</div>
