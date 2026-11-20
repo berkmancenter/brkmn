@@ -7,6 +7,7 @@ require "securerandom"
 # Table name: users
 #
 #  id                     :integer          not null, primary key
+#  api_only               :boolean          default(FALSE), not null
 #  confirmation_sent_at   :datetime
 #  confirmation_token     :string
 #  confirmed_at           :datetime
@@ -53,6 +54,17 @@ class User < ApplicationRecord
     foreign_key: :last_edited_by_id,
     dependent: :nullify,
     inverse_of: :last_edited_by
+  has_many :api_tokens, dependent: :destroy
+  has_many :created_api_tokens,
+    class_name: "ApiToken",
+    foreign_key: :created_by_id,
+    dependent: :nullify,
+    inverse_of: :created_by
+  has_many :revoked_api_tokens,
+    class_name: "ApiToken",
+    foreign_key: :revoked_by_id,
+    dependent: :nullify,
+    inverse_of: :revoked_by
 
   if Rails.application.config.devise_auth_type == "cas"
     devise :cas_authenticatable, :rememberable
@@ -77,11 +89,30 @@ class User < ApplicationRecord
     devise(*devise_modules)
 
     before_create :set_username
+
+    # API-only accounts never use the website, so don't send them reset emails.
+    def send_reset_password_instructions
+      return if api_only?
+
+      super
+    end
   end
 
   validates :username, uniqueness: true
 
+  # External users created for API access can't sign in to the website.
+  def active_for_authentication?
+    super && !api_only?
+  end
+
+  def inactive_message
+    api_only? ? :api_only : super
+  end
+
+  # Called on every CAS sign-in. Signing in through SSO proves the person is a
+  # member, so an API-only account becomes a regular one.
   def cas_extra_attributes=(extra_attributes)
+    self.api_only = false
     extra_attributes.each do |name, value|
       case name.to_sym
       when :mail
@@ -90,7 +121,9 @@ class User < ApplicationRecord
     end
   end
 
+  # Called on every SAML sign-in; see cas_extra_attributes= for api_only.
   def apply_saml_response(saml_response, auth_value)
+    self.api_only = false
     assign_external_attributes(
       email: saml_value(saml_response, :email) || auth_value,
       username: saml_value(saml_response, :username) || saml_value(saml_response, :display_name)
@@ -113,6 +146,7 @@ class User < ApplicationRecord
     user = where("LOWER(email) = ?", normalized_email).first_or_initialize
     user.email = normalized_email
     user.username = header_username(name.strip, user: user)
+    user.api_only = false
     user.set_random_password
     user.skip_confirmation! if user.respond_to?(:skip_confirmation!) && !user.confirmed?
     # This runs on every request, so only write when something changed.
@@ -167,8 +201,15 @@ class User < ApplicationRecord
     existing_user = User.where(email: email).first
 
     unless existing_user.nil?
-      self.attributes = existing_user.attributes.except("username")
-      @new_record = false
+      # api_only is decided by the sign-in hooks above, not by the stored row.
+      authenticated_username = username
+      authenticated_api_only = api_only
+      persisted_attributes = self.class.attributes_builder.build_from_database(
+        existing_user.attributes_for_database
+      )
+      init_with_attributes(persisted_attributes)
+      self.username = authenticated_username
+      self.api_only = authenticated_api_only
     end
 
     set_random_password
