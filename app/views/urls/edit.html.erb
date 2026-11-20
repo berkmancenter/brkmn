@@ -1,7 +1,7 @@
 <div class="edit-form">
   <h4 class="is-size-4">URL Details</h4>
 
-  <%= form_for(@url) do |f| %>
+  <%= form_for(@url, html: {data: {turbo: false}}) do |f| %>
     <% if @url.errors.any? %>
       <div id="error">
         <% @url.errors.full_messages.each do |msg| %>

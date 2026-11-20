@@ -1,0 +1,47 @@
+<%# Loaded into the row by the Edit button (stream-link controller), opens at
+    once and removes itself when closed. data-turbo-temporary keeps it out of
+    Turbo's page cache, so "back" doesn't open it again. %>
+<% field_id = "edit_url_to_#{url.id}" %>
+<dialog
+  class="link_details link_edit"
+  aria-labelledby="link-edit-title-<%= url.id %>"
+  data-controller="modal"
+  data-action="close->modal#remove click->modal#closeOnBackdrop"
+  data-turbo-temporary>
+  <button
+    type="button"
+    class="link_details__close"
+    aria-label="Close"
+    data-action="modal#close">×</button>
+
+  <div class="link_details__header">
+    <h2 id="link-edit-title-<%= url.id %>">Edit "<%= url.shortened %>"</h2>
+    <p><%= link_to shortened_url(url.shortened), shortened_url(url.shortened) %></p>
+  </div>
+
+  <%= form_with model: url, class: "link_edit__form" do |form| %>
+    <% if url.errors.any? %>
+      <div class="link_details__message link_details__message--error" role="alert">
+        <%= url.errors.full_messages.to_sentence %>
+      </div>
+    <% end %>
+
+    <div class="link_edit__fields">
+      <%= form.label :to, "Full URL", for: field_id %>
+      <%= form.text_field :to, id: field_id, required: true, autofocus: true, autocomplete: "url" %>
+      <p class="link_edit__meta">
+        The short code stays the same, links already shared keep working.
+        <%= pluralize(url.clicks, "click") %> so far.
+        <% if url.last_edited_at.present? %>
+          Last edit by <%= user_email_address(url.last_edited_by, fallback: "Unknown user") %>
+          <time datetime="<%= url.last_edited_at.iso8601 %>"><%= time_ago_in_words(url.last_edited_at) %> ago</time>.
+        <% end %>
+      </p>
+    </div>
+
+    <div class="link_details__footer link_edit__footer">
+      <button type="button" class="link_details__button" data-action="modal#close">Cancel</button>
+      <%= form.button "Save", class: "link_details__button link_details__button--primary" %>
+    </div>
+  <% end %>
+</dialog>

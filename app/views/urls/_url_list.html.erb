@@ -1,4 +1,4 @@
-<tr>
+<tr id="<%= dom_id(url_list, :row) %>">
   <td class="shortened">
     <div>
       <div class="shortened-title">
@@ -26,9 +26,13 @@
 
         <% if can?(:update, url_list) %>
           <div>
-            <%= link_to(edit_url_path(url_list), title: 'Edit', data: { turbo: false }) do %>
-              <%= image_tag('edit.svg') %>
+            <%= link_to(edit_url_path(url_list),
+                  title: "Edit",
+                  aria: {label: "Edit #{url_list.shortened}"},
+                  data: {controller: "stream-link", action: "stream-link#load", turbo: false}) do %>
+              <%= image_tag("edit.svg", alt: "") %>
             <% end %>
+            <div id="<%= dom_id(url_list, :edit_dialog) %>"></div>
           </div>
         <% end %>
 

@@ -34,8 +34,10 @@ RSpec.describe "Managing short links", type: :system do
       click_link "Edit"
     end
 
-    fill_in "Full URL", with: "https://example.org/updated"
-    click_button "Update"
+    within "dialog.link_edit" do
+      fill_in "Full URL", with: "https://example.org/updated"
+      click_button "Save"
+    end
 
     within "#my_urls" do
       expect(page).to have_link("browser-demo")
@@ -144,8 +146,10 @@ RSpec.describe "Managing short links", type: :system do
       within "#not_my_urls" do
         click_link "Edit", href: edit_url_path(url)
       end
-      fill_in "Full URL", with: "https://example.org/admin-edit"
-      click_button "Update"
+      within "dialog.link_edit" do
+        fill_in "Full URL", with: "https://example.org/admin-edit"
+        click_button "Save"
+      end
 
       within "#not_my_urls" do
         expect(page).to have_link("https://example.org/admin-edit")

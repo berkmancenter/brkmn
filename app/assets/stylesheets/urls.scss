@@ -255,6 +255,33 @@ table {
   }
 }
 
+.link_edit__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+
+  label {
+    font-weight: bold;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid map.get($colors, light-border);
+    @include rounded-corners(0.5rem);
+  }
+}
+
+.link_edit__meta {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.link_edit__footer {
+  gap: 0.5rem;
+}
+
 .link_details__share_form {
   display: flex;
   flex-direction: row;

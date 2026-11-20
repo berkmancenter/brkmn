@@ -55,9 +55,16 @@ class UrlsController < ApplicationController
     redirect_to urls_path
   end
 
+  # The Edit button loads the form as a dialog into the link's row (Turbo
+  # Stream), the edit page is for links opened without JavaScript.
   def edit
-    @url = Url.includes(:url_collaborators).find(params[:id])
+    @url = Url.includes(:url_collaborators, :last_edited_by).find(params[:id])
     authorize! :update, @url
+
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: edit_dialog_stream }
+      format.html
+    end
   end
 
   def details
@@ -71,10 +78,11 @@ class UrlsController < ApplicationController
     @url = Url.includes(:url_collaborators).find(params[:id])
     authorize! :update, @url
 
-    if @url.update_with_editor(update_url_params, editor: current_user)
-      redirect_to urls_path
-    else
-      render 'edit'
+    saved = @url.update_with_editor(update_url_params, editor: current_user)
+
+    respond_to do |format|
+      format.turbo_stream { saved ? render(turbo_stream: row_stream) : render_edit_dialog_errors }
+      format.html { saved ? redirect_to(urls_path) : render("edit") }
     end
   end
 
@@ -108,6 +116,21 @@ class UrlsController < ApplicationController
 
   def update_url_params
     params.expect(url: [:to])
+  end
+
+  def edit_dialog_stream
+    turbo_stream.update(helpers.dom_id(@url, :edit_dialog), partial: "urls/edit_dialog", locals: {url: @url})
+  end
+
+  def render_edit_dialog_errors
+    render turbo_stream: edit_dialog_stream, status: :unprocessable_content
+  end
+
+  # The saved link's row, drawn again. Replacing it also removes the dialog in
+  # it, so the dialog closes and both lists stay on their pages.
+  def row_stream
+    url = Url.with_sharing_details.find(@url.id)
+    turbo_stream.replace(helpers.dom_id(url, :row), partial: "urls/url_list", locals: {url_list: url})
   end
 
   # The unique index catches two people taking the same code at the same time.

@@ -70,6 +70,47 @@ RSpec.describe "Urls", type: :request do
       expect(url.last_edited_at).to be_present
     end
 
+    context "from the edit dialog" do
+      let(:turbo_stream) { {"Accept" => "text/vnd.turbo-stream.html"} }
+
+      it "loads the form as a dialog into the link's row" do
+        get edit_url_path(url), headers: turbo_stream
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include(%(action="update" target="edit_dialog_url_#{url.id}"))
+        expect(response.body).to include("<dialog", %(value="https://example.org/original"))
+      end
+
+      it "replaces the row after saving, which closes the dialog" do
+        patch url_path(url), params: {url: {to: "https://example.org/from-dialog"}}, headers: turbo_stream
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(%(action="replace" target="row_url_#{url.id}"))
+        expect(response.body).to include("https://example.org/from-dialog")
+        expect(response.body).not_to include("link_edit")
+        expect(url.reload.to).to eq("https://example.org/from-dialog")
+        expect(url.last_edited_by).to eq(user)
+      end
+
+      it "shows the errors in the dialog and keeps the destination" do
+        patch url_path(url), params: {url: {to: "https://"}}, headers: turbo_stream
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include(%(action="update" target="edit_dialog_url_#{url.id}"))
+        expect(response.body).to include("must be a valid url", %(value="https://"))
+        expect(url.reload.to).to eq("https://example.org/original")
+      end
+
+      it "doesn't open for people who can't edit the link" do
+        sign_in(create(:user))
+
+        expect do
+          get edit_url_path(url), headers: turbo_stream
+        end.to raise_error(CanCan::AccessDenied)
+      end
+    end
+
     it "rejects an update without url params instead of failing" do
       patch url_path(url), params: {to: "https://example.org/updated"}
 
