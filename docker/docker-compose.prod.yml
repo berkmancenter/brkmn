@@ -23,7 +23,6 @@ services:
       dockerfile: docker/Dockerfile
     ports:
       - '8507:3000'
-      - '8517:1080' # Mailcatcher
     volumes:
       - '.:/app'
     restart: always

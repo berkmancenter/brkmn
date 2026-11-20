@@ -46,32 +46,37 @@ RUN if [ "$BUILD_IMAGE" = "true" ]; then \
       && rm ${APP_VERSION}.tar.gz; \
     fi
 
-# Create a user
+# Create a user, and a folder to be able to create a .bash_history
 RUN groupadd --gid $USER_GID $USERNAME \
     && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+    && mkdir -p /home/$USERNAME/hist \
+    && chown -R $USERNAME:$USERNAME /app /home/$USERNAME/hist
+
+# Passwordless sudo only in development and test images, the production app
+# user must not be able to become root.
+RUN if [ "$APP_ENV" != "production" ]; then \
+      echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+      && chmod 0440 /etc/sudoers.d/$USERNAME; \
+    fi
+
+# System wide tools, installed as root. Then the gem folder goes to the app
+# user, bundle install runs as that user.
+RUN npm install --global yarn
+RUN gem update --system
+RUN gem install mailcatcher \
+    && chown -R $USERNAME:$USERNAME /usr/local/bundle
 
 USER $USERNAME
 
-RUN sudo chown -R $USERNAME:$USERNAME /app
-
 # Install node modules
-RUN npm install --global yarn
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
 # Install and cache gems
-RUN sudo gem update --system
 RUN bundle install
-RUN sudo gem install mailcatcher
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
-
-# To be able to create a .bash_history
-WORKDIR /home/brkmn/hist
-RUN sudo chown -R $USERNAME:$USERNAME /home/brkmn/hist
 
 # Code mounted as a volume
 WORKDIR /app
