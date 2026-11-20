@@ -1,0 +1,283 @@
+# Demo data, loaded by Brkmn::DemoData (lib/brkmn/demo_data.rb).
+# See "Demo data" in README.md.
+#
+# Times are "how long ago": "3 days" means three days before the data is loaded.
+# Every user gets the email <key>@demo.brkmn.test.
+
+users:
+  - key: admin
+    name: Ada Admin
+    superadmin: true
+    about: superadmin, can edit and delete every link
+  - key: maya
+    name: Maya Chen
+    about: owns the research links, has access requests to answer
+  - key: jonas
+    name: Jonas Weber
+    about: owns the event links, can edit some of Maya's
+  - key: priya
+    name: Priya Natarajan
+    about: communications, owns the most clicked links
+  - key: sam
+    name: Sam Okafor
+    about: waits for edit access, an older request was denied
+  - key: lea
+    name: Lea Novak
+    about: new, no links yet, was just denied access
+  - key: tom
+    name: Tom Locked
+    state: locked
+    about: locked after too many wrong passwords
+  - key: nora
+    name: Nora Pending
+    state: unconfirmed
+    about: signed up but never confirmed the email
+
+# A link without a code gets a generated one, like the app makes when the
+# "shorten to" field is left empty.
+links:
+  # Maya, research
+  - code: ml-reading-list
+    to: https://arxiv.org/list/cs.LG/recent
+    owner: maya
+    clicks: 842
+    created: 210 days
+  - code: lab-handbook
+    to: https://docs.example.org/research-lab/handbook#onboarding
+    owner: maya
+    clicks: 391
+    created: 400 days
+  - code: spring-symposium
+    to: "https://events.example.org/2026/spring-symposium?utm_source=brkmn&utm_medium=shortlink"
+    owner: maya
+    clicks: 2314
+    created: 60 days
+    edited_by: jonas
+    edited: 3 days
+  - code: board-minutes
+    to: https://drive.example.org/folders/board-minutes
+    owner: maya
+    clicks: 57
+    created: 30 days
+  - code: data-policy
+    to: https://en.wikipedia.org/wiki/General_Data_Protection_Regulation
+    owner: maya
+    clicks: 1203
+    created: 500 days
+  - code: survey
+    to: https://forms.example.org/r/community-survey
+    owner: maya
+    clicks: 4410
+    created: 14 days
+  - code: rfc9110
+    to: https://www.rfc-editor.org/rfc/rfc9110.html
+    owner: maya
+    clicks: 77
+    created: 300 days
+  - code: paper-draft
+    to: https://writing.example.org/project/platform-governance-draft
+    owner: maya
+    clicks: 12
+    created: 5 days
+    edited_by: maya
+    edited: 1 day
+  - to: "https://scholar.google.com/scholar?q=platform+governance"
+    owner: maya
+    clicks: 33
+    created: 90 days
+  # A URL inside the URL, kept as it is.
+  - code: wayback-copy
+    to: https://web.archive.org/web/2016/https://www.example.com/
+    owner: maya
+    clicks: 8
+    created: 120 days
+  # A long destination, to see how the table handles it.
+  - code: transparency-reports
+    to: "https://search.example.org/results?query=content+moderation+transparency+reports&filters=year:2020-2026,type:report,language:en&sort=relevance&page=3"
+    owner: maya
+    clicks: 145
+    created: 75 days
+  - code: brand-new
+    to: https://www.example.org/news/just-published
+    owner: maya
+    clicks: 0
+    created: 10 minutes
+
+  # Jonas, events
+  - code: hackathon-signup
+    to: https://forms.example.org/r/hackathon-signup
+    owner: jonas
+    clicks: 650
+    created: 45 days
+  - code: retreat
+    to: https://events.example.org/2026/retreat/agenda
+    owner: jonas
+    clicks: 190
+    created: 20 days
+  - code: slides
+    to: https://slides.example.org/d/networked-governance-talk
+    owner: jonas
+    clicks: 88
+    created: 9 days
+  - code: livestream
+    to: https://stream.example.org/live/main-hall
+    owner: jonas
+    clicks: 1520
+    created: 2 days
+  - code: rsvp
+    to: "https://events.example.org/rsvp?event=fall-lecture&return=https://www.example.org/thanks"
+    owner: jonas
+    clicks: 302
+    created: 35 days
+  - code: meetup-map
+    to: "https://www.openstreetmap.org/#map=17/42.37800/-71.11800"
+    owner: jonas
+    clicks: 41
+    created: 70 days
+
+  # Priya, communications (the busy ones)
+  - code: newsletter
+    to: https://newsletter.example.org/issues/42
+    owner: priya
+    clicks: 12877
+    created: 400 days
+  - code: press-kit
+    to: https://media.example.org/press-kit.zip
+    owner: priya
+    clicks: 980
+    created: 150 days
+    edited_by: maya
+    edited: 12 days
+  - code: annual-report
+    to: https://www.example.org/annual-report-2025.pdf
+    owner: priya
+    clicks: 7342
+    created: 330 days
+  - code: join-us
+    to: "https://jobs.example.org/openings?team=communications"
+    owner: priya
+    clicks: 2145
+    created: 80 days
+  - code: podcast
+    to: https://podcasts.example.org/show/internet-and-society
+    owner: priya
+    clicks: 5520
+    created: 600 days
+  - code: mastodon
+    to: https://mastodon.social/explore
+    owner: priya
+    clicks: 219
+    created: 260 days
+  - code: donate
+    to: https://give.example.org/campaign/spring
+    owner: priya
+    clicks: 3301
+    created: 100 days
+
+  # Ada, admin
+  - code: status
+    to: https://status.example.org
+    owner: admin
+    clicks: 15
+    created: 700 days
+  - code: it-help
+    to: https://help.example.org/kb/vpn-setup
+    owner: admin
+    clicks: 466
+    created: 365 days
+
+  # Sam
+  - code: reading-group
+    to: https://en.wikipedia.org/wiki/Internet_governance
+    owner: sam
+    clicks: 64
+    created: 25 days
+  - to: https://github.com/rails/rails
+    owner: sam
+    clicks: 5
+    created: 3 days
+
+  # Old links without an owner, from before people had accounts.
+  - code: home
+    to: https://www.example.org/
+    clicks: 25004
+    created: 3650 days
+  - code: wiki
+    to: https://en.wikipedia.org/wiki/URL_shortening
+    clicks: 1802
+    created: 2900 days
+  - code: old-lab-site
+    to: http://old-site.example.org/~lab/index.html
+    clicks: 377
+    created: 4000 days
+
+# Edit access the owner gave to someone.
+shares:
+  - code: lab-handbook
+    user: jonas
+    by: maya
+    created: 200 days
+  - code: spring-symposium
+    user: jonas
+    by: maya
+    created: 50 days
+  - code: survey
+    user: priya
+    by: maya
+    created: 10 days
+  - code: press-kit
+    user: maya
+    by: priya
+    created: 120 days
+  - code: press-kit
+    user: sam
+    by: priya
+    created: 90 days
+  - code: hackathon-signup
+    user: priya
+    by: jonas
+    created: 40 days
+
+# Edit access requests, in every state.
+access_requests:
+  - code: lab-handbook
+    user: sam
+    status: pending
+    created: 2 days
+  - code: survey
+    user: jonas
+    status: pending
+    created: 1 day
+  - code: newsletter
+    user: lea
+    status: pending
+    created: 4 days
+  - code: spring-symposium
+    user: jonas
+    status: approved
+    by: maya
+    created: 52 days
+    resolved: 50 days
+  # Denied long ago, Sam can ask again.
+  - code: hackathon-signup
+    user: sam
+    status: denied
+    by: jonas
+    created: 12 days
+    resolved: 10 days
+  # Denied just now, Lea has to wait a day before asking again.
+  - code: board-minutes
+    user: lea
+    status: denied
+    by: maya
+    created: 1 day
+    resolved: 2 hours
+
+# Generated links (DEMO_GENERATED_LINKS of them, 120 by default), so there are pages to go through,
+# things to search for and columns worth sorting.
+generated:
+  owners: [maya, maya, maya, jonas, jonas, priya, priya, sam, admin]
+  adjectives: [brave, calm, clever, curious, eager, fuzzy, gentle, happy, jolly, lively, lucky, mellow, nimble, proud, quick, quiet, rapid, shiny, silly, sunny, swift, tidy, witty, zesty]
+  animals: [otter, falcon, badger, panda, koala, lynx, heron, walrus, gecko, bison, moose, raven, puffin, marmot, tapir, yak, llama, quokka, beaver, orca]
+  hosts: [www.example.org, blog.example.org, docs.example.org, events.example.org, news.example.com, research.example.net]
+  topics: [privacy, policy, ai-ethics, open-data, copyright, net-neutrality, misinformation, encryption, accessibility, platforms]

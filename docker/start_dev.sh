@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Starts the development environment (app + db).
-# Extra arguments are passed to `docker compose up`, e.g. `-d` or `--build`.
+# --demo loads the demo data (see "Demo data" in README.md).
+# Other arguments are passed to `docker compose up`, e.g. `-d` or `--build`.
 
 set -e
 cd "$(dirname "$0")/.."
@@ -11,6 +12,18 @@ if [ ! -f .env ]; then
   echo "Created .env from .env.sample"
 fi
 
-echo "App: http://localhost:8507, Mailcatcher: http://localhost:8517"
+args=()
+for arg in "$@"; do
+  if [ "$arg" = "--demo" ]; then
+    export SEED_DEMO_DATA=true
+  else
+    args+=("$arg")
+  fi
+done
 
-exec docker compose -f docker/docker-compose.dev.yml --env-file .env up "$@"
+echo "App: http://localhost:8507, Mailcatcher: http://localhost:8517"
+if [ "$SEED_DEMO_DATA" = "true" ]; then
+  echo "Demo data: loaded on start, log in as maya@demo.brkmn.test / brkmn-demo-password"
+fi
+
+exec docker compose -f docker/docker-compose.dev.yml --env-file .env up "${args[@]}"

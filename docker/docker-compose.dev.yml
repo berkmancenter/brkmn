@@ -32,8 +32,10 @@ services:
     restart: always
     environment:
       - APP_ENV=development
+      # true loads the demo data on every start, see "Demo data" in README.md
+      - SEED_DEMO_DATA=${SEED_DEMO_DATA:-}
     command: >
-      bash -c "bundle install && yarn install && ./bin/rails db:prepare && ./bin/dev"
+      bash -c "bundle install && yarn install && ./bin/rails db:prepare demo:auto && ./bin/dev"
 
 volumes:
   db:
