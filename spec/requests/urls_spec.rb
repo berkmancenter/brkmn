@@ -23,6 +23,23 @@ RSpec.describe "Urls", type: :request do
       expect(response).to redirect_to(urls_path)
     end
 
+    it "does not accept a destination without a host" do
+      expect do
+        post urls_path, params: {url: {to: "https://", shortened: ""}}
+      end.not_to change(Url, :count)
+
+      expect(flash[:error]).to include("must be a valid url")
+    end
+
+    it "shows an error when another request took the code at the same time" do
+      allow_any_instance_of(Url).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
+
+      post urls_path, params: {url: {to: "https://example.org", shortened: "taken"}}
+
+      expect(flash[:error]).to include("(taken) is already in use")
+      expect(response).to redirect_to(urls_path)
+    end
+
     it "redirects with an error without creating an invalid URL" do
       expect do
         post urls_path, params: {url: {to: "https://ex ample.org", shortened: "bad-url"}}

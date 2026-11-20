@@ -55,6 +55,32 @@ RSpec.describe Url, type: :model do
       url = Url.create(shortened: 'foobar', to: 'https://https://google.com')
       expect(url.to).to eq('https://google.com')
     end
+
+    it 'keeps URLs in the query string' do
+      url = Url.new(to: 'https://example.com/login?next=https://foo.com/x')
+      expect(url.to).to eq('https://example.com/login?next=https://foo.com/x')
+
+      url = Url.new(to: 'http://example.com/?u=https://b.com')
+      expect(url.to).to eq('http://example.com/?u=https://b.com')
+    end
+
+    it 'handles an upper case protocol and surrounding spaces' do
+      expect(Url.new(to: 'HTTPS://Example.com').to).to eq('https://Example.com')
+      expect(Url.new(to: '  https://example.com/  ').to).to eq('https://example.com/')
+    end
+
+    it 'requires a host' do
+      expect(Url.new(to: 'https://')).not_to be_valid
+    end
+
+    it 'only allows http and https' do
+      expect(Url.new(to: 'ftp://example.com/file')).not_to be_valid
+      expect(Url.new(to: 'javascript:alert(1)')).not_to be_valid
+    end
+
+    it 'does not crash on a value that is not a string' do
+      expect(Url.new(to: ['https://example.com'])).not_to be_valid
+    end
   end
 
   describe '.shortened on creation' do
@@ -89,6 +115,25 @@ RSpec.describe Url, type: :model do
         expect(url).not_to be_valid
       end
     end
+
+    it 'disallows codes taken by the health check and PWA routes' do
+      %w[up manifest service-worker].each do |shortcode|
+        expect(Url.new(shortened: shortcode, to: 'https://google.com')).not_to be_valid
+      end
+    end
+
+    it 'disallows codes that are served as public files or mounted apps' do
+      %w[robots.txt 404 sidekiq Sidekiq . ..].each do |shortcode|
+        expect(Url.new(shortened: shortcode, to: 'https://google.com')).not_to be_valid
+      end
+    end
+
+    it 'has a unique index so a race cannot create the same code twice' do
+      create(:url, shortened: 'race')
+      duplicate = build(:url, shortened: 'race')
+
+      expect { duplicate.save(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
   end
 
   describe '.shortened on update' do
@@ -113,6 +158,14 @@ RSpec.describe Url, type: :model do
       url = Url.create(shortened: '42', to: 'http://google.com')
       url.shortened = 'urls'
       expect(url).not_to be_valid
+    end
+
+    it 'lets an older link with a now reserved code change its destination' do
+      url = create(:url, to: 'https://google.com')
+      url.update_column(:shortened, 'up')
+
+      url.to = 'https://example.com/new'
+      expect(url).to be_valid
     end
 
     it "disallows characters that can't be used in a URL" do

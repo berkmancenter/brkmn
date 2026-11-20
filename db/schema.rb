@@ -63,7 +63,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_20_115209) do
     t.index ["auto"], name: "index_urls_on_auto"
     t.index ["clicks"], name: "index_urls_on_clicks"
     t.index ["last_edited_by_id"], name: "index_urls_on_last_edited_by_id"
-    t.index ["shortened"], name: "index_urls_on_shortened"
+    t.index ["shortened"], name: "index_urls_on_shortened", unique: true
     t.index ["to"], name: "index_urls_on_to"
     t.index ["user_id"], name: "index_urls_on_user_id"
   end

@@ -46,7 +46,7 @@ class UrlsController < ApplicationController
 
     respond_to do |f|
       f.html do
-        if @url.save
+        if save_url
           flash[:notice] = "Shortened URL (#{root_url}#{@url.shortened}) was successfully created."
         else
           logger.warn(@url.errors.inspect)
@@ -122,6 +122,14 @@ class UrlsController < ApplicationController
 
   def update_url_params
     params.permit(url: :to)[:url]
+  end
+
+  # The unique index catches two people taking the same code at the same time.
+  def save_url
+    @url.save
+  rescue ActiveRecord::RecordNotUnique
+    @url.errors.add(:shortened, "(#{@url.shortened}) is already in use. Please choose another.")
+    false
   end
 
   def sort_column

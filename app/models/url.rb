@@ -20,7 +20,7 @@
 #  index_urls_on_auto               (auto)
 #  index_urls_on_clicks             (clicks)
 #  index_urls_on_last_edited_by_id  (last_edited_by_id)
-#  index_urls_on_shortened          (shortened)
+#  index_urls_on_shortened          (shortened) UNIQUE
 #  index_urls_on_to                 (to)
 #  index_urls_on_user_id            (user_id)
 #
@@ -36,6 +36,10 @@ class Url < ApplicationRecord
     {url_collaborators: :user, url_access_requests: :user}
   ].freeze
 
+  # One or more http(s):// at the start, e.g. "https://http://example.com".
+  LEADING_PROTOCOLS = %r{\A(?:https?://)+}i
+  OTHER_SCHEME = %r{\A[a-z][a-z0-9+.-]*://}i
+
   belongs_to :user, optional: true
   belongs_to :last_edited_by, class_name: "User", optional: true, inverse_of: :edited_urls
 
@@ -50,7 +54,7 @@ class Url < ApplicationRecord
   validate :to do
     errors.add(:to, "cannot be 'localhost' or '#{REDIRECT_DOMAIN}'.") if
       to&.match(PROTECTED_REDIRECT_REGEX)
-    errors.add(:to, 'must be a valid url') unless valid_url?(to)
+    errors.add(:to, 'must be a valid url') unless to.blank? || valid_url?(to)
   end
   validates :shortened, shortcode: true, on: %i[create update]
 
@@ -115,23 +119,33 @@ class Url < ApplicationRecord
     super
   end
 
-  # Ensure protocol appears exactly once.
+  # Ensure protocol appears exactly once at the start. Only the start is
+  # touched, URLs in the query (?next=https://...) stay as they are.
   def to=(value)
-    if value.present?
-      protocols = value.scan(%r{https?://})
-      protocol = protocols.last || 'https://'
-
-      base_url = value.gsub(%r{https?://}, '')
-      value = "#{protocol}#{base_url}"
-    end
+    value = normalize_destination(value) if value.is_a?(String) && value.present?
 
     super
   end
 
   private
 
+  def normalize_destination(value)
+    value = value.strip
+    leading = value[LEADING_PROTOCOLS]
+    rest = value.delete_prefix(leading.to_s)
+
+    if leading
+      "#{leading.scan(%r{https?://}i).last.downcase}#{rest}"
+    elsif rest.match?(OTHER_SCHEME)
+      rest # ftp:// and friends, left for the validation to reject
+    else
+      "https://#{rest}"
+    end
+  end
+
   def valid_url?(url)
-    !!URI.parse(url)
+    uri = URI.parse(url.to_s)
+    uri.is_a?(URI::HTTP) && uri.host.present?
   rescue URI::InvalidURIError
     false
   end
