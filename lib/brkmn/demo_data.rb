@@ -37,6 +37,14 @@ module Brkmn
       "#{key}@#{DOMAIN}"
     end
 
+    # "3 days" in the data file is 3 days before now.
+    def self.ago(text)
+      amount, unit = TIME_AGO.match(text.to_s)&.captures
+      raise ArgumentError, "Unknown time #{text.inspect} in #{DATA_FILE}, use e.g. \"3 days\"" unless amount
+
+      amount.to_i.public_send(unit).ago
+    end
+
     attr_reader :password, :skipped_codes
 
     def initialize(
@@ -64,6 +72,7 @@ module Brkmn
         reset_sharing
         load_shares
         load_access_requests
+        api_tokens.load(@users)
       end
       self
     end
@@ -88,6 +97,11 @@ module Brkmn
 
     def users_data
       @data[:users]
+    end
+
+    # From their own random seed, so the link data stays the same.
+    def api_tokens
+      @api_tokens ||= DemoApiTokens.new(@data[:api_tokens], random_seed: @random_seed + 1)
     end
 
     def demo_users
@@ -240,10 +254,7 @@ module Brkmn
     end
 
     def ago(text)
-      amount, unit = TIME_AGO.match(text.to_s)&.captures
-      raise ArgumentError, "Unknown time #{text.inspect} in #{DATA_FILE}, use e.g. \"3 days\"" unless amount
-
-      amount.to_i.public_send(unit).ago
+      self.class.ago(text)
     end
   end
 end

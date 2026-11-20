@@ -15,6 +15,7 @@ module Brkmn
         user = User.find_or_initialize_by(email: DemoData.email_for(attributes[:key]))
         user.username = attributes[:name]
         user.superadmin = attributes.fetch(:superadmin, false)
+        user.api_only = attributes.fetch(:api_only, false)
         assign_password(user)
         assign_confirmation(user, confirmed: attributes[:state] != "unconfirmed")
         user.save!

@@ -32,6 +32,15 @@ users:
     name: Nora Pending
     state: unconfirmed
     about: signed up but never confirmed the email
+  # External people with API access only, they can't sign in to the website.
+  - key: partner
+    name: Pat Partner
+    api_only: true
+    about: external partner, API only, uses a token an admin made for them
+  - key: vendor
+    name: Vic Vendor
+    api_only: true
+    about: external, API only, hasn't collected the token from the claim link yet
 
 # A link without a code gets a generated one, like the app makes when the
 # "shorten to" field is left empty.
@@ -272,6 +281,64 @@ access_requests:
     by: maya
     created: 1 day
     resolved: 2 hours
+
+# API tokens, in every state. The secrets come from the demo random seed, the
+# report (bin/rails demo:info) shows them. Without lifetime_days a token never
+# expires, without created_by the owner made it. A token with claim: pending
+# has only a claim link, nobody collected it yet.
+api_tokens:
+  - user: maya
+    name: Newsletter script
+    access: read_write
+    lifetime_days: 90
+    created: 30 days
+    last_used: 2 hours
+    note: Adds the links of the weekly newsletter.
+  - user: maya
+    name: Reporting dashboard
+    access: read_only
+    created: 200 days
+    last_used: 1 day
+  - user: jonas
+    name: Event signup sync
+    access: read_write
+    lifetime_days: 30
+    created: 40 days
+    last_used: 11 days
+  - user: priya
+    name: Analytics export
+    access: read_only
+    lifetime_days: 7
+    created: 5 days
+  - user: priya
+    name: Old CMS plugin
+    access: read_write
+    lifetime_days: 365
+    created: 120 days
+    revoked: 5 days
+    revoked_by: admin
+    note: Was in a public repository, revoked.
+  - user: admin
+    name: Ops monitoring
+    access: read_only
+    lifetime_days: 365
+    created: 10 days
+  - user: partner
+    name: Partner newsletter feed
+    access: read_only
+    lifetime_days: 180
+    created: 60 days
+    created_by: admin
+    claimed: 59 days
+    last_used: 3 hours
+    note: For the partner's newsletter.
+  - user: vendor
+    name: Vendor integration
+    access: read_write
+    lifetime_days: 90
+    created: 1 day
+    created_by: admin
+    claim: pending
 
 # Generated links (DEMO_GENERATED_LINKS of them, 120 by default), so there are pages to go through,
 # things to search for and columns worth sorting.

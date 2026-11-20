@@ -11,7 +11,7 @@ RSpec.describe Brkmn::DemoData do
   it "loads people, links, sharing and access requests" do
     demo.load!
 
-    expect(demo.demo_users.count).to eq(8)
+    expect(demo.demo_users.count).to eq(10)
     expect(demo.demo_urls.count).to eq(32 + 10)
     expect(User.find_by!(email: "admin@demo.brkmn.test")).to be_superadmin
     expect(maya.valid_password?(described_class::DEFAULT_PASSWORD)).to be(true)
@@ -45,7 +45,7 @@ RSpec.describe Brkmn::DemoData do
     described_class.new(generated_links: 10).load!
 
     expect(Url.order(:shortened).pluck(:shortened, :to, :clicks)).to eq(first_run)
-    expect(demo.demo_users.count).to eq(8)
+    expect(demo.demo_users.count).to eq(10)
   end
 
   it "puts the demo data back to its starting state when loaded again" do
