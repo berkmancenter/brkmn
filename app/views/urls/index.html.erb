@@ -1,3 +1,7 @@
+<%# Coming back to this page after an action (delete, share without
+    JavaScript, ...) is a Turbo refresh: change only what changed and keep
+    the scroll position. %>
+<% turbo_refreshes_with method: :morph, scroll: :preserve %>
 <%= render partial: 'shared/add_url' %>
 
 <hr>

@@ -38,7 +38,8 @@
 
         <% if can?(:destroy, url_list) %>
           <div>
-            <%= link_to(url_path(url_list), title: 'Delete', method: :delete, data: { turbo_method: :delete, turbo_confirm: "Are you sure you want to delete this?" }) do %>
+            <%# "replace" makes coming back here a refresh, so the page stays where it is %>
+            <%= link_to(url_path(url_list), title: 'Delete', method: :delete, data: { turbo_method: :delete, turbo_action: "replace", turbo_confirm: "Are you sure you want to delete this?" }) do %>
               <%= image_tag('delete.svg') %>
             <% end %>
           </div>
