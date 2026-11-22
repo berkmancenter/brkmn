@@ -15,6 +15,14 @@ $fonts: (
   body: ('Verdana', sans-serif),
 );
 
+// Page box: grows with the screen until max width, the URL table is wide
+// so it is bigger than usual text page, but still not full width on big monitors
+$layout-max-width: 1600px;
+// Space between page box and screen edge, small on phones and bigger on desktop
+$layout-gutter: clamp(0.75rem, 3vw, 2rem);
+// Space inside the page box
+$layout-padding: clamp(1rem, 2vw, 1.5rem);
+
 // Below this width the header shows only Search and a Menu button,
 // the full row of header items needs about 1000px with a long email
 $header-menu-breakpoint: 1152px;

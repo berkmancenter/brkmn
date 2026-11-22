@@ -15,7 +15,9 @@
     color: map.get($colors, primary);
   }
 
+  // Long lines are hard to read on wide layout
   p {
+    max-width: 80ch;
     margin: 0 0 0.5rem;
 
     &:last-child {

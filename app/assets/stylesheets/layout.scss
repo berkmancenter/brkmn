@@ -3,11 +3,10 @@
 @use 'mixins' as *;
 
 .wrapper {
-  width: 90%;
-  max-width: 1400px;
-  margin: 20px auto;
+  width: min(100% - 2 * $layout-gutter, $layout-max-width);
+  margin-inline: auto;
   background-color: #fff;
-  padding: 20px;
+  padding: $layout-padding;
   @include rounded-corners;
   @include box-shadow;
 
