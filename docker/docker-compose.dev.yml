@@ -3,7 +3,7 @@ services:
     image: 'postgres:14'
     volumes:
       - 'db:/var/lib/postgresql/data'
-      - '.:/app'
+      - '..:/app'
     environment:
       POSTGRES_USER: ${DATABASE_USERNAME}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
