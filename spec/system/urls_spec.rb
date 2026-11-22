@@ -123,6 +123,34 @@ RSpec.describe "Managing short links", type: :system do
     end
   end
 
+  it "cuts a long short link and shows the whole one with the toggle button" do
+    long_code = "a-very-long-custom-short-link-for-the-spring-campaign-2026"
+    create(:url, user: user, shortened: "short")
+    create(:url, user: user, shortened: long_code)
+
+    visit urls_path
+
+    within "#my_urls" do
+      expect(page).to have_link("short")
+      expect(page).to have_button("Show the whole short link short", visible: :hidden)
+
+      link = find_link(long_code)
+      cut_height = link.evaluate_script("this.getBoundingClientRect().height")
+      expect(link.evaluate_script("this.scrollWidth > this.clientWidth")).to be(true)
+
+      toggle = find_button("Show the whole short link #{long_code}")
+      expect(toggle["aria-expanded"]).to eq("false")
+      toggle.click
+
+      expect(page).to have_css(".shortened-title--expanded .shortened-title-toggle[aria-expanded='true']")
+      expect(link.evaluate_script("this.getBoundingClientRect().height")).to be > cut_height
+
+      toggle.click
+      expect(page).to have_no_css(".shortened-title--expanded")
+      expect(toggle["aria-expanded"]).to eq("false")
+    end
+  end
+
   it "keeps the selected theme after reloading" do
     visit urls_path
     click_link "Classic"

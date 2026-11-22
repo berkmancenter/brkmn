@@ -2,8 +2,26 @@
 <tr id="<%= dom_id(url_list, :row) %>" class="<%= class_names("url-row", "url-row--changed": local_assigns[:changed]) %>">
   <td class="shortened">
     <div>
-      <div class="shortened-title">
-        <%= link_to(url_list.shortened, shortened_url(url_list.shortened)) %>
+      <%# Long short links are cut, the button next to them shows the whole one %>
+      <div
+        class="shortened-title"
+        data-controller="truncated-text"
+        data-truncated-text-expanded-class="shortened-title--expanded">
+        <%= link_to(url_list.shortened, shortened_url(url_list.shortened),
+              class: "shortened-title-link",
+              title: shortened_url(url_list.shortened),
+              data: {truncated_text_target: "text"}) %>
+        <button
+          type="button"
+          class="shortened-title-toggle"
+          title="Show the whole short link"
+          aria-label="Show the whole short link <%= url_list.shortened %>"
+          aria-expanded="false"
+          hidden
+          data-truncated-text-target="toggle"
+          data-action="truncated-text#toggle">
+          <%= image_tag("expand.svg", alt: "") %>
+        </button>
       </div>
       <div
         class="shortened-actions"

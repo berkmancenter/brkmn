@@ -114,18 +114,82 @@ table {
     }
 
     td.shortened {
+      // Column has fixed width: the short link and the icons. 1px means the table
+      // gives no extra space to this column, so it is only as wide as its content
+      width: 1px;
+
+      // Same width in every row: about 15 characters and the toggle button.
+      // Longer short links are cut with "…", the toggle button shows the whole one
       .shortened-title {
+        display: flex;
+        flex: none;
+        align-items: center;
+        width: calc(15ch + 1.5rem);
         margin-right: 0.5rem;
       }
 
+      .shortened-title-link {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .shortened-title--expanded .shortened-title-link {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .shortened-title-toggle {
+        display: flex;
+        flex-shrink: 0;
+        margin-left: 0.15rem;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+
+        &[hidden] {
+          display: none;
+        }
+
+        img {
+          width: 1.25rem;
+          height: 1.25rem;
+          min-width: 1.25rem;
+          min-height: 1.25rem;
+          @include transition(transform, 0.2s);
+        }
+
+        &:hover img {
+          transform: scale(1.1);
+        }
+
+        &[aria-expanded="true"] img {
+          transform: rotate(180deg);
+        }
+
+        &[aria-expanded="true"]:hover img {
+          transform: rotate(180deg) scale(1.1);
+        }
+      }
+
+      // Expanded text is in many lines, the button stays at the top
+      .shortened-title--expanded .shortened-title-toggle {
+        align-self: flex-start;
+      }
+
+      // Centered like other cells, also when the expanded short link has many lines
       > div {
         display: flex;
         flex-wrap: nowrap;
+        align-items: center;
       }
 
       .shortened-actions {
         display: flex;
         flex-wrap: nowrap;
+        align-items: center;
         margin-left: auto;
 
         > div {
